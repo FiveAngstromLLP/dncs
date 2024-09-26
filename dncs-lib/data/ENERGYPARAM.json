@@ -1,0 +1,214 @@
+{
+  "seq": [
+    {
+      "atomtype": "C",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "C*",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CA",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CB",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CC",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CD",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CE",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CF",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CG",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CH",
+      "sigma": 1.85,
+      "epsilon": 0.09
+    },
+    {
+      "atomtype": "CI",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CJ",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CM",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CN",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CP",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CR",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "CT",
+      "sigma": 1.8,
+      "epsilon": 0.06
+    },
+    {
+      "atomtype": "CW",
+      "sigma": 1.8,
+      "epsilon": 0.06
+    },
+    {
+      "atomtype": "C2",
+      "sigma": 1.925,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "C3",
+      "sigma": 2.0,
+      "epsilon": 0.15
+    },
+    {
+      "atomtype": "H",
+      "sigma": 1.0,
+      "epsilon": 0.02
+    },
+    {
+      "atomtype": "HC",
+      "sigma": 1.375,
+      "epsilon": 0.038
+    },
+    {
+      "atomtype": "HO",
+      "sigma": 1.0,
+      "epsilon": 0.02
+    },
+    {
+      "atomtype": "HS",
+      "sigma": 1.0,
+      "epsilon": 0.02
+    },
+    {
+      "atomtype": "H2",
+      "sigma": 1.0,
+      "epsilon": 0.02
+    },
+    {
+      "atomtype": "H3",
+      "sigma": 1.0,
+      "epsilon": 0.02
+    },
+    {
+      "atomtype": "LP",
+      "sigma": 1.2,
+      "epsilon": 0.016
+    },
+    {
+      "atomtype": "N",
+      "sigma": 1.75,
+      "epsilon": 0.16
+    },
+    {
+      "atomtype": "N*",
+      "sigma": 1.75,
+      "epsilon": 0.16
+    },
+    {
+      "atomtype": "NA",
+      "sigma": 1.75,
+      "epsilon": 0.16
+    },
+    {
+      "atomtype": "NB",
+      "sigma": 1.75,
+      "epsilon": 0.16
+    },
+    {
+      "atomtype": "NC",
+      "sigma": 1.75,
+      "epsilon": 0.16
+    },
+    {
+      "atomtype": "NT",
+      "sigma": 1.85,
+      "epsilon": 0.12
+    },
+    {
+      "atomtype": "N2",
+      "sigma": 1.75,
+      "epsilon": 0.16
+    },
+    {
+      "atomtype": "N3",
+      "sigma": 1.85,
+      "epsilon": 0.08
+    },
+    {
+      "atomtype": "O",
+      "sigma": 1.6,
+      "epsilon": 0.2
+    },
+    {
+      "atomtype": "OH",
+      "sigma": 1.65,
+      "epsilon": 0.15
+    },
+    {
+      "atomtype": "OS",
+      "sigma": 1.65,
+      "epsilon": 0.15
+    },
+    {
+      "atomtype": "O2",
+      "sigma": 1.6,
+      "epsilon": 0.2
+    },
+    {
+      "atomtype": "P",
+      "sigma": 2.1,
+      "epsilon": 0.2
+    },
+    {
+      "atomtype": "S",
+      "sigma": 2.0,
+      "epsilon": 0.2
+    },
+    {
+      "atomtype": "SH",
+      "sigma": 2.0,
+      "epsilon": 0.2
+    }
+  ]
+}

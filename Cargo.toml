@@ -1,0 +1,13 @@
+[package]
+name = "dncs_workspace"
+version = "0.1.0"
+edition = "2021"
+
+
+[lib]
+name = "libdncs"
+path = "dncs/src/lib.rs"
+
+
+[workspace]
+members = ["dncs-lib", "dncs-cli", "dncs-ui"]
