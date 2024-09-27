@@ -13,12 +13,10 @@ fn convert() {
     data2.to_json("data/ALLAMINOMOLS_2.json");
     let data3: Polymer<Bond> = Polymer::from_lib("examples/files/ALLCONN.lib");
     data3.to_json("data/ALLCONN.json");
-    let data4: Polymer<Type> = Polymer::from_lib("examples/files/ATOMTYPE.lib");
-    data4.to_json("data/ATOMTYPE.json");
-    let data5: Polymer<Diheds> = Polymer::from_lib("examples/files/DIHEDS.lib");
-    data5.to_json("data/DIHEDS.json");
-    let data6 = EnergyParam::from_lib("examples/files/ENERGYPARAM.lib");
-    data6.to_json("data/ENERGYPARAM.json");
+    let data4: Polymer<Diheds> = Polymer::from_lib("examples/files/DIHEDS.lib");
+    data4.to_json("data/DIHEDS.json");
+    let data4 = EnergyParam::from_lib("examples/files/ENERGYPARAM.lib");
+    data4.to_json("data/ENERGYPARAM.json");
 }
 
 #[allow(dead_code)]
@@ -28,15 +26,24 @@ trait Convert {
 }
 
 #[derive(Deserialize, Serialize, Clone)]
-pub struct Atom {
-    pub record: String,
-    pub serial: usize,
-    pub name: String,
-    pub residue: String,
-    pub sequence: usize,
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
+struct Atom {
+    record: String,
+    serial: usize,
+    name: String,
+    residue: String,
+    chain_id: String,
+    sequence: usize,
+    position: [f64; 3],
+    occupancy: f64,
+    bfactor: f64,
+    element: String,
+    mass: f64,
+    charge: f64,
+    atomtype: String,
+    sigma: f64,
+    epsilon: f64,
+    velocity: [f64; 3],
+    force: [f64; 3],
 }
 
 impl Convert for Atom {
@@ -46,27 +53,42 @@ impl Convert for Atom {
             serial: line.get(7..12).unwrap_or("").trim().parse().unwrap_or(0),
             name: line.get(12..17).unwrap_or("").trim().to_string(),
             residue: line.get(17..21).unwrap_or("").trim().to_string(),
+            chain_id: line.get(21..23).unwrap_or("").trim().to_string(),
             sequence: line.get(23..27).unwrap_or("").trim().parse().unwrap_or(0),
-            x: line.get(31..39).unwrap_or("").trim().parse().unwrap_or(0.0),
-            y: line.get(39..47).unwrap_or("").trim().parse().unwrap_or(0.0),
-            z: line.get(47..54).unwrap_or("").trim().parse().unwrap_or(0.0),
+            position: [
+                line.get(31..39).unwrap_or("").trim().parse().unwrap_or(0.0),
+                line.get(39..47).unwrap_or("").trim().parse().unwrap_or(0.0),
+                line.get(47..54).unwrap_or("").trim().parse().unwrap_or(0.0),
+            ],
+            occupancy: line.get(55..60).unwrap_or("").trim().parse().unwrap_or(0.0),
+            bfactor: line.get(60..66).unwrap_or("").trim().parse().unwrap_or(0.0),
+            element: line.get(76..78).unwrap_or("").trim().to_string(),
+            mass: line.get(78..87).unwrap_or("").trim().parse().unwrap_or(0.0),
+            charge: line.get(87..97).unwrap_or("").trim().parse().unwrap_or(0.0),
+            atomtype: line.get(97..).unwrap_or("").trim().to_string(),
+            epsilon: 0.0,
+            sigma: 0.0,
+            velocity: [0.0; 3],
+            force: [0.0; 3],
         }
     }
     fn to_string(&self) -> String {
         format!(
-            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}",
+            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}{:>6.2}{:>6.2}          {:>2}",
             self.record,
             self.serial,
-            match self.name.chars().next() {
-                Some(c) if c.is_alphabetic() && self.name.len() == 3 => format!(" {}", self.name),
-                Some(c) if c.is_numeric() && self.name.len() == 3 => format!("{} ", self.name),
+            match self.name.len() {
+                3 => format!(" {}", self.name.to_string()),
                 _ => self.name.to_string(),
             },
             self.residue,
             self.sequence,
-            self.x,
-            self.y,
-            self.z,
+            self.position[0],
+            self.position[1],
+            self.position[2],
+            self.occupancy,
+            self.bfactor,
+            self.element
         )
     }
 }
@@ -75,34 +97,36 @@ impl Debug for Atom {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}",
+            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}{:>6.2}{:>6.2}          {:>2}",
             self.record,
             self.serial,
-            match self.name.chars().next() {
-                Some(c) if c.is_alphabetic() && self.name.len() == 3 => format!(" {}", self.name),
-                Some(c) if c.is_numeric() && self.name.len() == 3 => format!("{} ", self.name),
+            match self.name.len() {
+                3 => format!(" {}", self.name.to_string()),
                 _ => self.name.to_string(),
             },
             self.residue,
             self.sequence,
-            self.x,
-            self.y,
-            self.z,
+            self.position[0],
+            self.position[1],
+            self.position[2],
+            self.occupancy,
+            self.bfactor,
+            self.element
         )
     }
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Bond {
-    pub a: String,
-    pub b: String,
+struct Bond {
+    a: String,
+    b: String,
 }
 
 impl Convert for Bond {
     fn new(line: &str) -> Self {
         Bond {
-            a: line.get(8..12).unwrap_or("").trim().to_string(),
-            b: line.get(12..).unwrap_or("").trim().to_string(),
+            a: line.get(8..13).unwrap_or("").trim().to_string(),
+            b: line.get(13..).unwrap_or("").trim().to_string(),
         }
     }
     fn to_string(&self) -> String {
@@ -111,49 +135,10 @@ impl Convert for Bond {
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Type {
-    pub name: String,
-    pub symb: String,
-    pub atomtype: String,
-    pub charge: f64,
-    pub val1: f64,
-    pub val2: u32,
-}
-
-impl Convert for Type {
-    fn new(line: &str) -> Self {
-        Type {
-            name: line.get(0..5).unwrap_or("").trim().to_string(),
-            symb: line.get(10..13).unwrap_or("").trim().to_string(),
-            atomtype: line.get(13..17).unwrap_or("").trim().to_string(),
-            charge: line.get(17..25).unwrap_or("").trim().parse().unwrap_or(0.0),
-            val1: line.get(25..32).unwrap_or("").trim().parse().unwrap_or(0.0),
-            val2: line.get(33..).unwrap_or("").trim().parse().unwrap_or(0),
-        }
-    }
-
-    fn to_string(&self) -> String {
-        format!(
-            "{:^4}{:>8}  {:<3}{:>8.4}{:>8.3} {:>3}",
-            match self.name.chars().next() {
-                Some(c) if c.is_alphabetic() && self.name.len() == 3 => format!(" {}", self.name),
-                Some(c) if c.is_numeric() && self.name.len() == 3 => format!("{} ", self.name),
-                _ => self.name.to_string(),
-            },
-            self.symb,
-            self.atomtype,
-            self.charge,
-            self.val1,
-            self.val2
-        )
-    }
-}
-
-#[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Energy {
-    pub atomtype: String,
-    pub sigma: f64,
-    pub epsilon: f64,
+struct Energy {
+    atomtype: String,
+    sigma: f64,
+    epsilon: f64,
 }
 
 impl Convert for Energy {
@@ -175,20 +160,20 @@ impl Convert for Energy {
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Diheds {
-    pub d: String,
-    pub a: String,
-    pub b: String,
-    pub c: String,
+struct Diheds {
+    a: String,
+    b: String,
+    c: String,
+    d: String,
 }
 
 impl Convert for Diheds {
     fn new(line: &str) -> Self {
         Diheds {
-            a: line.get(9..13).unwrap_or("").trim().to_string(),
-            b: line.get(13..16).unwrap_or("").trim().to_string(),
-            c: line.get(16..20).unwrap_or("").trim().to_string(),
-            d: line.get(20..).unwrap_or("").trim().to_string(),
+            a: line.get(9..14).unwrap_or("").trim().to_string(),
+            b: line.get(14..21).unwrap_or("").trim().to_string(),
+            c: line.get(21..28).unwrap_or("").trim().to_string(),
+            d: line.get(28..).unwrap_or("").trim().to_string(),
         }
     }
 
@@ -209,85 +194,11 @@ impl Convert for Diheds {
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Var {
-    pub a: String,
-    pub b: String,
-    pub c: String,
-    pub d: String,
-    pub t: String,
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
-}
-
-impl Convert for Var {
-    fn new(line: &str) -> Self {
-        Var {
-            a: line.get(9..13).unwrap_or("").trim().to_string(),
-            b: line.get(13..16).unwrap_or("").trim().to_string(),
-            c: line.get(16..20).unwrap_or("").trim().to_string(),
-            d: line.get(20..24).unwrap_or("").trim().to_string(),
-            t: line.get(26..31).unwrap_or("").trim().to_string(),
-            x: line.get(33..39).unwrap_or("").trim().parse().unwrap_or(0.0),
-            y: line.get(39..46).unwrap_or("").trim().parse().unwrap_or(0.0),
-            z: line.get(46..).unwrap_or("").trim().parse().unwrap_or(0.0),
-        }
-    }
-
-    fn to_string(&self) -> String {
-        let formt = |s: &str| match s.chars().next() {
-            Some(c) if c.is_alphabetic() && s.len() == 3 => format!(" {}", s),
-            Some(c) if c.is_numeric() && s.len() == 3 => format!("{} ", s),
-            _ => s.to_string(),
-        };
-        format!(
-            "        {:^4}{:^4}{:^4}{:^4}  {:<4}{:>7.2}{:>7.2}{:>7.2}",
-            formt(&self.a),
-            formt(&self.b),
-            formt(&self.c),
-            formt(&self.d),
-            self.t,
-            self.x,
-            self.y,
-            self.z
-        )
-    }
-}
-
-#[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct SC {
-    pub seq: String,
-    pub serial: u32,
-    pub val: Vec<f32>,
-}
-
-impl Convert for SC {
-    fn new(line: &str) -> Self {
-        SC {
-            seq: line.get(0..4).unwrap_or("").trim().to_string(),
-            serial: line.get(5..9).unwrap_or("").trim().parse().unwrap_or(0),
-            val: line
-                .split_whitespace()
-                .skip(2)
-                .map(|f| f.parse().unwrap_or(0.0))
-                .collect(),
-        }
-    }
-    fn to_string(&self) -> String {
-        let mut val = "".to_string();
-        for i in &self.val {
-            val += format!("{:>8.1}", i).as_str()
-        }
-        format!("{:<5}{:>3}             {}", self.seq, self.serial, val)
-    }
-}
-
-#[derive(Deserialize, Serialize, Debug, Clone)]
-pub struct Monomer<T> {
-    pub tcode: String,
-    pub scode: String,
-    pub natom: usize,
-    pub atoms: Vec<T>,
+struct Monomer<T> {
+    tcode: String,
+    scode: String,
+    natom: usize,
+    atoms: Vec<T>,
 }
 
 impl<T> Convert for Monomer<T> {
@@ -353,8 +264,8 @@ impl<T: Convert + Serialize + Debug> FileHandling for Polymer<T> {
 }
 
 #[derive(Deserialize, Serialize, Clone)]
-pub struct EnergyParam {
-    pub seq: Vec<Energy>,
+struct EnergyParam {
+    seq: Vec<Energy>,
 }
 
 impl FileHandling for EnergyParam {

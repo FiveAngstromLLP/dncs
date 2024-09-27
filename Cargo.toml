@@ -10,4 +10,4 @@ path = "dncs/src/lib.rs"
 
 
 [workspace]
-members = ["dncs-lib", "dncs-cli", "dncs-ui"]
+members = ["dncs-lib", "dncs-cli", "dncs-py"]

@@ -1,8 +1,8 @@
 // use clap::Parser;
-use libdncs::parser::Polygen;
+use libdncs::parser::generate;
 fn main() {
-    let s = Polygen::new("YGGFM");
-    for atom in s.atoms {
+    let s = generate("YGGFM");
+    for atom in s {
         println!("{:?}", atom)
     }
 }

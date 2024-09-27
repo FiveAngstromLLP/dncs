@@ -1,85 +1,90 @@
-use rayon::prelude::*;
-use serde::{Deserialize, Serialize};
+#![allow(dead_code)]
+use serde::Deserialize;
 use std::fmt::Debug;
 use std::io::Write;
 use std::sync::LazyLock;
 
-const ALLAMINOMOLS_1: LazyLock<Polymer<Atom>> =
+pub(crate) static ALLAMINOMOLS_1: LazyLock<Polymer<Atom>> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/ALLAMINOMOLS_1.json")).unwrap());
-const ALLAMINOMOLS_2: LazyLock<Polymer<Atom>> =
+pub(crate) static ALLAMINOMOLS_2: LazyLock<Polymer<Atom>> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/ALLAMINOMOLS_2.json")).unwrap());
+pub(crate) static ALLCONN: LazyLock<Polymer<Bond>> =
+    LazyLock::new(|| serde_json::from_str(include_str!("../data/ALLCONN.json")).unwrap());
+pub(crate) static DIHEDS: LazyLock<Polymer<Diheds>> =
+    LazyLock::new(|| serde_json::from_str(include_str!("../data/DIHEDS.json")).unwrap());
+pub(crate) static ENERGYPARAM: LazyLock<EnergyParam> =
+    LazyLock::new(|| serde_json::from_str(include_str!("../data/ENERGYPARAM.json")).unwrap());
 
-/// Atom
-#[derive(Deserialize, Serialize, Clone, PartialEq)]
+#[derive(Deserialize, Clone)]
 pub struct Atom {
+    /// Record type (e.g., "ATOM" or "HETATM")
     pub record: String,
+    /// Atom serial number
     pub serial: usize,
+    /// Atom name
     pub name: String,
+    /// Residue name
     pub residue: String,
+    /// Chain identifier
+    pub chain_id: String,
+    /// Residue sequence number
     pub sequence: usize,
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
-}
-
-#[allow(dead_code)]
-impl Atom {
-    /// Create Atom from pdb formated line
-    pub(crate) fn new(line: &str) -> Self {
-        Atom {
-            record: line.get(0..5).unwrap_or("").trim().to_string(),
-            serial: line.get(7..12).unwrap_or("").trim().parse().unwrap_or(0),
-            name: line.get(12..17).unwrap_or("").trim().to_string(),
-            residue: line.get(17..21).unwrap_or("").trim().to_string(),
-            sequence: line.get(23..27).unwrap_or("").trim().parse().unwrap_or(0),
-            x: line.get(31..39).unwrap_or("").trim().parse().unwrap_or(0.0),
-            y: line.get(39..47).unwrap_or("").trim().parse().unwrap_or(0.0),
-            z: line.get(47..54).unwrap_or("").trim().parse().unwrap_or(0.0),
-        }
-    }
+    /// Atom position (x, y, z coordinates)
+    pub position: [f64; 3],
+    /// Occupancy
+    pub occupancy: f64,
+    /// Temperature factor (B-factor)
+    pub bfactor: f64,
+    /// Element symbol
+    pub element: String,
+    /// Atomic mass
+    pub(crate) mass: f64,
+    /// Atomic charge
+    pub(crate) charge: f64,
+    /// Atom type (for force field calculations)
+    pub(crate) atomtype: String,
+    /// Lennard-Jones parameter sigma
+    pub(crate) sigma: f64,
+    /// Lennard-Jones parameter epsilon
+    pub(crate) epsilon: f64,
+    /// Atomic velocity (vx, vy, vz)
+    pub(crate) velocity: [f64; 3],
+    /// Force acting on the atom (fx, fy, fz)
+    pub(crate) force: [f64; 3],
 }
 
 impl Debug for Atom {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}",
+            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}{:>6.2}{:>6.2}          {:>2}",
             self.record,
             self.serial,
-            match self.name.chars().next() {
-                Some(c) if c.is_alphabetic() && self.name.len() == 3 => format!(" {}", self.name),
-                Some(c) if c.is_numeric() && self.name.len() == 3 => format!("{} ", self.name),
+            match self.name.len() {
+                3 => format!(" {}", self.name),
                 _ => self.name.to_string(),
             },
             self.residue,
             self.sequence,
-            self.x,
-            self.y,
-            self.z,
+            self.position[0],
+            self.position[1],
+            self.position[2],
+            self.occupancy,
+            self.bfactor,
+            self.element
         )
     }
 }
 
 /// Bond
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Clone)]
 pub(crate) struct Bond {
     pub(crate) a: String,
     pub(crate) b: String,
 }
 
-/// Type
-#[derive(Deserialize, Serialize, Debug, Clone)]
-pub(crate) struct Type {
-    pub(crate) name: String,
-    pub(crate) symb: String,
-    pub(crate) atomtype: String,
-    pub(crate) charge: f64,
-    pub(crate) val1: f64,
-    pub(crate) val2: u32,
-}
-
 /// Diheds
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Clone)]
 pub(crate) struct Diheds {
     pub(crate) d: String,
     pub(crate) a: String,
@@ -88,7 +93,7 @@ pub(crate) struct Diheds {
 }
 
 /// Energy
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Clone)]
 pub(crate) struct Energy {
     pub(crate) atomtype: String,
     pub(crate) sigma: f64,
@@ -96,179 +101,130 @@ pub(crate) struct Energy {
 }
 
 /// EnergyParam
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Clone)]
 pub(crate) struct EnergyParam {
     pub(crate) seq: Vec<Energy>,
 }
 
 /// Monomer
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Clone)]
 pub(crate) struct Monomer<T> {
+    /// Three-letter code for the monomer type
     pub(crate) tcode: String,
+    /// Single-letter code for the monomer type
     pub(crate) scode: String,
+    /// Number of atoms in the monomer
     pub(crate) natom: usize,
+    /// Vector of atoms that make up the monomer
     pub(crate) atoms: Vec<T>,
 }
 
 /// Polymer
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize)]
 pub(crate) struct Polymer<T> {
     pub(crate) seq: Vec<Monomer<T>>,
 }
 
-/// Polygen
-pub struct Polygen {
-    pub atoms: Vec<Atom>, // atoms
+/// Generates a polymer structure from a given amino acid sequence
+pub fn generate(seq: &str) -> Vec<Atom> {
+    let seq = seq.trim().to_uppercase();
+    for s in seq.chars() {
+        assert!(!" OJUXZ".contains(s), "Invalid Sequence");
+    }
+
+    let mut sequence = Vec::<Atom>::new();
+    let mut dumm = [0.0; 3];
+    let mut atomno = 1;
+    let mut resno = 1;
+
+    let data: Vec<(Monomer<Atom>, Monomer<Atom>)> = ALLAMINOMOLS_1
+        .seq
+        .iter()
+        .zip(ALLAMINOMOLS_2.seq.iter())
+        .map(|(a, b)| (a.clone(), b.clone()))
+        .collect();
+
+    // Handle N-terminal
+    if let Some(m) = data.iter().find(|lib| lib.0.tcode == "NH") {
+        let atoms = if !seq.starts_with('P') {
+            &m.0.atoms
+        } else {
+            &m.1.atoms
+        };
+        for mut atom in atoms.clone() {
+            if atom.record == "ATOM" {
+                atom.serial = atomno;
+                atom.sequence = 1;
+                if let Some(r) = ALLAMINOMOLS_1
+                    .seq
+                    .iter()
+                    .find(|f| f.scode.chars().next() == seq.chars().next())
+                {
+                    atom.residue = r.tcode.clone();
+                }
+                sequence.push(atom);
+                atomno += 1;
+            }
+        }
+    }
+
+    // Process each amino acid in the sequence
+    for (r, s) in seq.char_indices() {
+        if let Some(m) = data.iter().find(|lib| lib.0.scode == s.to_string()) {
+            let atoms = if r % 2 == 0 { &m.0.atoms } else { &m.1.atoms };
+            for mut atom in atoms.clone() {
+                if atom.record == "DUMM" {
+                    dumm[0] += atom.position[0];
+                    dumm[1] += atom.position[1];
+                    dumm[2] += atom.position[2];
+                    break;
+                } else {
+                    atom.serial = atomno;
+                    atom.sequence = r + 1;
+                    atom.position[0] += dumm[0];
+                    atom.position[1] += dumm[1];
+                    atom.position[2] += dumm[2];
+                    sequence.push(atom);
+                    atomno += 1;
+                    resno = r;
+                }
+            }
+        }
+    }
+
+    // Handle C-terminal
+    if let Some(m) = data.iter().find(|lib| lib.0.tcode == "COH") {
+        let atoms = if seq.len() % 2 == 1 {
+            &m.0.atoms
+        } else {
+            &m.1.atoms
+        };
+        for mut atom in atoms.clone() {
+            if atom.record == "DUMM" {
+                dumm[0] += atom.position[0];
+                dumm[1] += atom.position[1];
+                dumm[2] += atom.position[2];
+                break;
+            } else {
+                atom.serial = atomno;
+                atom.sequence = resno + 1;
+                atom.position[0] += dumm[0];
+                atom.position[1] += dumm[1];
+                atom.position[2] += dumm[2];
+                sequence.push(atom);
+                atomno += 1;
+            }
+        }
+    }
+    sequence
 }
 
-impl Polygen {
-    /// Create Polymer
-    pub fn new(seq: &str) -> Self {
-        let seq = seq.trim().to_uppercase();
-        for s in seq.chars() {
-            assert!(!" OJUXZ".contains(s), "Invalid Sequence");
-        }
-        let mut sequence = Vec::<Atom>::new();
-        let mut dumm = (0.0, 0.0, 0.0);
-        let mut atomno = 1;
-        let mut resno = 1;
-
-        let data: Vec<(Monomer<Atom>, Monomer<Atom>)> = ALLAMINOMOLS_1
-            .seq
-            .par_iter()
-            .zip(ALLAMINOMOLS_2.seq.par_iter())
-            .map(|(a, b)| (a.clone(), b.clone()))
-            .collect();
-
-        if let Some(m) = data.par_iter().find_any(|lib| lib.0.tcode == "NH") {
-            if !seq.starts_with('P') {
-                for mut atom in m.0.atoms.clone() {
-                    if atom.record == "ATOM" {
-                        atom.serial = atomno;
-                        atom.sequence = 1;
-                        if let Some(r) = ALLAMINOMOLS_1
-                            .seq
-                            .iter()
-                            .find(|f| f.scode.chars().next() == seq.chars().next())
-                        {
-                            atom.residue = r.tcode.clone();
-                        }
-                        sequence.push(atom);
-                        atomno += 1
-                    } else if atom.record == "DUMM" {
-                        continue;
-                    }
-                }
-            } else {
-                for mut atom in m.1.atoms.clone() {
-                    if atom.record == "ATOM" {
-                        atom.serial = atomno;
-                        atom.sequence = 1;
-                        if let Some(r) = ALLAMINOMOLS_1
-                            .seq
-                            .iter()
-                            .find(|f| f.scode.chars().next() == seq.chars().next())
-                        {
-                            atom.residue = r.tcode.clone();
-                        }
-                        sequence.push(atom);
-                        atomno += 1
-                    } else if atom.record == "DUMM" {
-                        continue;
-                    }
-                }
-            }
-        }
-
-        for (r, s) in seq.char_indices() {
-            if let Some(m) = data.iter().find(|lib| lib.0.scode == s.to_string()) {
-                if r % 2 == 0 {
-                    for mut atom in m.0.atoms.clone() {
-                        if atom.record == "DUMM" {
-                            dumm.0 += atom.x;
-                            dumm.1 += atom.y;
-                            dumm.2 += atom.z;
-                            break;
-                        } else {
-                            atom.serial = atomno;
-                            atom.sequence = r + 1;
-                            atom.x += dumm.0;
-                            atom.y += dumm.1;
-                            atom.z += dumm.2;
-                            sequence.push(atom);
-                            atomno += 1;
-                            resno = r;
-                        }
-                    }
-                } else {
-                    for mut atom in m.1.atoms.clone() {
-                        if atom.record == "DUMM" {
-                            dumm.0 += atom.x;
-                            dumm.1 += atom.y;
-                            dumm.2 += atom.z;
-                            break;
-                        } else {
-                            atom.serial = atomno;
-                            atom.sequence = r + 1;
-                            atom.x += dumm.0;
-                            atom.y += dumm.1;
-                            atom.z += dumm.2;
-                            sequence.push(atom);
-                            atomno += 1;
-                            resno = r;
-                        }
-                    }
-                }
-            }
-        }
-
-        if let Some(m) = data.iter().find(|lib| lib.0.tcode == "COH") {
-            if seq.len() % 2 == 1 {
-                for mut atom in m.0.atoms.clone() {
-                    if atom.record == "DUMM" {
-                        dumm.0 += atom.x;
-                        dumm.1 += atom.y;
-                        dumm.2 += atom.z;
-                        break;
-                    } else {
-                        atom.serial = atomno;
-                        atom.sequence = resno + 1;
-                        atom.x += dumm.0;
-                        atom.y += dumm.1;
-                        atom.z += dumm.2;
-                        sequence.push(atom);
-                        atomno += 1;
-                    }
-                }
-            } else {
-                for mut atom in m.1.atoms.clone() {
-                    if atom.record == "DUMM" {
-                        dumm.0 += atom.x;
-                        dumm.1 += atom.y;
-                        dumm.2 += atom.z;
-                        break;
-                    } else {
-                        atom.serial = atomno;
-                        atom.sequence = resno + 1;
-                        atom.x += dumm.0;
-                        atom.y += dumm.1;
-                        atom.z += dumm.2;
-                        sequence.push(atom);
-                        atomno += 1;
-                    }
-                }
-            }
-        }
-        Self { atoms: sequence }
+/// Write polymer structure to a PDB file
+#[allow(dead_code)]
+pub fn atoms_to_pdb(polymer: Vec<Atom>, filename: &str) -> Result<(), std::io::Error> {
+    let mut outfile = std::fs::File::create(filename)?;
+    for atom in polymer {
+        writeln!(outfile, "{:?}", atom)?;
     }
-
-    /// Write pdb file
-    #[allow(dead_code)]
-    pub fn to_pdb(&self, filename: &str) -> Result<(), std::io::Error> {
-        let mut outfile = std::fs::File::create(filename)?;
-        for atom in &self.atoms {
-            writeln!(outfile, "{:?}", atom)?;
-        }
-        Ok(())
-    }
+    Ok(())
 }
