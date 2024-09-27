@@ -1,5 +1,8 @@
 #![allow(dead_code, non_snake_case)]
 
+use std::sync::Arc;
+
+use libdncs::forcefield::Amber;
 use libdncs::system::System;
 use pyo3::prelude::*;
 
@@ -54,10 +57,35 @@ fn getPDB(seq: String, filename: String) {
     polymer.to_pdb(&filename);
 }
 
+#[pyclass]
+pub struct Polymer {
+    pub polymer: System,
+}
+
+#[pymethods]
+impl Polymer {
+    #[new]
+    fn fromAminoSEQ(seq: String) -> PyResult<Polymer> {
+        Ok(Polymer {
+            polymer: System::new(&seq),
+        })
+    }
+
+    fn getEnergy(&mut self) -> PyResult<f64> {
+        self.polymer.init_parameters();
+        let ff = Amber::new(Arc::new(self.polymer.clone()));
+        Ok(ff.energy())
+    }
+
+    fn toPDB(&self, filename: String) {
+        self.polymer.to_pdb(&filename);
+    }
+}
+
 /// A Python module implemented in Rust.
 #[pymodule]
 fn dncs(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    // m.add_function(wrap_pyfunction!(fromAminoSEQ, m)?)?;
     m.add_function(wrap_pyfunction!(getPDB, m)?)?;
+    m.add_class::<Polymer>()?;
     Ok(())
 }

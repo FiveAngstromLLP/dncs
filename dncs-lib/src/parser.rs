@@ -14,7 +14,7 @@ pub(crate) static DIHEDS: LazyLock<Polymer<Diheds>> =
 pub(crate) static ENERGYPARAM: LazyLock<EnergyParam> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/ENERGYPARAM.json")).unwrap());
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Clone, PartialEq)]
 pub struct Atom {
     /// Record type (e.g., "ATOM" or "HETATM")
     pub record: String,

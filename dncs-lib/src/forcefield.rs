@@ -42,7 +42,7 @@ impl Amber {
     fn nonbonded_energy(&self, iatom: &Atom) -> f64 {
         let mut lennard_jones = 0.0;
         let mut electrostatic = 0.0;
-        for l in self.system.nonbonded.chunks(2) {
+        for l in self.system.nonbonded[iatom.serial - 1].chunks(2) {
             for jatom in self
                 .system
                 .particles
@@ -54,7 +54,7 @@ impl Amber {
                 electrostatic += Self::electrostatic_energy(iatom, jatom);
             }
         }
-        for j in self.system.bonded1_4.iter() {
+        for j in self.system.bonded1_4[iatom.serial - 1].iter() {
             if let Some(jatom) = self.system.particles.iter().find(|a| a.serial == j.serial) {
                 lennard_jones += 0.500 * Self::lennard_jones_energy(iatom, jatom);
                 electrostatic += 0.500 * Self::electrostatic_energy(iatom, jatom);
@@ -66,7 +66,7 @@ impl Amber {
     fn nonbonded_potential(&self, iatom: &Atom) -> Vector3<f64> {
         let mut lennard_jones = Vector3::zeros();
         let mut electrostatic = Vector3::zeros();
-        for l in self.system.nonbonded.chunks(2) {
+        for l in self.system.nonbonded[iatom.serial - 1].chunks(2) {
             for jatom in self
                 .system
                 .particles
@@ -78,7 +78,7 @@ impl Amber {
                 electrostatic += Self::electrostatic_potential(iatom, jatom);
             }
         }
-        for j in self.system.bonded1_4.iter() {
+        for j in self.system.bonded1_4[iatom.serial - 1].iter() {
             if let Some(jatom) = self.system.particles.iter().find(|a| a.serial == j.serial) {
                 lennard_jones += 0.500 * Self::lennard_jones_potential(iatom, jatom);
                 electrostatic += 0.500 * Self::electrostatic_potential(iatom, jatom);

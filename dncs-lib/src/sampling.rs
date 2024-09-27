@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+use crate::forcefield::Amber;
 use crate::parser::{self, Atom};
 use crate::system::{Particles, System};
 use nalgebra::{Matrix3, Vector3};
@@ -217,6 +218,7 @@ impl RotateAtDihedral {
 
     fn to_pdbstring(&self, model: usize) -> String {
         let pdb = parser::atoms_to_pdbstring(self.rotated.clone());
-        format!("MODEL{:>9}\n{}\nENDMDL\n", model, pdb)
+        let energy = Amber::new(Arc::clone(&self.system)).energy();
+        format!("MODEL{:>9}{:>16.10}\n{}\nENDMDL\n", model, energy, pdb)
     }
 }
