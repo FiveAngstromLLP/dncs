@@ -219,9 +219,44 @@ pub fn generate(seq: &str) -> Vec<Atom> {
 }
 
 /// Write polymer structure to a PDB file
-#[allow(dead_code)]
-pub fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
+pub(crate) fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
     let mut a: Vec<String> = atoms.iter().map(|atom| format!("{:?}", atom)).collect();
     a.insert(a.len() - 2, "TER".to_string());
     a.join("\n")
 }
+
+// /// Atoms to Sequence
+// pub(crate) fn atoms_to_seq(atoms: Vec<Atom>) -> String {
+//     let mut seq = "".to_string();
+//     let mut n = 0;
+//     for atom in atoms.iter() {
+//         if atom.sequence != n {
+//             match atom.residue.as_str() {
+//                 "ALA" => seq.push('A'),
+//                 "ARG" => seq.push('R'),
+//                 "ASN" => seq.push('N'),
+//                 "ASP" => seq.push('D'),
+//                 "CYS" => seq.push('C'),
+//                 "GLU" => seq.push('E'),
+//                 "GLN" => seq.push('Q'),
+//                 "GLY" => seq.push('G'),
+//                 "HIS" => seq.push('H'),
+//                 "ILE" => seq.push('I'),
+//                 "LEU" => seq.push('L'),
+//                 "LYS" => seq.push('K'),
+//                 "MET" => seq.push('M'),
+//                 "PHE" => seq.push('F'),
+//                 "PRO" => seq.push('P'),
+//                 "SER" => seq.push('S'),
+//                 "THR" => seq.push('T'),
+//                 "TRP" => seq.push('W'),
+//                 "TYR" => seq.push('Y'),
+//                 "VAL" => seq.push('V'),
+//                 "AIB" => seq.push('B'),
+//                 _ => {}
+//             }
+//             n += 1;
+//         }
+//     }
+//     seq
+// }
