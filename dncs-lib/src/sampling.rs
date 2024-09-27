@@ -6,7 +6,8 @@ use crate::system::{Particles, System};
 use nalgebra::{Matrix3, Vector3};
 use rand::Rng;
 use rayon::prelude::*;
-use std::sync::{Arc, LazyLock};
+use std::io::Write;
+use std::sync::LazyLock;
 
 const DIRECTION: LazyLock<Vec<String>> = LazyLock::new(|| {
     include_str!("../data/new-joe-kuo-6.21201")
@@ -91,7 +92,7 @@ impl Iterator for Sobol {
                 .map(|i| *i as f64 / f64::powi(2.0, SIZE as i32))
                 .collect();
             let num = bakers_transform(num);
-            // let num = uniform_noise(&num, 0.05);
+            let num = uniform_noise(&num, 0.05);
             Some(num)
         } else {
             None
@@ -136,27 +137,27 @@ fn sobol() {
 }
 
 pub struct RotateAtDihedral {
-    pub system: Arc<System>,
+    pub system: System,
     pub rotated: Particles,
 }
 
 impl RotateAtDihedral {
-    pub fn new(system: Arc<System>) -> Self {
+    pub fn new(system: System) -> Self {
         Self {
-            system: Arc::clone(&system),
+            system: system.clone(),
             rotated: system.particles.clone(),
         }
     }
 
     /// Rotate the atoms at Dihedral angle
     pub fn rotate(&mut self, angle: Vec<f64>) {
-        for (i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {
-            let mut phi = theta;
-            if i == 0 || i == self.system.dihedral.len() - 1 {
-                phi = phi
-            } else {
-                phi = phi + 180.0
-            }
+        for (_i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {
+            let phi = theta;
+            // if i == 0 || i == self.system.dihedral.len() - 1 {
+            //     phi = phi
+            // } else {
+            //     phi = phi + 180.0
+            // }
             if let Some(p) = self.rotated.iter().find(|i| i.serial == a.0) {
                 let v1 = Vector3::new(p.position[0], p.position[1], p.position[2]);
                 if let Some(q) = self.rotated.iter().find(|i| i.serial == a.1) {
@@ -172,6 +173,7 @@ impl RotateAtDihedral {
                 }
             }
         }
+        self.system.particles = self.rotated.clone();
     }
 
     /// Normalization
@@ -216,9 +218,91 @@ impl RotateAtDihedral {
         }
     }
 
-    fn to_pdbstring(&self, model: usize) -> String {
+    fn to_pdbstring(&self, model: usize, energy: f64) -> String {
         let pdb = parser::atoms_to_pdbstring(self.rotated.clone());
-        let energy = Amber::new(Arc::clone(&self.system)).energy();
-        format!("MODEL{:>9}{:>16.10}\n{}\nENDMDL\n", model, energy, pdb)
+        format!("MODEL{:>9}{:>16.10}\n{}\nENDMDL\n\n", model, energy, pdb)
+    }
+}
+
+pub struct Sampler {
+    pub system: System,
+    pub rotate: RotateAtDihedral,
+    pub angles: Vec<Vec<f64>>,
+    pub sample: Vec<System>,
+    pub energy: Vec<f64>,
+}
+
+impl Sampler {
+    pub fn new(system: System) -> Self {
+        Self {
+            system: system.clone(),
+            rotate: RotateAtDihedral::new(system.clone()),
+            angles: Vec::new(),
+            sample: Vec::new(),
+            energy: Vec::new(),
+        }
+    }
+
+    pub fn sample(&mut self, maxsample: usize) {
+        for phi in Sobol::new(self.system.dihedral.len()).take(maxsample) {
+            let energy = Amber::new(self.rotate.system.clone()).energy();
+            let angle: Vec<f64> = phi.iter().map(|i| i * 180.0).collect();
+            self.rotatesample(angle.clone());
+            self.energy.push(energy);
+            self.angles.push(angle.clone());
+            self.sample.push(self.rotate.system.clone());
+        }
+    }
+
+    pub fn filter_only_conformation(&mut self) {
+        let mut i = 0;
+        while i < self.sample.len() {
+            if self.energy[i] < self.energy[0] {
+                i += 1;
+            } else {
+                self.sample.remove(i);
+                self.energy.remove(i);
+                self.angles.remove(i);
+            }
+        }
+    }
+
+    fn rotatesample(&mut self, angle: Vec<f64>) {
+        self.reinit();
+        self.rotate.rotate(angle);
+    }
+
+    #[inline]
+    fn conformation(&self, energy: f64) -> bool {
+        const KB: f64 = 1.380649e-23 * 6.02214076e23 / 4184.0; //Kcal/mol
+        const KBT: f64 = 300.0 * KB;
+        let weight = (-energy / KBT).exp();
+        if weight > 1.0 {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    #[inline]
+    fn reinit(&mut self) {
+        self.rotate = RotateAtDihedral::new(self.system.clone());
+    }
+
+    pub fn to_pdb(&self, filename: &str) {
+        let mut file = std::fs::File::create(filename).unwrap();
+        for (i, s) in self.sample.iter().enumerate() {
+            let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i, self.energy[i]);
+            file.write_all(pdb.as_bytes()).unwrap();
+        }
+    }
+
+    pub fn to_pdbfiles(&self, foldername: &str) {
+        for (i, s) in self.sample.iter().enumerate() {
+            let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i, self.energy[i]);
+            let filename = format!("{}/sample_{:04}.pdb", foldername, i);
+            let mut file = std::fs::File::create(filename).unwrap();
+            file.write_all(pdb.as_bytes()).unwrap();
+        }
     }
 }

@@ -1,8 +1,7 @@
 #![allow(dead_code, non_snake_case)]
 
-use std::sync::Arc;
-
 use libdncs::forcefield::Amber;
+use libdncs::sampling::Sampler;
 use libdncs::system::System;
 use pyo3::prelude::*;
 
@@ -66,14 +65,13 @@ pub struct Polymer {
 impl Polymer {
     #[new]
     fn fromAminoSEQ(seq: String) -> PyResult<Polymer> {
-        Ok(Polymer {
-            polymer: System::new(&seq),
-        })
+        let mut system = System::new(&seq);
+        system.init_parameters();
+        Ok(Polymer { polymer: system })
     }
 
     fn getEnergy(&mut self) -> PyResult<f64> {
-        self.polymer.init_parameters();
-        let ff = Amber::new(Arc::new(self.polymer.clone()));
+        let ff = Amber::new(self.polymer.clone());
         Ok(ff.energy())
     }
 
@@ -82,10 +80,34 @@ impl Polymer {
     }
 }
 
+#[pyclass]
+pub struct SobolSampler {
+    pub sampler: Sampler,
+}
+
+#[pymethods]
+impl SobolSampler {
+    #[new]
+    fn new(system: &Polymer, no_of_samples: usize) -> PyResult<SobolSampler> {
+        let mut sample = Sampler::new(system.polymer.clone());
+        sample.sample(no_of_samples);
+        Ok(SobolSampler { sampler: sample })
+    }
+
+    fn toPDB(&self, filename: String) {
+        self.sampler.to_pdb(&filename);
+    }
+
+    fn toPDBFiles(&self, prefix: String) {
+        self.sampler.to_pdbfiles(&prefix);
+    }
+}
+
 /// A Python module implemented in Rust.
 #[pymodule]
 fn dncs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(getPDB, m)?)?;
     m.add_class::<Polymer>()?;
+    m.add_class::<SobolSampler>()?;
     Ok(())
 }

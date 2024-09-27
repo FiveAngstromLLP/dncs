@@ -3,15 +3,13 @@ use crate::parser::Atom;
 use crate::system::System;
 use nalgebra::Vector3;
 use rayon::prelude::*;
-use std::sync::Arc;
 
 pub struct Amber {
     pub system: System,
 }
 
 impl Amber {
-    pub fn new(system: Arc<System>) -> Self {
-        let system = Arc::try_unwrap(system).unwrap();
+    pub fn new(system: System) -> Self {
         Self { system }
     }
 

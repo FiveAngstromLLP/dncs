@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 use crate::parser::{self, Atom, ALLCONN, DIHEDS, ENERGYPARAM};
 use std::io::Write;
-use std::sync::Arc;
 
 pub type Particles = Vec<Atom>;
 
@@ -89,9 +88,8 @@ impl System {
 
     /// Get Neighbours
     pub fn get_neighbours(&mut self) {
-        let particles = Arc::new(self.particles.clone());
         for (i, atom) in self.particles.iter().enumerate() {
-            let mut neighbor = Neighbor::new(Arc::clone(&particles), atom.clone());
+            let mut neighbor = Neighbor::new(self.particles.clone(), atom.clone());
             neighbor.get_neighbours();
             self.nonbonded[i] = neighbor.nonbonded;
             self.bonded1_4[i] = neighbor.bonded1_4;
@@ -109,13 +107,13 @@ impl System {
 
 struct Neighbor {
     atom: Atom,
-    polymer: Arc<Particles>,
+    polymer: Particles,
     nonbonded: Particles,
     bonded1_4: Particles,
 }
 
 impl Neighbor {
-    pub fn new(polymer: Arc<Particles>, atom: Atom) -> Self {
+    pub fn new(polymer: Particles, atom: Atom) -> Self {
         Self {
             atom,
             polymer,
