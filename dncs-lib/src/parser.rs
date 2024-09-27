@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 use serde::Deserialize;
 use std::fmt::Debug;
-use std::io::Write;
 use std::sync::LazyLock;
 
 pub(crate) static ALLAMINOMOLS_1: LazyLock<Polymer<Atom>> =
@@ -221,10 +220,8 @@ pub fn generate(seq: &str) -> Vec<Atom> {
 
 /// Write polymer structure to a PDB file
 #[allow(dead_code)]
-pub fn atoms_to_pdb(polymer: Vec<Atom>, filename: &str) -> Result<(), std::io::Error> {
-    let mut outfile = std::fs::File::create(filename)?;
-    for atom in polymer {
-        writeln!(outfile, "{:?}", atom)?;
-    }
-    Ok(())
+pub fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
+    let mut a: Vec<String> = atoms.iter().map(|atom| format!("{:?}", atom)).collect();
+    a.insert(a.len() - 2, "TER".to_string());
+    a.join("\n")
 }

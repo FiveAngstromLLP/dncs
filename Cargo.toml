@@ -11,3 +11,6 @@ path = "dncs/src/lib.rs"
 
 [workspace]
 members = ["dncs-lib", "dncs-cli", "dncs-py"]
+
+[dependencies]
+rayon = "1.10.0"

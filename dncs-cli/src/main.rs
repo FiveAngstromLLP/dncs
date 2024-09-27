@@ -1,8 +1,8 @@
 // use clap::Parser;
-use libdncs::parser::generate;
+use libdncs::system::System;
 fn main() {
-    let s = generate("YGGFM");
-    for atom in s {
+    let s = System::new("YGGFM");
+    for atom in s.particles {
         println!("{:?}", atom)
     }
 }

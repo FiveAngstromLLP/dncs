@@ -1,5 +1,6 @@
 #![allow(dead_code, non_snake_case)]
-use libdncs::parser;
+
+use libdncs::system::System;
 use pyo3::prelude::*;
 
 // #[pyclass]
@@ -49,8 +50,8 @@ use pyo3::prelude::*;
 
 #[pyfunction]
 fn getPDB(seq: String, filename: String) {
-    let polymer = parser::generate(&seq);
-    parser::atoms_to_pdb(polymer, &filename).unwrap()
+    let polymer = System::new(&seq);
+    polymer.to_pdb(&filename);
 }
 
 /// A Python module implemented in Rust.

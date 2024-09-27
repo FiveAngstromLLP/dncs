@@ -149,6 +149,9 @@ dependencies = [
 [[package]]
 name = "dncs_workspace"
 version = "0.1.0"
+dependencies = [
+ "rayon",
+]
 
 [[package]]
 name = "either"
