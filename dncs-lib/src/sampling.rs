@@ -3,10 +3,12 @@
 use crate::forcefield::Amber;
 use crate::parser::{self, Atom};
 use crate::system::{Particles, System};
+use lbfgs::*;
 use nalgebra::{Matrix3, Vector3};
 use rand::Rng;
 use rayon::prelude::*;
 use std::io::Write;
+use std::sync::Arc;
 use std::sync::LazyLock;
 
 const DIRECTION: LazyLock<Vec<String>> = LazyLock::new(|| {
@@ -92,7 +94,7 @@ impl Iterator for Sobol {
                 .map(|i| *i as f64 / f64::powi(2.0, SIZE as i32))
                 .collect();
             let num = bakers_transform(num);
-            let num = uniform_noise(&num, 0.05);
+            // let num = uniform_noise(&num, 0.05);
             Some(num)
         } else {
             None
@@ -290,6 +292,22 @@ impl Sampler {
         self.rotate = RotateAtDihedral::new(self.system.clone());
     }
 
+    pub fn write_sampled_angles(&self, filename: &str) {
+        let mut file = std::fs::File::create(filename).unwrap();
+        for (angles, energy) in self.angles.iter().zip(self.energy.iter()) {
+            let line = format!(
+                "{:.4} {:.6}\n",
+                angles
+                    .iter()
+                    .map(|&a| a.to_string())
+                    .collect::<Vec<String>>()
+                    .join(" "),
+                energy
+            );
+            file.write_all(line.as_bytes()).unwrap();
+        }
+    }
+
     pub fn to_pdb(&self, filename: &str) {
         let mut file = std::fs::File::create(filename).unwrap();
         for (i, s) in self.sample.iter().enumerate() {
@@ -303,6 +321,110 @@ impl Sampler {
         for (i, s) in self.sample.iter().enumerate() {
             let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(1, self.energy[i]);
             let filename = format!("{}/sample_{:04}.pdb", foldername, i);
+            let mut file = std::fs::File::create(filename).unwrap();
+            file.write_all(pdb.as_bytes()).unwrap();
+        }
+    }
+}
+
+pub struct Minimizer {
+    sample: Arc<Sampler>,
+    minimized: Vec<(f64, System)>,
+}
+
+impl Minimizer {
+    pub fn new(sample: Sampler) -> Self {
+        Self {
+            sample: Arc::new(sample),
+            minimized: Vec::new(),
+        }
+    }
+
+    pub fn minimize(&mut self) {
+        let minimized: Vec<(f64, System)> = self
+            .sample
+            .sample
+            .par_iter()
+            .map(|system| {
+                let mut lbfgs = Self::create_lbfgs(&system);
+                Self::minimize_system(system.clone(), &mut lbfgs)
+            })
+            .collect();
+
+        self.minimized = minimized;
+    }
+
+    fn create_lbfgs(system: &System) -> Lbfgs {
+        let problem_size = system.dihedral.len();
+        let lbfgs_memory_size = 5;
+        Lbfgs::new(problem_size, lbfgs_memory_size)
+            .with_sy_epsilon(1e-8)
+            .with_cbfgs_alpha(1.0)
+            .with_cbfgs_epsilon(1e-4)
+    }
+
+    fn minimize_system(mut system: System, lbfgs: &mut Lbfgs) -> (f64, System) {
+        let mut x = system.get_dihedral_angles();
+        let mut g = system.get_dihedral_gradients();
+        let mut energy = system.get_energy();
+
+        let max_iterations = 100;
+        for _ in 0..max_iterations {
+            lbfgs.apply_hessian(&mut g);
+
+            // Simplified line search
+            let step_size = 0.01;
+            let x_new: Vec<f64> = x
+                .iter()
+                .zip(g.iter())
+                .map(|(xi, gi)| xi - step_size * gi)
+                .collect();
+
+            // Update dihedral angles and recalculate system
+            system.set_dihedral_angles(&x_new);
+            let new_energy = system.get_energy();
+            let new_g = system.get_dihedral_gradients();
+
+            let s: Vec<f64> = x_new
+                .iter()
+                .zip(x.iter())
+                .map(|(new, old)| new - old)
+                .collect();
+            let y: Vec<f64> = new_g
+                .iter()
+                .zip(g.iter())
+                .map(|(new, old)| new - old)
+                .collect();
+
+            if lbfgs.update_hessian(&s, &y) == UpdateStatus::UpdateOk {
+                x = x_new;
+                g = new_g;
+                energy = new_energy;
+            } else {
+                break;
+            }
+
+            if g.iter().all(|&gi| gi.abs() < 1e-6) {
+                break;
+            }
+        }
+
+        (energy, system)
+    }
+
+    pub fn to_pdb(&self, filename: &str) {
+        let mut file = std::fs::File::create(filename).unwrap();
+        for (i, (energy, sys)) in self.minimized.iter().enumerate() {
+            let pdb = RotateAtDihedral::new(sys.clone()).to_pdbstring(i + 1, *energy);
+            file.write_all(pdb.as_bytes()).unwrap();
+        }
+    }
+
+    pub fn to_pdbfiles(&self, foldername: &str) {
+        std::fs::create_dir_all(foldername).unwrap();
+        for (i, (energy, sys)) in self.minimized.iter().enumerate() {
+            let pdb = RotateAtDihedral::new(sys.clone()).to_pdbstring(i + 1, *energy);
+            let filename = format!("{}/minimized_{:04}.pdb", foldername, i);
             let mut file = std::fs::File::create(filename).unwrap();
             file.write_all(pdb.as_bytes()).unwrap();
         }
