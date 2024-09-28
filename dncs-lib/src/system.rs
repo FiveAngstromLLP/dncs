@@ -12,6 +12,7 @@ pub struct System {
     pub dihedral: Vec<(usize, usize, usize, usize)>,
     pub nonbonded: Vec<Particles>,
     pub bonded1_4: Vec<Particles>,
+    pub hydrogen: Vec<(Atom, Atom)>,
 }
 
 impl System {
@@ -25,6 +26,7 @@ impl System {
             dihedral: Vec::new(),
             nonbonded: vec![Vec::new(); total],
             bonded1_4: vec![Vec::new(); total],
+            hydrogen: Vec::new(),
         }
     }
 
@@ -81,6 +83,27 @@ impl System {
                         }
                     }
                     self.dihedral.push(val)
+                }
+            }
+        }
+    }
+
+    /// Find hydrogen-bonded atom pairs
+    pub fn hydrogen_bonded(&mut self) {
+        for i in self.particles.iter().take(self.particles.len() - 1) {
+            if i.name == "H" || i.name == "HN" {
+                for j in self.particles.iter().skip(i.serial + 1) {
+                    if i.sequence < i.sequence && j.name == "O" {
+                        self.hydrogen.push((i.clone(), j.clone()))
+                    }
+                }
+            } else if i.name == "O" {
+                for j in self.particles.iter().skip(i.serial + 1) {
+                    if let Some(k) = self.particles.iter().find(|a| a.serial == i.serial + 1) {
+                        if k.sequence < j.sequence && j.name == "H" {
+                            self.hydrogen.push((i.clone(), j.clone()))
+                        }
+                    }
                 }
             }
         }

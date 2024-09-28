@@ -3,12 +3,12 @@
 use crate::forcefield::Amber;
 use crate::parser::{self, Atom};
 use crate::system::{Particles, System};
-use lbfgs::*;
+// use lbfgs::*;
 use nalgebra::{Matrix3, Vector3};
 use rand::Rng;
 use rayon::prelude::*;
 use std::io::Write;
-use std::sync::Arc;
+// use std::sync::Arc;
 use std::sync::LazyLock;
 
 const DIRECTION: LazyLock<Vec<String>> = LazyLock::new(|| {
@@ -153,13 +153,13 @@ impl RotateAtDihedral {
 
     /// Rotate the atoms at Dihedral angle
     pub fn rotate(&mut self, angle: Vec<f64>) {
-        for (_i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {
-            // let phi = theta;
-            // if i == 0 || i == self.system.dihedral.len() - 1 {
-            //     phi = phi
-            // } else {
-            //     phi = phi + 180.0
-            // }
+        for (i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {
+            let mut phi = theta;
+            if i == 0 || i == self.system.dihedral.len() - 1 {
+                phi = phi
+            } else {
+                phi = phi + 180.0
+            }
             if let Some(p) = self.rotated.iter().find(|i| i.serial == a.0) {
                 let v1 = Vector3::new(p.position[0], p.position[1], p.position[2]);
                 if let Some(q) = self.rotated.iter().find(|i| i.serial == a.1) {
@@ -167,7 +167,7 @@ impl RotateAtDihedral {
                     let dcos = Self::elemen(v1, v2);
                     for j in self.rotated.iter_mut().take(a.3).skip(a.2 - 1) {
                         let avector = Vector3::new(j.position[0], j.position[1], j.position[2]);
-                        let r = Self::rotor(dcos, avector - v1, theta) + v1;
+                        let r = Self::rotor(dcos, avector - v1, phi) + v1;
                         j.position[0] = r[0];
                         j.position[1] = r[1];
                         j.position[2] = r[2];
@@ -220,6 +220,10 @@ impl RotateAtDihedral {
         }
     }
 
+    pub fn energy(&self) -> f64 {
+        Amber::new(self.system.clone()).energy()
+    }
+
     fn to_pdbstring(&self, model: usize, energy: f64) -> String {
         let pdb = parser::atoms_to_pdbstring(self.rotated.clone());
         format!("MODEL{:>9}{:>16.10}\n{}\nENDMDL\n\n", model, energy, pdb)
@@ -247,25 +251,21 @@ impl Sampler {
 
     pub fn sample(&mut self, maxsample: usize) {
         let n = self.system.dihedral.len();
-        for phi in Sobol::new(n).skip(32).take(maxsample) {
-            let energy = Amber::new(self.rotate.system.clone()).energy();
-            let angle: Vec<f64> = phi.iter().map(|i| i * 180.0).collect();
+        let mut count = 0;
+        for phi in Sobol::new(n) {
+            if count >= maxsample {
+                break;
+            }
+            let angle: Vec<f64> = phi.iter().map(|i| i * 360.0 - 180.0).collect();
             self.rotatesample(angle.clone());
-            self.energy.push(energy);
-            self.angles.push(angle.clone());
-            self.sample.push(self.rotate.system.clone());
-        }
-    }
-
-    pub fn filter_only_conformation(&mut self) {
-        let mut i = 0;
-        while i < self.sample.len() {
-            if self.energy[i] < self.energy[0] {
-                i += 1;
-            } else {
-                self.sample.remove(i);
-                self.energy.remove(i);
-                self.angles.remove(i);
+            let energy = self.rotate.energy();
+            if self.conformation(energy) {
+                self.energy.push(energy);
+                self.angles.push(angle.clone());
+                self.sample.push(self.rotate.system.clone());
+                println!("Energy: {:?}, Count: {}", energy, count);
+                println!("Accepted Dihedral Angle: {:?}", angle);
+                count += 1;
             }
         }
     }
@@ -277,13 +277,21 @@ impl Sampler {
 
     #[inline]
     fn conformation(&self, energy: f64) -> bool {
-        const KB: f64 = 1.380649e-23 * 6.02214076e23 / 4184.0; //Kcal/mol
-        const KBT: f64 = 300.0 * KB;
-        let weight = (-energy / KBT).exp();
-        if weight > 1.0 {
-            return true;
+        if let Some(lenergy) = self.energy.first() {
+            let ratio = energy / lenergy;
+            if ratio < 1.0 {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            let lenergy = Amber::new(self.system.clone()).energy();
+            let ratio = energy / lenergy;
+            if ratio < 1.0 {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -327,106 +335,106 @@ impl Sampler {
     }
 }
 
-pub struct Minimizer {
-    sample: Arc<Sampler>,
-    minimized: Vec<(f64, System)>,
-}
+// pub struct Minimizer {
+//     sample: Arc<Sampler>,
+//     minimized: Vec<(f64, System)>,
+// }
 
-impl Minimizer {
-    pub fn new(sample: Sampler) -> Self {
-        Self {
-            sample: Arc::new(sample),
-            minimized: Vec::new(),
-        }
-    }
+// impl Minimizer {
+//     pub fn new(sample: Sampler) -> Self {
+//         Self {
+//             sample: Arc::new(sample),
+//             minimized: Vec::new(),
+//         }
+//     }
 
-    pub fn minimize(&mut self) {
-        let minimized: Vec<(f64, System)> = self
-            .sample
-            .sample
-            .par_iter()
-            .map(|system| {
-                let mut lbfgs = Self::create_lbfgs(&system);
-                Self::minimize_system(system.clone(), &mut lbfgs)
-            })
-            .collect();
+//     pub fn minimize(&mut self) {
+//         let minimized: Vec<(f64, System)> = self
+//             .sample
+//             .sample
+//             .par_iter()
+//             .map(|system| {
+//                 let mut lbfgs = Self::create_lbfgs(&system);
+//                 Self::minimize_system(system.clone(), &mut lbfgs)
+//             })
+//             .collect();
 
-        self.minimized = minimized;
-    }
+//         self.minimized = minimized;
+//     }
 
-    fn create_lbfgs(system: &System) -> Lbfgs {
-        let problem_size = system.dihedral.len();
-        let lbfgs_memory_size = 5;
-        Lbfgs::new(problem_size, lbfgs_memory_size)
-            .with_sy_epsilon(1e-8)
-            .with_cbfgs_alpha(1.0)
-            .with_cbfgs_epsilon(1e-4)
-    }
+//     fn create_lbfgs(system: &System) -> Lbfgs {
+//         let problem_size = system.dihedral.len();
+//         let lbfgs_memory_size = 5;
+//         Lbfgs::new(problem_size, lbfgs_memory_size)
+//             .with_sy_epsilon(1e-8)
+//             .with_cbfgs_alpha(1.0)
+//             .with_cbfgs_epsilon(1e-4)
+//     }
 
-    fn minimize_system(mut system: System, lbfgs: &mut Lbfgs) -> (f64, System) {
-        let mut x = system.get_dihedral_angles();
-        let mut g = system.get_dihedral_gradients();
-        let mut energy = system.get_energy();
+//     fn minimize_system(mut system: System, lbfgs: &mut Lbfgs) -> (f64, System) {
+//         let mut x = system.get_dihedral_angles();
+//         let mut g = system.get_dihedral_gradients();
+//         let mut energy = system.get_energy();
 
-        let max_iterations = 100;
-        for _ in 0..max_iterations {
-            lbfgs.apply_hessian(&mut g);
+//         let max_iterations = 100;
+//         for _ in 0..max_iterations {
+//             lbfgs.apply_hessian(&mut g);
 
-            // Simplified line search
-            let step_size = 0.01;
-            let x_new: Vec<f64> = x
-                .iter()
-                .zip(g.iter())
-                .map(|(xi, gi)| xi - step_size * gi)
-                .collect();
+//             // Simplified line search
+//             let step_size = 0.01;
+//             let x_new: Vec<f64> = x
+//                 .iter()
+//                 .zip(g.iter())
+//                 .map(|(xi, gi)| xi - step_size * gi)
+//                 .collect();
 
-            // Update dihedral angles and recalculate system
-            system.set_dihedral_angles(&x_new);
-            let new_energy = system.get_energy();
-            let new_g = system.get_dihedral_gradients();
+//             // Update dihedral angles and recalculate system
+//             system.set_dihedral_angles(&x_new);
+//             let new_energy = system.get_energy();
+//             let new_g = system.get_dihedral_gradients();
 
-            let s: Vec<f64> = x_new
-                .iter()
-                .zip(x.iter())
-                .map(|(new, old)| new - old)
-                .collect();
-            let y: Vec<f64> = new_g
-                .iter()
-                .zip(g.iter())
-                .map(|(new, old)| new - old)
-                .collect();
+//             let s: Vec<f64> = x_new
+//                 .iter()
+//                 .zip(x.iter())
+//                 .map(|(new, old)| new - old)
+//                 .collect();
+//             let y: Vec<f64> = new_g
+//                 .iter()
+//                 .zip(g.iter())
+//                 .map(|(new, old)| new - old)
+//                 .collect();
 
-            if lbfgs.update_hessian(&s, &y) == UpdateStatus::UpdateOk {
-                x = x_new;
-                g = new_g;
-                energy = new_energy;
-            } else {
-                break;
-            }
+//             if lbfgs.update_hessian(&s, &y) == UpdateStatus::UpdateOk {
+//                 x = x_new;
+//                 g = new_g;
+//                 energy = new_energy;
+//             } else {
+//                 break;
+//             }
 
-            if g.iter().all(|&gi| gi.abs() < 1e-6) {
-                break;
-            }
-        }
+//             if g.iter().all(|&gi| gi.abs() < 1e-6) {
+//                 break;
+//             }
+//         }
 
-        (energy, system)
-    }
+//         (energy, system)
+//     }
 
-    pub fn to_pdb(&self, filename: &str) {
-        let mut file = std::fs::File::create(filename).unwrap();
-        for (i, (energy, sys)) in self.minimized.iter().enumerate() {
-            let pdb = RotateAtDihedral::new(sys.clone()).to_pdbstring(i + 1, *energy);
-            file.write_all(pdb.as_bytes()).unwrap();
-        }
-    }
+//     pub fn to_pdb(&self, filename: &str) {
+//         let mut file = std::fs::File::create(filename).unwrap();
+//         for (i, (energy, sys)) in self.minimized.iter().enumerate() {
+//             let pdb = RotateAtDihedral::new(sys.clone()).to_pdbstring(i + 1, *energy);
+//             file.write_all(pdb.as_bytes()).unwrap();
+//         }
+//     }
 
-    pub fn to_pdbfiles(&self, foldername: &str) {
-        std::fs::create_dir_all(foldername).unwrap();
-        for (i, (energy, sys)) in self.minimized.iter().enumerate() {
-            let pdb = RotateAtDihedral::new(sys.clone()).to_pdbstring(i + 1, *energy);
-            let filename = format!("{}/minimized_{:04}.pdb", foldername, i);
-            let mut file = std::fs::File::create(filename).unwrap();
-            file.write_all(pdb.as_bytes()).unwrap();
-        }
-    }
-}
+//     pub fn to_pdbfiles(&self, foldername: &str) {
+//         std::fs::create_dir_all(foldername).unwrap();
+//         for (i, (energy, sys)) in self.minimized.iter().enumerate() {
+//             let pdb = RotateAtDihedral::new(sys.clone()).to_pdbstring(i + 1, *energy);
+//             let filename = format!("{}/minimized_{:04}.pdb", foldername, i);
+//             let mut file = std::fs::File::create(filename).unwrap();
+//             file.write_all(pdb.as_bytes()).unwrap();
+//         }
+//     }
+// }

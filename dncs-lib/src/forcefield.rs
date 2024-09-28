@@ -85,19 +85,19 @@ impl Amber {
         lennard_jones + electrostatic // Unit >> (kg.Å/s^2)
     }
 
-    // fn hydrogen_bond_energy(&self) -> f64 {
-    //     self.system
-    //         .hydrogen
-    //         .iter()
-    //         .map(|(iatom, jatom)| {
-    //             let mut hb_energy = 0.0;
-    //             let r = Self::distance(iatom, jatom);
-    //             hb_energy += 7557.0 * (1.0 / r).powi(12) - 2385.0 * (1.0 / r).powi(10);
-    //             hb_energy -= Self::lennard_jones_energy(iatom, jatom);
-    //             hb_energy
-    //         })
-    //         .sum::<f64>()
-    // }
+    fn hydrogen_bond_energy(&self) -> f64 {
+        self.system
+            .hydrogen
+            .iter()
+            .map(|(iatom, jatom)| {
+                let mut hb_energy = 0.0;
+                let r = Self::distance(iatom, jatom);
+                hb_energy += 7557.0 * (1.0 / r).powi(12) - 2385.0 * (1.0 / r).powi(10);
+                hb_energy -= Self::lennard_jones_energy(iatom, jatom);
+                hb_energy
+            })
+            .sum::<f64>()
+    }
 
     #[inline]
     fn lennard_jones_energy(i: &Atom, j: &Atom) -> f64 {
