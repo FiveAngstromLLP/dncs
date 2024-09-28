@@ -31,7 +31,6 @@ impl System {
     pub fn init_parameters(&mut self) {
         self.get_neighbours();
         self.get_energyparameters();
-        self.get_dihedralatoms();
     }
 
     /// Get energy parameters
@@ -58,10 +57,11 @@ impl System {
     }
 
     /// Get Dihedral Atoms
-    fn get_dihedralatoms(&mut self) {
+    pub fn get_dihedralatoms(&mut self, sidechain: bool) {
         for (i, s) in self.seq.chars().enumerate() {
             if let Some(m) = DIHEDS.seq.iter().find(|f| f.scode == s.to_string()) {
-                for d in m.atoms.iter().take(m.natom) {
+                let n = if sidechain { m.natom } else { 2 };
+                for d in m.atoms.iter().take(n) {
                     let mut val = (0, 0, 0, 0);
                     for atom in self.particles.iter() {
                         if atom.name == d.a && atom.sequence == i + 1 {

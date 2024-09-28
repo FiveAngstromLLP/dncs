@@ -88,8 +88,9 @@ pub struct SobolSampler {
 #[pymethods]
 impl SobolSampler {
     #[new]
-    fn new(system: &Polymer, no_of_samples: usize) -> PyResult<SobolSampler> {
+    fn new(system: &Polymer, no_of_samples: usize, sidechain: bool) -> PyResult<SobolSampler> {
         let mut sample = Sampler::new(system.polymer.clone());
+        sample.system.get_dihedralatoms(sidechain);
         sample.sample(no_of_samples);
         Ok(SobolSampler { sampler: sample })
     }

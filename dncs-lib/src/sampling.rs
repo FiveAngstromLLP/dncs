@@ -152,7 +152,7 @@ impl RotateAtDihedral {
     /// Rotate the atoms at Dihedral angle
     pub fn rotate(&mut self, angle: Vec<f64>) {
         for (_i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {
-            let phi = theta;
+            // let phi = theta;
             // if i == 0 || i == self.system.dihedral.len() - 1 {
             //     phi = phi
             // } else {
@@ -165,7 +165,7 @@ impl RotateAtDihedral {
                     let dcos = Self::elemen(v1, v2);
                     for j in self.rotated.iter_mut().take(a.3).skip(a.2 - 1) {
                         let avector = Vector3::new(j.position[0], j.position[1], j.position[2]);
-                        let r = Self::rotor(dcos, avector - v1, phi) + v1;
+                        let r = Self::rotor(dcos, avector - v1, theta) + v1;
                         j.position[0] = r[0];
                         j.position[1] = r[1];
                         j.position[2] = r[2];
@@ -244,7 +244,8 @@ impl Sampler {
     }
 
     pub fn sample(&mut self, maxsample: usize) {
-        for phi in Sobol::new(self.system.dihedral.len()).take(maxsample) {
+        let n = self.system.dihedral.len();
+        for phi in Sobol::new(n).skip(32).take(maxsample) {
             let energy = Amber::new(self.rotate.system.clone()).energy();
             let angle: Vec<f64> = phi.iter().map(|i| i * 180.0).collect();
             self.rotatesample(angle.clone());
@@ -292,14 +293,15 @@ impl Sampler {
     pub fn to_pdb(&self, filename: &str) {
         let mut file = std::fs::File::create(filename).unwrap();
         for (i, s) in self.sample.iter().enumerate() {
-            let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i, self.energy[i]);
+            let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i + 1, self.energy[i]);
             file.write_all(pdb.as_bytes()).unwrap();
         }
     }
 
     pub fn to_pdbfiles(&self, foldername: &str) {
+        std::fs::create_dir_all(foldername).unwrap();
         for (i, s) in self.sample.iter().enumerate() {
-            let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i, self.energy[i]);
+            let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(1, self.energy[i]);
             let filename = format!("{}/sample_{:04}.pdb", foldername, i);
             let mut file = std::fs::File::create(filename).unwrap();
             file.write_all(pdb.as_bytes()).unwrap();
