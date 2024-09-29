@@ -8,7 +8,8 @@ fn main() {
     let mut polymer = System::new("YGGFM");
     polymer.init_parameters();
     let mut sample = Sampler::new(polymer.clone());
-    sample.system.get_dihedralatoms(true);
-    sample.sample(10);
+    sample.system.get_dihedralatoms(false);
+    sample.sample(100);
+    sample.conformational_sort();
     sample.to_pdb("sample.pdb");
 }

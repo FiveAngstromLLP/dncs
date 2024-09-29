@@ -14,13 +14,15 @@ impl Amber {
     }
 
     pub fn energy(&self) -> f64 {
-        self.system
+        let energy = self
+            .system
             .particles
             .par_iter()
             .map(|iatom| self.nonbonded_energy(iatom)) // Unit >> (kg.Å^2/s^2)
             .map(|energy| energy * 1e-10_f64.powi(2)) // Unit >> (kg.m^2/s^2)
             .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
-            .sum::<f64>()
+            .sum::<f64>();
+        energy + self.hydrogen_bond_energy()
     }
 
     pub fn potential(&mut self) {
@@ -92,9 +94,11 @@ impl Amber {
             .map(|(iatom, jatom)| {
                 let mut hb_energy = 0.0;
                 let r = Self::distance(iatom, jatom);
-                hb_energy += 7557.0 * (1.0 / r).powi(12) - 2385.0 * (1.0 / r).powi(10);
-                hb_energy -= Self::lennard_jones_energy(iatom, jatom);
-                hb_energy
+                hb_energy += 7557.0 * (1.0 / r).powi(12) - 4184.0 * (1.0 / r).powi(10); // Unit >> Kcal/mol
+                let hb_ljenergy = Self::lennard_jones_energy(iatom, jatom); // Unit >> (kg.Å^2/s^2)
+                let hb_ljenergy = hb_ljenergy * 1e-10_f64.powi(2); // Unit >> (kg.m^2/s^2)
+                let hb_ljenergy = hb_ljenergy * 6.02214076e23 / 4184.0; // // Unit >> Kcal/mol
+                hb_energy - hb_ljenergy
             })
             .sum::<f64>()
     }
@@ -104,7 +108,7 @@ impl Amber {
         let r = Self::distance(i, j); // Unit >> Å
         let sigma = (i.sigma + j.sigma) / 2.0; // Unit >> Å
         let epsilon = (i.epsilon * j.epsilon).sqrt(); // Unit >> kcal/mol
-        let epsilon = epsilon * 4184.0 / 6.02214076e23; //  Joules (or) Kg.m^2/s^2
+        let epsilon = epsilon * 4184.0 / 6.02214076e23; // Unit >> Joules (or) Kg.m^2/s^2
         let epsilon = epsilon * 1e10_f64.powi(2); // Unit >> (kg.Å^2/s^2)
         4.0 * epsilon * ((sigma / r).powi(12) - (sigma / r).powi(6)) // Unit >> (kg.Å^2/s^2)
     }

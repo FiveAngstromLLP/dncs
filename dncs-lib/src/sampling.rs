@@ -251,22 +251,13 @@ impl Sampler {
 
     pub fn sample(&mut self, maxsample: usize) {
         let n = self.system.dihedral.len();
-        let mut count = 0;
-        for phi in Sobol::new(n) {
-            if count >= maxsample {
-                break;
-            }
+        for phi in Sobol::new(n).skip(32).take(maxsample) {
             let angle: Vec<f64> = phi.iter().map(|i| i * 360.0 - 180.0).collect();
             self.rotatesample(angle.clone());
             let energy = self.rotate.energy();
-            if self.conformation(energy) {
-                self.energy.push(energy);
-                self.angles.push(angle.clone());
-                self.sample.push(self.rotate.system.clone());
-                println!("Energy: {:?}, Count: {}", energy, count);
-                println!("Accepted Dihedral Angle: {:?}", angle);
-                count += 1;
-            }
+            self.energy.push(energy);
+            self.angles.push(angle.clone());
+            self.sample.push(self.rotate.system.clone());
         }
     }
 
@@ -275,24 +266,29 @@ impl Sampler {
         self.rotate.rotate(angle);
     }
 
-    #[inline]
-    fn conformation(&self, energy: f64) -> bool {
-        if let Some(lenergy) = self.energy.first() {
-            let ratio = energy / lenergy;
-            if ratio < 1.0 {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            let lenergy = Amber::new(self.system.clone()).energy();
-            let ratio = energy / lenergy;
-            if ratio < 1.0 {
-                return true;
-            } else {
-                return false;
-            }
-        }
+    pub fn conformational_sort(&mut self) {
+        const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
+        let weight: Vec<f64> = self.energy.iter().map(|e| (-e / KBT).exp()).collect();
+        let z: f64 = weight.iter().sum();
+        let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
+        // println!("Normalized : {normalized:?}");
+        let energies = std::mem::take(&mut self.energy);
+        let angles = std::mem::take(&mut self.angles);
+        let samples = std::mem::take(&mut self.sample);
+
+        let mut combined: Vec<(f64, Vec<f64>, System, f64)> = energies
+            .into_iter()
+            .zip(angles.into_iter())
+            .zip(samples.into_iter())
+            .zip(normalized.into_iter())
+            .map(|(((e, a), s), w)| (e, a, s, w))
+            .collect();
+
+        combined.sort_by(|a, b| b.3.partial_cmp(&a.3).unwrap());
+
+        self.energy = combined.iter().map(|(e, _, _, _)| *e).collect();
+        self.angles = combined.iter().map(|(_, a, _, _)| a.clone()).collect();
+        self.sample = combined.into_iter().map(|(_, _, s, _)| s).collect();
     }
 
     #[inline]
@@ -318,6 +314,9 @@ impl Sampler {
 
     pub fn to_pdb(&self, filename: &str) {
         let mut file = std::fs::File::create(filename).unwrap();
+        let eng = Amber::new(self.system.clone()).energy();
+        let pdb = RotateAtDihedral::new(self.system.clone()).to_pdbstring(0 + 1, eng);
+        file.write_all(pdb.as_bytes()).unwrap();
         for (i, s) in self.sample.iter().enumerate() {
             let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i + 1, self.energy[i]);
             file.write_all(pdb.as_bytes()).unwrap();

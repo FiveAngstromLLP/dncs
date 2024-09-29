@@ -6,8 +6,8 @@ polymer = dncs.Polymer("YGGFM")
 print("Energy = ", polymer.getEnergy())
 
 # Create a sampler object
-sample = dncs.SobolSampler(polymer, no_of_samples=100, sidechain=False)
-
+sample = dncs.SobolSampler(polymer, no_of_samples=100, sidechain=True)
+sample.conformational_sort()
 
 # Sample the polymer
 sample.toPDB("sample.pdb")

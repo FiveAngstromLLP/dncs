@@ -33,6 +33,7 @@ impl System {
     pub fn init_parameters(&mut self) {
         self.get_neighbours();
         self.get_energyparameters();
+        self.get_hydrogen_bonded();
     }
 
     /// Get energy parameters
@@ -89,7 +90,7 @@ impl System {
     }
 
     /// Find hydrogen-bonded atom pairs
-    pub fn hydrogen_bonded(&mut self) {
+    fn get_hydrogen_bonded(&mut self) {
         for i in self.particles.iter().take(self.particles.len() - 1) {
             if i.name == "H" || i.name == "HN" {
                 for j in self.particles.iter().skip(i.serial + 1) {

@@ -220,8 +220,8 @@ pub fn generate(seq: &str) -> Vec<Atom> {
 
 /// Write polymer structure to a PDB file
 pub(crate) fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
-    let mut a: Vec<String> = atoms.iter().map(|atom| format!("{:?}", atom)).collect();
-    a.insert(a.len() - 2, "TER".to_string());
+    let a: Vec<String> = atoms.iter().map(|atom| format!("{:?}", atom)).collect();
+    // a.insert(a.len() - 2, "TER".to_string());
     a.join("\n")
 }
 
