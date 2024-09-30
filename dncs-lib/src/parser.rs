@@ -206,7 +206,7 @@ pub fn generate(seq: &str) -> Vec<Atom> {
                 break;
             } else {
                 atom.serial = atomno;
-                atom.sequence = resno + 1;
+                atom.sequence = resno + 2;
                 atom.position[0] += dumm[0];
                 atom.position[1] += dumm[1];
                 atom.position[2] += dumm[2];
