@@ -206,7 +206,7 @@ pub fn generate(seq: &str) -> Vec<Atom> {
                 break;
             } else {
                 atom.serial = atomno;
-                atom.sequence = resno + 2;
+                atom.sequence = resno + 1;
                 atom.position[0] += dumm[0];
                 atom.position[1] += dumm[1];
                 atom.position[2] += dumm[2];
@@ -220,9 +220,29 @@ pub fn generate(seq: &str) -> Vec<Atom> {
 
 /// Write polymer structure to a PDB file
 pub(crate) fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
-    let a: Vec<String> = atoms.iter().map(|atom| format!("{:?}", atom)).collect();
-    // a.insert(a.len() - 2, "TER".to_string());
-    a.join("\n")
+    let mut a: Vec<Atom> = atoms
+        .iter()
+        .filter(|atom| atom.residue != "OH")
+        .cloned()
+        .collect();
+    if let Some(terminal) = atoms
+        .iter()
+        .find(|atom| atom.residue == "OH" && atom.name == "O1")
+        .cloned()
+    {
+        let mut terminal = terminal;
+        terminal.name = "OXT".to_string();
+        terminal.residue = a.last().unwrap().residue.clone();
+        a.push(terminal);
+    }
+    a.iter_mut().enumerate().for_each(|(i, atom)| {
+        atom.serial = i;
+    });
+    a.remove(0);
+    a.iter()
+        .map(|atom| format!("{:?}", atom))
+        .collect::<Vec<String>>()
+        .join("\n")
 }
 
 // /// Atoms to Sequence
