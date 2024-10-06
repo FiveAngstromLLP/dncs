@@ -33,6 +33,10 @@ impl Polymer {
     fn toPDB(&self, filename: String) {
         self.polymer.to_pdb(&filename);
     }
+
+    fn dihedral(&self, foldername: String) {
+        self.polymer.dihedral_log(&foldername)
+    }
 }
 
 #[pyclass]

@@ -120,6 +120,34 @@ impl System {
         }
     }
 
+    pub fn dihedral_log(&self, foldername: &str) {
+        let filename = format!("{}/dihedral.log", foldername);
+        let mut file = std::fs::File::create(filename).unwrap();
+        for (a, b, c, d) in self.dihedral.iter() {
+            let atoma = self.particles.iter().find(|i| i.serial == *a).unwrap();
+            let atomb = self.particles.iter().find(|i| i.serial == *b).unwrap();
+            let atomc = self.particles.iter().find(|i| i.serial == *c).unwrap();
+            let atomd = self.particles.iter().find(|i| i.serial == *d).unwrap();
+            writeln!(
+                file,
+                "{} {} {} | {} {} {} | {} {} {} | {} {} {}",
+                atoma.name,
+                atoma.residue,
+                atoma.sequence,
+                atomb.name,
+                atomb.residue,
+                atomb.sequence,
+                atomc.name,
+                atomc.residue,
+                atomc.sequence,
+                atomd.name,
+                atomd.residue,
+                atomd.sequence,
+            )
+            .unwrap()
+        }
+    }
+
     /// Writes the system to a PDB file
     pub fn to_pdb(&self, filename: &str) {
         let val = parser::atoms_to_pdbstring(self.particles.clone());
