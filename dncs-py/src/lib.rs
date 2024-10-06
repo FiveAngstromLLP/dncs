@@ -34,7 +34,8 @@ impl Polymer {
         self.polymer.to_pdb(&filename);
     }
 
-    fn dihedral(&self, foldername: String) {
+    fn dihedral(&mut self, sidechain: bool, foldername: String) {
+        self.polymer.get_dihedralatoms(sidechain);
         self.polymer.dihedral_log(&foldername)
     }
 }
