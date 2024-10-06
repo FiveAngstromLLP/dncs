@@ -164,6 +164,7 @@ name = "dncs-py"
 version = "0.1.0"
 dependencies = [
  "libdncs",
+ "nalgebra",
  "pyo3",
 ]
 

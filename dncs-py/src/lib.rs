@@ -3,12 +3,27 @@
 use libdncs::forcefield::Amber;
 use libdncs::sampling::Sampler;
 use libdncs::system::System;
+use nalgebra::Vector3;
 use pyo3::prelude::*;
 
 #[pyfunction]
 fn getPDB(seq: String, filename: String) {
     let polymer = System::new(&seq);
     polymer.to_pdb(&filename);
+}
+
+#[pyfunction]
+fn dihedral_angle(a: [f64; 3], b: [f64; 3], c: [f64; 3], d: [f64; 3]) -> f64 {
+    let u1 = Vector3::new(b[0] - a[0], b[1] - a[1], b[2] - a[2]);
+    let u2 = Vector3::new(c[0] - b[0], c[1] - b[1], c[2] - b[2]);
+    let u3 = Vector3::new(d[0] - c[0], d[1] - c[1], d[2] - c[2]);
+    let sinth = (u2.norm() * u1).dot(&u2.cross(&u3));
+    let costh = u1.cross(&u2).dot(&u2.cross(&u3));
+    if u1.cross(&u2).dot(&u2.cross(&u3).cross(&u2)) < 0.0 {
+        -sinth.atan2(costh).to_degrees()
+    } else {
+        sinth.atan2(costh).to_degrees()
+    }
 }
 
 #[pyclass]
