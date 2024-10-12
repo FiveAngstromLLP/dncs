@@ -219,7 +219,7 @@ pub fn generate(seq: &str) -> Vec<Atom> {
 }
 
 /// Write polymer structure to a PDB file
-pub(crate) fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
+pub fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
     let mut a: Vec<Atom> = atoms
         .iter()
         .filter(|atom| atom.residue != "OH")

@@ -87,6 +87,7 @@ impl SobolSampler {
 #[pymodule]
 fn dncs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(getPDB, m)?)?;
+    m.add_function(wrap_pyfunction!(dihedral_angle, m)?)?;
     m.add_class::<Polymer>()?;
     m.add_class::<SobolSampler>()?;
     Ok(())
