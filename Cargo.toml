@@ -17,7 +17,7 @@ regex = "1.10.5"
 
 
 [workspace]
-members = ["python"]
+members = ["python", "server"]
 
 [[bin]]
 name = "dncs"
