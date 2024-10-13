@@ -10,10 +10,14 @@ rand = "0.8.5"
 rayon = "1.10.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+liblbfgs-sys = "0.1"
 
 [dev-dependencies]
 regex = "1.10.5"
 
+
+[workspace]
+members = ["server", "python"]
 
 [[bin]]
 name = "dncs"

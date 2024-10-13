@@ -120,6 +120,7 @@ impl System {
         }
     }
 
+    /// Writes the dihedral atoms
     pub fn dihedral_log(&self, foldername: &str) {
         let filename = format!("{}/dihedral.log", foldername);
         let mut file = std::fs::File::create(filename).unwrap();
