@@ -19,6 +19,7 @@ regex = "1.10.5"
 [workspace]
 members = ["python", "server"]
 
+
 [[bin]]
 name = "dncs"
 path = "src/main.rs"
