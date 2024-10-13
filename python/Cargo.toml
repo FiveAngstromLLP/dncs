@@ -1,5 +1,5 @@
 [package]
-name = "dncs-py"
+name = "python"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,5 +10,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = "0.22.0"
-libdncs = { path = "../dncs-lib" }
+libdncs = { path = "../" }
 nalgebra = "0.32.0"
