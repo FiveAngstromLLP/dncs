@@ -279,6 +279,7 @@ pub fn pdb_to_atoms(pdb_string: &str) -> Vec<Atom> {
         .expect("Failed to read PDB file")
         .lines()
         .filter(|line| line.starts_with("ATOM") || line.starts_with("HETATM"))
+        .inspect(|l| println!("{:?}", l))
         .map(|line| Atom::new(line.to_string()))
         .map(|atom| {
             if atom.name == "OXT" {
@@ -294,6 +295,26 @@ pub fn pdb_to_atoms(pdb_string: &str) -> Vec<Atom> {
                     newatom.position[2] += -0.003;
                 }
                 return newatom;
+            } else {
+                return atom;
+            }
+        })
+        .map(|atom| {
+            if atom.name.len() == 3
+                && (atom.name.contains("HA")
+                    || atom.name.contains("HB")
+                    || atom.name.contains("HG")
+                    || atom.name.contains("HD"))
+            {
+                let d = atom.name.chars().last().unwrap();
+                if d.is_numeric() {
+                    let mut newatom = atom;
+                    let mdigit = 4 - d.to_digit(10).unwrap();
+                    newatom.name = newatom.name.replace(d, &mdigit.to_string());
+                    return newatom;
+                } else {
+                    return atom;
+                }
             } else {
                 return atom;
             }
