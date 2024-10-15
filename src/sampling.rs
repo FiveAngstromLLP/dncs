@@ -91,8 +91,8 @@ impl Iterator for Sobol {
                 .par_iter()
                 .map(|i| *i as f64 / f64::powi(2.0, SIZE as i32))
                 .collect();
-            let num = bakers_transform(num);
-            // let num = uniform_noise(&num, 0.05);
+            // let num = bakers_transform(num);
+            let num = uniform_noise(&num, 0.05);
             Some(num)
         } else {
             None
@@ -124,7 +124,10 @@ fn uniform_noise(point: &[f64], noise_amplitude: f64) -> Vec<f64> {
     let mut rng = rand::thread_rng();
     point
         .iter()
-        .map(|&x| x + rng.gen_range(-noise_amplitude..=noise_amplitude))
+        .map(|&x| {
+            let noise = rng.gen_range(-noise_amplitude..=noise_amplitude);
+            (x + noise).clamp(0.0, 1.0)
+        })
         .collect()
 }
 
