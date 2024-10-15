@@ -155,7 +155,6 @@ impl RotateAtDihedral {
         s.dihedral
             .par_iter()
             .map(|(a, b, c, d)| {
-                println!("{} {} {} {}", a, b, c, d);
                 let atoma = s.particles.iter().find(|atom| atom.serial == *a).unwrap();
                 let atomb = s.particles.iter().find(|atom| atom.serial == *b).unwrap();
                 let atomc = s.particles.iter().find(|atom| atom.serial == *c).unwrap();

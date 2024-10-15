@@ -279,7 +279,6 @@ pub fn pdb_to_atoms(pdb_string: &str) -> Vec<Atom> {
         .expect("Failed to read PDB file")
         .lines()
         .filter(|line| line.starts_with("ATOM") || line.starts_with("HETATM"))
-        .inspect(|l| println!("{:?}", l))
         .map(|line| Atom::new(line.to_string()))
         .map(|atom| {
             if atom.name == "OXT" {

@@ -98,7 +98,6 @@ impl System {
                             val.3 = atom.serial
                         }
                     }
-                    println!("{:?}", val);
                     self.dihedral.push(val)
                 }
             }
