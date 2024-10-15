@@ -265,7 +265,7 @@ impl Sampler {
     pub fn sample(&mut self, maxsample: usize) {
         let n = self.system.dihedral.len();
         for phi in Sobol::new(n).skip(32).take(maxsample) {
-            let angle: Vec<f64> = phi.iter().map(|i| (i * 360.0) - 180.0).collect();
+            let angle: Vec<f64> = phi.iter().map(|i| i * 360.0 - 180.0).collect();
             self.rotatesample(angle.clone());
             let energy = self.rotate.energy();
             self.energy.push(energy);
@@ -311,15 +311,17 @@ impl Sampler {
 
     pub fn write_sampled_angles(&self, filename: &str) {
         let mut file = std::fs::File::create(filename).unwrap();
-        for (angles, energy) in self.angles.iter().zip(self.energy.iter()) {
+
+        for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(
-                "{:.4} {:.6}\n",
+                "{}, {}, {}\n",
+                i,
+                energy,
                 angles
                     .iter()
                     .map(|&a| a.to_string())
                     .collect::<Vec<String>>()
-                    .join(" "),
-                energy
+                    .join(", ")
             );
             file.write_all(line.as_bytes()).unwrap();
         }

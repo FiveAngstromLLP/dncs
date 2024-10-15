@@ -1,11 +1,12 @@
 extern crate libdncs;
 
-use libdncs::{sampling::RotateAtDihedral, system::System};
+use libdncs::sampling::Sampler;
+use libdncs::system::System;
 
 fn main() {
-    let mut s = System::new("YGGFM");
-    s.get_dihedralatoms(true);
-    println!("{:?}", s.dihedral.len());
-    let y = RotateAtDihedral::from_pdb("examples/test.pdb", true);
-    println!("{:?}", y.len());
+    let mut system = System::new("YGGFM");
+    system.get_dihedralatoms(true);
+    let mut sample = Sampler::new(system);
+    sample.sample(10);
+    println!("{:?}", sample.angles)
 }
