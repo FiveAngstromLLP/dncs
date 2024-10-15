@@ -149,6 +149,21 @@ impl RotateAtDihedral {
         }
     }
 
+    pub fn from_pdb(file: &str, sidechain: bool) -> Vec<f64> {
+        let mut s = System::from_pdb(file);
+        s.get_dihedralatoms(sidechain);
+        s.dihedral
+            .par_iter()
+            .map(|(a, b, c, d)| {
+                let atoma = s.particles.iter().find(|atom| atom.serial == *a).unwrap();
+                let atomb = s.particles.iter().find(|atom| atom.serial == *b).unwrap();
+                let atomc = s.particles.iter().find(|atom| atom.serial == *c).unwrap();
+                let atomd = s.particles.iter().find(|atom| atom.serial == *d).unwrap();
+                Self::dihedral_angle(atoma, atomb, atomc, atomd)
+            })
+            .collect()
+    }
+
     /// Rotate the atoms at Dihedral angle
     pub fn rotate(&mut self, angle: Vec<f64>) {
         for (i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {

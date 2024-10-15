@@ -52,6 +52,34 @@ pub struct Atom {
     pub(crate) force: [f64; 3],
 }
 
+impl Atom {
+    pub fn new(line: String) -> Self {
+        Atom {
+            record: line.get(0..5).unwrap_or("").trim().to_string(),
+            serial: line.get(7..12).unwrap_or("").trim().parse().unwrap_or(0),
+            name: line.get(12..17).unwrap_or("").trim().to_string(),
+            residue: line.get(17..21).unwrap_or("").trim().to_string(),
+            chain_id: line.get(21..23).unwrap_or("").trim().to_string(),
+            sequence: line.get(23..27).unwrap_or("").trim().parse().unwrap_or(0),
+            position: [
+                line.get(31..39).unwrap_or("").trim().parse().unwrap_or(0.0),
+                line.get(39..47).unwrap_or("").trim().parse().unwrap_or(0.0),
+                line.get(47..54).unwrap_or("").trim().parse().unwrap_or(0.0),
+            ],
+            occupancy: line.get(55..60).unwrap_or("").trim().parse().unwrap_or(0.0),
+            bfactor: line.get(60..66).unwrap_or("").trim().parse().unwrap_or(0.0),
+            element: line.get(76..78).unwrap_or("").trim().to_string(),
+            mass: line.get(78..87).unwrap_or("").trim().parse().unwrap_or(0.0),
+            charge: line.get(87..97).unwrap_or("").trim().parse().unwrap_or(0.0),
+            atomtype: line.get(97..).unwrap_or("").trim().to_string(),
+            epsilon: 0.0,
+            sigma: 0.0,
+            velocity: [0.0; 3],
+            force: [0.0; 3],
+        }
+    }
+}
+
 impl Debug for Atom {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -243,4 +271,68 @@ pub fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
         .map(|atom| format!("{:?}", atom))
         .collect::<Vec<String>>()
         .join("\n")
+}
+
+/// PDB to Atom
+pub fn pdb_to_atoms(pdb_string: &str) -> Vec<Atom> {
+    std::fs::read_to_string(pdb_string)
+        .expect("Failed to read PDB file")
+        .lines()
+        .filter(|line| line.starts_with("ATOM") || line.starts_with("HETATM"))
+        .map(|line| Atom::new(line.to_string()))
+        .map(|atom| {
+            if atom.name == "OXT" {
+                let mut newatom = atom.clone();
+                newatom.name = "HO".to_string();
+                if newatom.sequence % 2 == 1 {
+                    newatom.position[0] += 0.250;
+                    newatom.position[1] += 0.927;
+                    newatom.position[2] += 0.013;
+                } else {
+                    newatom.position[0] += 0.935;
+                    newatom.position[1] += -0.218;
+                    newatom.position[2] += -0.003;
+                }
+                return newatom;
+            } else {
+                return atom;
+            }
+        })
+        .collect()
+}
+
+/// Atoms to Sequence
+pub(crate) fn atoms_to_seq(atoms: Vec<Atom>) -> String {
+    let mut seq = "".to_string();
+    let mut n = 0;
+    for atom in atoms.iter() {
+        if atom.sequence != n {
+            match atom.residue.as_str() {
+                "ALA" => seq.push('A'),
+                "ARG" => seq.push('R'),
+                "ASN" => seq.push('N'),
+                "ASP" => seq.push('D'),
+                "CYS" => seq.push('C'),
+                "GLU" => seq.push('E'),
+                "GLN" => seq.push('Q'),
+                "GLY" => seq.push('G'),
+                "HIS" => seq.push('H'),
+                "ILE" => seq.push('I'),
+                "LEU" => seq.push('L'),
+                "LYS" => seq.push('K'),
+                "MET" => seq.push('M'),
+                "PHE" => seq.push('F'),
+                "PRO" => seq.push('P'),
+                "SER" => seq.push('S'),
+                "THR" => seq.push('T'),
+                "TRP" => seq.push('W'),
+                "TYR" => seq.push('Y'),
+                "VAL" => seq.push('V'),
+                "AIB" => seq.push('B'),
+                _ => {}
+            }
+            n += 1;
+        }
+    }
+    seq
 }

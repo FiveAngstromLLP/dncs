@@ -1,7 +1,7 @@
 #![allow(dead_code, non_snake_case)]
 
 use libdncs::forcefield::Amber;
-use libdncs::sampling::Sampler;
+use libdncs::sampling::{RotateAtDihedral, Sampler};
 use libdncs::system::System;
 use nalgebra::Vector3;
 use pyo3::prelude::*;
@@ -10,6 +10,17 @@ use pyo3::prelude::*;
 fn getPDB(seq: String, filename: String) {
     let polymer = System::new(&seq);
     polymer.to_pdb(&filename);
+}
+
+#[pyfunction]
+fn pdb_to_angle(filename: String, include_side_chain: bool) -> String {
+    let angle = RotateAtDihedral::from_pdb(&filename, include_side_chain);
+    let angle_csv = angle
+        .iter()
+        .map(|&a| a.to_string())
+        .collect::<Vec<String>>()
+        .join(", ");
+    angle_csv
 }
 
 #[pyfunction]
@@ -87,6 +98,7 @@ impl SobolSampler {
 #[pymodule]
 fn dncs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(getPDB, m)?)?;
+    m.add_function(wrap_pyfunction!(pdb_to_angle, m)?)?;
     m.add_function(wrap_pyfunction!(dihedral_angle, m)?)?;
     m.add_class::<Polymer>()?;
     m.add_class::<SobolSampler>()?;

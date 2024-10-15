@@ -30,6 +30,21 @@ impl System {
         }
     }
 
+    pub fn from_pdb(file: &str) -> Self {
+        let atoms: Vec<Atom>;
+        atoms = parser::pdb_to_atoms(file);
+
+        let total = atoms.len();
+        Self {
+            seq: parser::atoms_to_seq(atoms.clone()),
+            particles: atoms,
+            dihedral: Vec::new(),
+            nonbonded: vec![Vec::new(); total],
+            bonded1_4: vec![Vec::new(); total],
+            hydrogen: Vec::new(),
+        }
+    }
+
     pub fn init_parameters(&mut self) {
         self.get_neighbours();
         self.get_energyparameters();
