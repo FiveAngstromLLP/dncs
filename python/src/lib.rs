@@ -3,7 +3,6 @@
 use libdncs::forcefield::Amber;
 use libdncs::sampling::{RotateAtDihedral, Sampler};
 use libdncs::system::System;
-use nalgebra::Vector3;
 use pyo3::prelude::*;
 
 #[pyfunction]
