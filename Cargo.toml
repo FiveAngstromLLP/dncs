@@ -4,20 +4,24 @@ version = "0.1.3"
 edition = "2021"
 
 [dependencies]
+clap = "4.5.20"
 lbfgs = "0.2.1"
 nalgebra = "0.32.0"
 rand = "0.8.5"
 rayon = "1.10.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
-liblbfgs-sys = "0.1"
+toml = "0.8.19"
+zip = "2.2.0"
+
 
 [dev-dependencies]
 regex = "1.10.5"
+liblbfgs-sys = "0.1"
 
 
-[workspace]
-members = ["python", "server"]
+# [workspace]
+# members = ["python", "server"]
 
 
 [[bin]]
