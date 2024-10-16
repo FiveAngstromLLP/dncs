@@ -1,5 +1,5 @@
 pub mod forcefield;
-pub mod langevin;
+pub mod minimizer;
 mod parser;
 pub mod sampling;
 pub mod system;

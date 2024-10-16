@@ -1,0 +1,9 @@
+
+{
+    "Generate": {
+        "molecule": "Sample",
+        "sequence": "AAAAA",
+        "include_sidechain": true,
+        "n_samples": 10
+    }
+}

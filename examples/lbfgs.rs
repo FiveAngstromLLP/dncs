@@ -1,69 +1,86 @@
-#![allow(unused_variables)]
-use liblbfgs_sys::*;
-use std::os::raw::{c_int, c_void};
+extern crate libdncs;
 
-// Define our function to minimize: f(x) = x^2 + 1
-extern "C" fn evaluate(
-    instance: *mut c_void,
-    x: *const f64,
-    g: *mut f64,
-    n: c_int,
-    step: f64,
-) -> f64 {
-    unsafe {
-        let x = std::slice::from_raw_parts(x, n as usize);
-        let g = std::slice::from_raw_parts_mut(g, n as usize);
-
-        // Calculate f(x) = x^2 + 1
-        let fx = 1.0 / x[0] - 100.0;
-
-        // Calculate gradient: f'(x) = 2x
-        g[0] = 2.0 * x[0];
-
-        fx
-    }
-}
+use libdncs::forcefield::Amber;
+use libdncs::sampling::{RotateAtDihedral, Sampler};
+use libdncs::system::System;
+use liblbfgs::lbfgs;
 
 fn main() {
-    let n = 1; // Dimension of the problem
-    let mut x = vec![2.0]; // Initial guess
-    let mut f = 0.0; // Will store the minimum function value
+    let mut s = System::new("AAAA");
+    s.init_parameters();
+    s.get_dihedralatoms(false);
+    println!("{:?}", s.dihedral);
+    let ff = Amber::new(s.clone());
+    println!("Energy: {}", ff.energy());
+    let mut sample = Sampler::new(s);
+    sample.sample(10);
+    let mut m = Minimizer::new(sample);
+    m.minimize()
+}
 
-    let mut param = lbfgs_parameter_t {
-        m: 0,
-        epsilon: 0.0,
-        past: 0,
-        delta: 0.0,
-        max_iterations: 0,
-        linesearch: 0,
-        max_linesearch: 0,
-        min_step: 0.0,
-        max_step: 0.0,
-        ftol: 0.0,
-        wolfe: 0.0,
-        gtol: 0.0,
-        xtol: 0.0,
-        orthantwise_c: 0.0,
-        orthantwise_start: 0,
-        orthantwise_end: 0,
-    };
-    unsafe {
-        lbfgs_parameter_init(&mut param);
+pub struct Minimizer {
+    pub sample: Sampler,
+    pub minimized: Vec<System>,
+}
+
+impl Minimizer {
+    /// New Minimizer
+    pub fn new(sample: Sampler) -> Self {
+        Self {
+            sample,
+            minimized: Vec::new(),
+        }
     }
 
-    let result = unsafe {
-        lbfgs(
-            n,
-            x.as_mut_ptr(),
-            &mut f,
-            Some(evaluate),
-            None,
-            std::ptr::null_mut(),
-            &mut param as *mut lbfgs_parameter_t,
-        )
-    };
+    /// Automatic Differentiation of Energy Function
+    #[inline]
+    fn diff<'a>(func: Box<dyn Fn(Vec<f64>) -> f64 + 'a>, angle: Vec<f64>) -> (f64, Vec<f64>) {
+        let h = 1.0 / 32.0;
+        let fx: f64 = (func)(angle.clone());
+        println!("diff {}", fx);
+        let dfx = angle
+            .iter()
+            .enumerate()
+            .map(|(i, _)| {
+                let mut dx = angle.clone();
+                dx[i] += h;
+                ((func)(dx) - fx) / h
+            })
+            .collect();
+        (fx, dfx)
+    }
 
-    println!("LBFGS optimization result: {:?}", result);
-    println!("Optimal x: {:?}", x);
-    println!("Minimum function value: {}", f);
+    /// Energy minimizer
+    pub fn minimize(&mut self) {
+        let s = self.sample.sample.clone();
+        let a = self.sample.angles.clone();
+        for (sys, angle) in s.iter().zip(a) {
+            let evaluate = |x: &[f64], gx: &mut [f64]| {
+                let val = Self::diff(
+                    Box::new(|x: Vec<f64>| RotateAtDihedral::new(sys.clone()).rotated_energy(x)),
+                    x.to_vec(),
+                );
+                gx.copy_from_slice(&val.1);
+                Ok(val.0)
+            };
+            let mut theta: Vec<f64> = angle.clone();
+            let prbs = lbfgs()
+                .with_max_iterations(10)
+                .minimize(&mut theta, evaluate, |prgr| {
+                    println!("iter: {:?}; Energy: {}", prgr.niter, prgr.fx);
+                    println!("x: {:?}", prgr.x);
+                    false
+                });
+            match prbs {
+                Ok(p) => {
+                    println!("Minimized theta = {:?}", theta);
+                    // self.minimized.sample_for_angle(theta);
+                    println!("Minimized Energy = {:?}", p.fx);
+                }
+                Err(e) => {
+                    println!("{:?}", e);
+                }
+            }
+        }
+    }
 }

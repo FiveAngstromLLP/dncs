@@ -139,6 +139,7 @@ fn sobol() {
     }
 }
 
+#[derive(Clone)]
 pub struct RotateAtDihedral {
     pub system: System,
     pub rotated: Particles,
@@ -194,6 +195,12 @@ impl RotateAtDihedral {
         self.system.particles = self.rotated.clone();
     }
 
+    pub fn rotated_energy(&mut self, angle: Vec<f64>) -> f64 {
+        self.rotate(angle);
+        let ff = Amber::new(self.system.clone());
+        ff.energy()
+    }
+
     /// Normalization
     #[inline]
     fn elemen(a: Vector3<f64>, b: Vector3<f64>) -> Vector3<f64> {
@@ -246,6 +253,7 @@ impl RotateAtDihedral {
     }
 }
 
+#[derive(Clone)]
 pub struct Sampler {
     pub system: System,
     pub rotate: RotateAtDihedral,
