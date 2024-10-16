@@ -1,0 +1,5 @@
+[Generate]
+molecule = "YGGFM"
+sequence = "Name"
+include_sidechain = true
+n_samples = 100
