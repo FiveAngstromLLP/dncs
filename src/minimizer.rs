@@ -60,7 +60,7 @@ impl Minimizer {
                 .minimize(&mut theta, evaluate, |_| false);
             match prbs {
                 Ok(p) => {
-                    println!("Minimized Energy for Model {} = {:?} KCal/Mol", i, p.fx);
+                    println!("Model {} Energy : {:?} KCal/Mol", i, p.fx);
                     let mut r = RotateAtDihedral::new(self.sample.system.clone());
                     r.rotate(theta.clone());
                     self.minimized[i] = r.system.clone();
