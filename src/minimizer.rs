@@ -56,12 +56,11 @@ impl Minimizer {
             };
             let mut theta: Vec<f64> = angle.clone();
             let prbs = lbfgs()
-                .with_max_iterations(100)
+                .with_max_iterations(5)
                 .minimize(&mut theta, evaluate, |_| false);
             match prbs {
                 Ok(p) => {
-                    println!("Minimized theta for Model {} = {:?}", i, theta);
-                    println!("Minimized Energy for Model {} = {:?}", i, p.fx);
+                    println!("Minimized Energy for Model {} = {:?} KCal/Mol", i, p.fx);
                     let mut r = RotateAtDihedral::new(self.sample.system.clone());
                     r.rotate(theta.clone());
                     self.minimized[i] = r.system.clone();
