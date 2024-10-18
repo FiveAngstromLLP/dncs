@@ -294,7 +294,7 @@ impl Sampler {
         self.rotate.rotate(angle);
     }
 
-    pub fn conformational_sort(&mut self) {
+    fn conformational_sort(&mut self) {
         const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
         let weight: Vec<f64> = self.energy.iter().map(|e| (-e / KBT).exp()).collect();
         let z: f64 = weight.iter().sum();

@@ -66,10 +66,6 @@ impl SobolSampler {
         Ok(SobolSampler { sampler: sample })
     }
 
-    fn conformational_sort(&mut self) {
-        self.sampler.conformational_sort();
-    }
-
     fn write_angles(&self, filename: String) {
         self.sampler.write_sampled_angles(&filename)
     }

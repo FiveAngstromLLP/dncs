@@ -62,7 +62,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     system.get_dihedralatoms(include_sidechain);
     let mut sample = Sampler::new(system);
     sample.sample(samples);
-    sample.conformational_sort();
 
     let result_dir = format!("Result/{}", molecule);
     if fs::metadata(&result_dir).is_ok() {
