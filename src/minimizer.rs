@@ -56,11 +56,11 @@ impl Minimizer {
             };
             let mut theta: Vec<f64> = angle.clone();
             let prbs = lbfgs()
-                .with_max_iterations(5)
+                .with_max_iterations(10)
                 .minimize(&mut theta, evaluate, |_| false);
             match prbs {
                 Ok(p) => {
-                    println!("Sample {} Energy : {:?} KCal/Mol", i + 1, p.fx);
+                    println!("Model {} Energy : {:?} KCal/Mol", i + 1, p.fx);
                     let mut r = RotateAtDihedral::new(self.sample.system.clone());
                     r.rotate(theta.clone());
                     self.minimized[i] = r.system.clone();
@@ -72,6 +72,33 @@ impl Minimizer {
                 }
             }
         }
+    }
+
+    pub fn conformational_sort(&mut self) {
+        const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23; // KJ/mol
+        let weight: Vec<f64> = self.energy.iter().map(|e| (-e / KBT).exp()).collect();
+        let z: f64 = weight.iter().sum();
+        let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
+        // println!("Normalized : {normalized:?}");
+        let energies = std::mem::take(&mut self.energy);
+        let angles = std::mem::take(&mut self.angles);
+        let minimized = std::mem::take(&mut self.minimized);
+
+        // println!("Probability : {}", normalized.iter().sum::<f64>());
+
+        let mut combined: Vec<(f64, Vec<f64>, System, f64)> = energies
+            .into_iter()
+            .zip(angles.into_iter())
+            .zip(minimized.into_iter())
+            .zip(normalized.into_iter())
+            .map(|(((e, a), s), w)| (e, a, s, w))
+            .collect();
+
+        combined.sort_by(|a, b| b.3.partial_cmp(&a.3).unwrap());
+
+        self.energy = combined.iter().map(|(e, _, _, _)| *e).collect();
+        self.angles = combined.iter().map(|(_, a, _, _)| a.clone()).collect();
+        self.minimized = combined.into_iter().map(|(_, _, s, _)| s).collect();
     }
 
     pub fn write_sampled_angles(&self, filename: &str) {

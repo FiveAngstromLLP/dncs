@@ -64,21 +64,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     sample.sample(samples);
     sample.conformational_sort();
 
-    match fs::create_dir_all(&format!("Result/{}", molecule)) {
-        Ok(_) => (),
-        Err(e) => {
-            eprintln!("Failed to create result directory: {}", e);
-            std::process::exit(1);
-        }
+    let result_dir = format!("Result/{}", molecule);
+    if fs::metadata(&result_dir).is_ok() {
+        fs::remove_dir_all(&result_dir)?;
     }
+    fs::create_dir_all(&result_dir)?;
 
-    sample.write_sampled_angles(&format!("Result/{}/Sampled.out", molecule));
-    sample.to_pdb(&format!("Result/{}/Sampled.pdb", molecule));
+    // sample.write_sampled_angles(&format!("Result/{}/Sampled.out", molecule));
+    // sample.to_pdb(&format!("Result/{}/Sampled.pdb", molecule));
 
     let mut mini = Minimizer::new(sample);
     mini.minimize();
-    mini.write_sampled_angles(&format!("Result/{}/Minimized.out", molecule));
-    mini.to_pdb(&format!("Result/{}/Minimized.pdb", molecule));
+    mini.conformational_sort();
+    mini.write_sampled_angles(&format!("Result/{}/{}.out", molecule, molecule));
+    mini.to_pdb(&format!("Result/{}/{}.pdb", molecule, molecule));
     Ok(())
 }
 

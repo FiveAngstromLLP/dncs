@@ -275,7 +275,7 @@ impl Sampler {
 
     pub fn sample(&mut self, maxsample: usize) {
         let n = self.system.dihedral.len();
-        for phi in Sobol::new(n).skip(32).take(maxsample) {
+        for phi in Sobol::new(n).skip(32).take(maxsample * 10) {
             let angle: Vec<f64> = phi.iter().map(|i| i * 360.0 - 180.0).collect();
             self.rotatesample(angle.clone());
             let energy = self.rotate.energy();
@@ -283,6 +283,10 @@ impl Sampler {
             self.angles.push(angle.clone());
             self.sample.push(self.rotate.system.clone());
         }
+        self.conformational_sort();
+        self.energy = self.energy.clone().into_iter().take(maxsample).collect();
+        self.angles = self.angles.clone().into_iter().take(maxsample).collect();
+        self.sample = self.sample.clone().into_iter().take(maxsample).collect();
     }
 
     fn rotatesample(&mut self, angle: Vec<f64>) {
