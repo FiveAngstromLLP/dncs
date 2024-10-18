@@ -69,8 +69,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     fs::create_dir_all(&result_dir)?;
 
-    // sample.write_sampled_angles(&format!("Result/{}/Sampled.out", molecule));
-    // sample.to_pdb(&format!("Result/{}/Sampled.pdb", molecule));
+    sample.write_sampled_angles(&format!("Result/{}/Sampled.out", molecule));
+    sample.to_pdb(&format!("Result/{}/Sampled.pdb", molecule));
 
     let mut mini = Minimizer::new(sample);
     mini.minimize();

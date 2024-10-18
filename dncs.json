@@ -3,6 +3,6 @@
     "molecule": "Molecule",
     "sequence": "AAAAA",
     "include_sidechain": true,
-    "n_samples": 100
+    "n_samples": 10
   }
 }
