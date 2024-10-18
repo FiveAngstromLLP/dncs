@@ -287,6 +287,9 @@ impl Sampler {
         self.energy = self.energy.clone().into_iter().take(maxsample).collect();
         self.angles = self.angles.clone().into_iter().take(maxsample).collect();
         self.sample = self.sample.clone().into_iter().take(maxsample).collect();
+    for ix in self.angles.iter(){
+        println!("{:?}",ix)
+    }
     }
 
     fn rotatesample(&mut self, angle: Vec<f64>) {
