@@ -92,7 +92,7 @@ impl Iterator for Sobol {
                 .map(|i| *i as f64 / f64::powi(2.0, SIZE as i32))
                 .collect();
             // let num = bakers_transform(num);
-            // let num = uniform_noise(&num, 0.05);
+            let num = uniform_noise(&num, 0.05);
             Some(num)
         } else {
             None
@@ -167,10 +167,10 @@ impl RotateAtDihedral {
                 .iter()
                 .find(|i| dih.0.serial == i.1.serial && dih.1.serial == i.2.serial)
             {
-                println!(
-                    "{}:{} {}:{} {}:{} {}:{}",
-                    a.name, a.serial, b.name, b.serial, c.name, c.serial, d.serial, d.name,
-                );
+                // println!(
+                //     "{}:{} {}:{} {}:{} {}:{}",
+                //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.serial, d.name,
+                // );
                 dihedral.push(Self::dihedral_angle(a, b, c, d))
             }
         }
