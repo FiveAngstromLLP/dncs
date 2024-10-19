@@ -265,10 +265,10 @@ pub fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
         terminal.residue = a.last().unwrap().residue.clone();
         a.push(terminal);
     }
-    // a.iter_mut().enumerate().for_each(|(i, atom)| {
-    //     atom.serial = i;
-    // });
-    // a.remove(0);
+    a.iter_mut().enumerate().for_each(|(i, atom)| {
+        atom.serial = i;
+    });
+    a.remove(0);
     a.iter()
         .map(|atom| format!("{:?}", atom))
         .collect::<Vec<String>>()
