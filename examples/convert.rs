@@ -15,8 +15,10 @@ fn convert() {
     data3.to_json("data/ALLCONN.json");
     let data4: Polymer<Diheds> = Polymer::from_lib("examples/files/DIHEDS.lib");
     data4.to_json("data/DIHEDS.json");
-    let data4 = EnergyParam::from_lib("examples/files/ENERGYPARAM.lib");
-    data4.to_json("data/ENERGYPARAM.json");
+    let data5 = EnergyParam::from_lib("examples/files/ENERGYPARAM.lib");
+    data5.to_json("data/ENERGYPARAM.json");
+    let data6: Polymer<Diheds> = Polymer::from_lib("examples/files/VAR.lib");
+    data6.to_json("data/VAR.json");
 }
 
 #[allow(dead_code)]
@@ -169,11 +171,16 @@ struct Diheds {
 
 impl Convert for Diheds {
     fn new(line: &str) -> Self {
+        let var: Vec<String> = line
+            .split(" ")
+            .filter(|s| !s.is_empty())
+            .map(String::from)
+            .collect();
         Diheds {
-            a: line.get(9..14).unwrap_or("").trim().to_string(),
-            b: line.get(14..21).unwrap_or("").trim().to_string(),
-            c: line.get(21..28).unwrap_or("").trim().to_string(),
-            d: line.get(28..).unwrap_or("").trim().to_string(),
+            a: var[0].to_string(),
+            b: var[1].to_string(),
+            c: var[2].to_string(),
+            d: var[3].to_string(),
         }
     }
 

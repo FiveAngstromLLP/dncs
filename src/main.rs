@@ -52,8 +52,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             std::process::exit(1);
         }
     };
-    let molecule = generate["molecule"].as_str().unwrap_or("Sample");
-    let sequence = generate["sequence"].as_str().unwrap_or("YGGFM");
+    let molecule = generate["molecule"].as_str().unwrap_or("");
+    let sequence = generate["sequence"].as_str().unwrap_or("");
     let include_sidechain = generate["include_sidechain"].as_bool().unwrap_or(false);
     let samples = generate["n_samples"].as_u64().unwrap_or(10) as usize;
 

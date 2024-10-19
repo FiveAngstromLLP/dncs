@@ -92,7 +92,7 @@ impl Iterator for Sobol {
                 .map(|i| *i as f64 / f64::powi(2.0, SIZE as i32))
                 .collect();
             // let num = bakers_transform(num);
-            let num = uniform_noise(&num, 0.05);
+            // let num = uniform_noise(&num, 0.05);
             Some(num)
         } else {
             None
@@ -155,34 +155,54 @@ impl RotateAtDihedral {
 
     pub fn from_pdb(file: &str, sidechain: bool) -> Vec<f64> {
         let mut s = System::from_pdb(file);
-        s.get_dihedralatoms(sidechain);
-        s.dihedral
-            .par_iter()
-            .map(|(a, b, c, d)| {
-                let atoma = s.particles.iter().find(|atom| atom.serial == *a).unwrap();
-                let atomb = s.particles.iter().find(|atom| atom.serial == *b).unwrap();
-                let atomc = s.particles.iter().find(|atom| atom.serial == *c).unwrap();
-                let atomd = s.particles.iter().find(|atom| atom.serial == *d).unwrap();
-                Self::dihedral_angle(atoma, atomb, atomc, atomd)
-            })
-            .collect()
+        let mut scopy = s.clone();
+        scopy.get_dihedralatoms(sidechain);
+        s.get_dihedral_for_angle(sidechain);
+
+        let mut dihedral = Vec::new();
+
+        for dih in scopy.dihedral {
+            if let Some((a, b, c, d)) = s
+                .dihedral
+                .iter()
+                .find(|i| dih.0.serial == i.1.serial && dih.1.serial == i.2.serial)
+            {
+                println!(
+                    "{}:{} {}:{} {}:{} {}:{}",
+                    a.name, a.serial, b.name, b.serial, c.name, c.serial, d.serial, d.name,
+                );
+                dihedral.push(Self::dihedral_angle(a, b, c, d))
+            }
+        }
+
+        dihedral
+
+        // s.dihedral
+        //     .iter()
+        //     .map(|(a, b, c, d)| Self::dihedral_angle(a, b, c, d))
+        //     .collect()
     }
 
     /// Rotate the atoms at Dihedral angle
     pub fn rotate(&mut self, angle: Vec<f64>) {
         for (i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {
-            let mut phi = theta;
+            let mut phi = theta.clone();
             if i == 0 || i == self.system.dihedral.len() - 1 {
                 phi = phi
             } else {
                 phi = phi + 180.0
             }
-            if let Some(p) = self.rotated.iter().find(|i| i.serial == a.0) {
+            if let Some(p) = self.rotated.iter().find(|i| i.serial == a.0.serial) {
                 let v1 = Vector3::new(p.position[0], p.position[1], p.position[2]);
-                if let Some(q) = self.rotated.iter().find(|i| i.serial == a.1) {
+                if let Some(q) = self.rotated.iter().find(|i| i.serial == a.1.serial) {
                     let v2 = Vector3::new(q.position[0], q.position[1], q.position[2]);
                     let dcos = Self::elemen(v1, v2);
-                    for j in self.rotated.iter_mut().take(a.3).skip(a.2 - 1) {
+                    for j in self
+                        .rotated
+                        .iter_mut()
+                        .take(a.3.serial)
+                        .skip(a.2.serial - 1)
+                    {
                         let avector = Vector3::new(j.position[0], j.position[1], j.position[2]);
                         let r = Self::rotor(dcos, avector - v1, phi) + v1;
                         j.position[0] = r[0];
@@ -218,7 +238,7 @@ impl RotateAtDihedral {
         mat * b
     }
 
-    fn dihedral_angle(a: &Atom, b: &Atom, c: &Atom, d: &Atom) -> f64 {
+    pub fn dihedral_angle(a: &Atom, b: &Atom, c: &Atom, d: &Atom) -> f64 {
         let u1 = Vector3::new(
             b.position[0] - a.position[0],
             b.position[1] - a.position[1],
@@ -236,11 +256,7 @@ impl RotateAtDihedral {
         );
         let sinth = (u2.norm() * u1).dot(&u2.cross(&u3));
         let costh = u1.cross(&u2).dot(&u2.cross(&u3));
-        if u1.cross(&u2).dot(&u2.cross(&u3).cross(&u2)) < 0.0 {
-            -sinth.atan2(costh).to_degrees()
-        } else {
-            sinth.atan2(costh).to_degrees()
-        }
+        sinth.atan2(costh).to_degrees()
     }
 
     pub fn energy(&self) -> f64 {
@@ -283,13 +299,10 @@ impl Sampler {
             self.angles.push(angle.clone());
             self.sample.push(self.rotate.system.clone());
         }
-        self.conformational_sort();
+        // self.conformational_sort();
         self.energy = self.energy.clone().into_iter().take(maxsample).collect();
         self.angles = self.angles.clone().into_iter().take(maxsample).collect();
         self.sample = self.sample.clone().into_iter().take(maxsample).collect();
-    for ix in self.angles.iter(){
-        println!("{:?}",ix)
-    }
     }
 
     fn rotatesample(&mut self, angle: Vec<f64>) {

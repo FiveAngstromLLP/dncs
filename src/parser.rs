@@ -13,6 +13,8 @@ pub(crate) static DIHEDS: LazyLock<Polymer<Diheds>> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/DIHEDS.json")).unwrap());
 pub(crate) static ENERGYPARAM: LazyLock<EnergyParam> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/ENERGYPARAM.json")).unwrap());
+pub(crate) static VAR: LazyLock<Polymer<Diheds>> =
+    LazyLock::new(|| serde_json::from_str(include_str!("../data/VAR.json")).unwrap());
 
 #[derive(Deserialize, Clone, PartialEq)]
 pub struct Atom {
@@ -263,10 +265,10 @@ pub fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
         terminal.residue = a.last().unwrap().residue.clone();
         a.push(terminal);
     }
-    a.iter_mut().enumerate().for_each(|(i, atom)| {
-        atom.serial = i;
-    });
-    a.remove(0);
+    // a.iter_mut().enumerate().for_each(|(i, atom)| {
+    //     atom.serial = i;
+    // });
+    // a.remove(0);
     a.iter()
         .map(|atom| format!("{:?}", atom))
         .collect::<Vec<String>>()
@@ -284,15 +286,15 @@ pub fn pdb_to_atoms(pdb_string: &str) -> Vec<Atom> {
             if atom.name == "OXT" {
                 let mut newatom = atom.clone();
                 newatom.name = "HO".to_string();
-                if newatom.sequence % 2 == 1 {
-                    newatom.position[0] += 0.250;
-                    newatom.position[1] += 0.927;
-                    newatom.position[2] += 0.013;
-                } else {
-                    newatom.position[0] += 0.935;
-                    newatom.position[1] += -0.218;
-                    newatom.position[2] += -0.003;
-                }
+                // if newatom.sequence % 2 == 1 {
+                //     newatom.position[0] += 0.250;
+                //     newatom.position[1] += 0.927;
+                //     newatom.position[2] += 0.013;
+                // } else {
+                //     newatom.position[0] += 0.935;
+                //     newatom.position[1] += -0.218;
+                //     newatom.position[2] += -0.003;
+                // }
                 return newatom;
             } else {
                 return atom;

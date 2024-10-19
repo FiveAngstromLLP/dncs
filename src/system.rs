@@ -1,5 +1,6 @@
 #![allow(dead_code)]
-use crate::parser::{self, Atom, ALLCONN, DIHEDS, ENERGYPARAM};
+use crate::parser::{self, Atom, ALLCONN, DIHEDS, ENERGYPARAM, VAR};
+
 use std::io::Write;
 
 pub type Particles = Vec<Atom>;
@@ -9,7 +10,7 @@ pub type Particles = Vec<Atom>;
 pub struct System {
     pub seq: String,
     pub particles: Particles,
-    pub dihedral: Vec<(usize, usize, usize, usize)>,
+    pub dihedral: Vec<(Atom, Atom, Atom, Atom)>,
     pub nonbonded: Vec<Particles>,
     pub bonded1_4: Vec<Particles>,
     pub hydrogen: Vec<(Atom, Atom)>,
@@ -76,32 +77,106 @@ impl System {
 
     /// Get Dihedral Atoms
     pub fn get_dihedralatoms(&mut self, sidechain: bool) {
+        let mut val: (Atom, Atom, Atom, Atom) = (
+            Atom::new("".to_string()),
+            Atom::new("".to_string()),
+            Atom::new("".to_string()),
+            Atom::new("".to_string()),
+        );
         for (i, s) in self.seq.chars().enumerate() {
             if let Some(m) = DIHEDS.seq.iter().find(|f| f.scode == s.to_string()) {
                 let n = if sidechain { m.natom } else { 2 };
                 for d in m.atoms.iter().take(n) {
-                    let mut val = (0, 0, 0, 0);
                     for atom in self.particles.iter() {
                         if atom.name == d.a && atom.sequence == i + 1 {
-                            val.0 = atom.serial
+                            val.0 = atom.clone()
                         }
                         if atom.name == d.b && atom.sequence == i + 1 {
-                            val.1 = atom.serial
+                            val.1 = atom.clone()
                         }
                         if atom.name == d.c && atom.sequence == i + 1 {
-                            val.2 = atom.serial
+                            val.2 = atom.clone()
                         }
                         if atom.name == d.d && atom.sequence == i + 1 {
-                            val.3 = atom.serial
+                            val.3 = atom.clone()
                         }
                         if atom.name == d.d && atom.name == "HO" {
-                            val.3 = atom.serial
+                            val.3 = atom.clone()
                         }
                     }
-                    self.dihedral.push(val)
+                    self.dihedral.push(val.clone())
                 }
             }
         }
+    }
+
+    pub fn get_dihedral_for_angle(&mut self, sidechain: bool) {
+        let lastseq = self.particles.last().unwrap().sequence;
+        let mut val: (Atom, Atom, Atom, Atom) = (
+            Atom::new("".to_string()),
+            Atom::new("".to_string()),
+            Atom::new("".to_string()),
+            Atom::new("".to_string()),
+        );
+
+        for atom in self.particles.iter() {
+            if atom.name == "H" && atom.sequence == 1 {
+                val.0 = atom.clone();
+            } else if atom.name == "N" && atom.sequence == 1 {
+                val.1 = atom.clone();
+            } else if atom.name == "CA" && atom.sequence == 1 {
+                val.2 = atom.clone();
+            } else if atom.name == "C" && atom.sequence == 1 {
+                val.3 = atom.clone();
+            }
+        }
+        self.dihedral.push(val.clone());
+
+        for (i, s) in self.seq.chars().enumerate() {
+            if let Some(m) = VAR.seq.iter().find(|f| f.scode == s.to_string()) {
+                let n = if sidechain { m.natom } else { 2 };
+                for d in m.atoms.iter().take(n) {
+                    let seqb = if d.a == "C" && d.b == "N" && d.c == "CA" && d.d == "C" {
+                        i + 2
+                    } else {
+                        i + 1
+                    };
+                    let seqd = match (d.a.as_str(), d.b.as_str(), d.c.as_str(), d.d.as_str()) {
+                        ("C", "N", "CA", "C") | ("N", "CA", "C", "N") => i + 2,
+                        _ => i + 1,
+                    };
+
+                    let get_atom = |name: &str, seq: usize| {
+                        self.particles
+                            .iter()
+                            .find(|i| i.name == name && i.sequence == seq)
+                    };
+
+                    let a = get_atom(&d.a, i + 1);
+                    let b = get_atom(&d.b, seqb);
+                    let c = get_atom(&d.c, seqb);
+                    let d = get_atom(&d.d, seqd);
+
+                    if let (Some(a), Some(b), Some(c), Some(d)) = (a, b, c, d) {
+                        self.dihedral
+                            .push((a.clone(), b.clone(), c.clone(), d.clone()));
+                    }
+                }
+            }
+        }
+
+        for atom in self.particles.iter() {
+            if atom.name == "N" && atom.sequence == lastseq {
+                val.0 = atom.clone();
+            } else if atom.name == "CA" && atom.sequence == lastseq {
+                val.1 = atom.clone();
+            } else if atom.name == "C" && atom.sequence == lastseq {
+                val.2 = atom.clone();
+            } else if atom.name == "O" && atom.sequence == lastseq {
+                val.3 = atom.clone();
+            }
+        }
+        self.dihedral.push(val);
     }
 
     /// Find hydrogen-bonded atom pairs
@@ -140,10 +215,26 @@ impl System {
         let filename = format!("{}/dihedral.log", foldername);
         let mut file = std::fs::File::create(filename).unwrap();
         for (a, b, c, d) in self.dihedral.iter() {
-            let atoma = self.particles.iter().find(|i| i.serial == *a).unwrap();
-            let atomb = self.particles.iter().find(|i| i.serial == *b).unwrap();
-            let atomc = self.particles.iter().find(|i| i.serial == *c).unwrap();
-            let atomd = self.particles.iter().find(|i| i.serial == *d).unwrap();
+            let atoma = self
+                .particles
+                .iter()
+                .find(|i| i.serial == a.serial)
+                .unwrap();
+            let atomb = self
+                .particles
+                .iter()
+                .find(|i| i.serial == b.serial)
+                .unwrap();
+            let atomc = self
+                .particles
+                .iter()
+                .find(|i| i.serial == c.serial)
+                .unwrap();
+            let atomd = self
+                .particles
+                .iter()
+                .find(|i| i.serial == d.serial)
+                .unwrap();
             writeln!(
                 file,
                 "{} {} {} | {} {} {} | {} {} {} | {} {} {}",
