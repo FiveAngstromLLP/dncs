@@ -1,12 +1,13 @@
 extern crate libdncs;
 
 use libdncs::forcefield::Amber;
+use libdncs::parser::AMBER99SB;
 use libdncs::sampling::{RotateAtDihedral, Sampler};
 use libdncs::system::System;
 use liblbfgs::lbfgs;
 
 fn main() {
-    let mut s = System::new("AAAA");
+    let mut s = System::new("AAAA", (*AMBER99SB).clone());
     s.init_parameters();
     s.get_dihedralatoms(false);
     println!("{:?}", s.dihedral);

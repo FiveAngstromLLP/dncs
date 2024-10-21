@@ -87,6 +87,15 @@ impl Amber {
         lennard_jones + electrostatic // Unit >> (kg.Å/s^2)
     }
 
+    // fn harmonic_bond_force(&self, iatom: &Atom) -> f64 {
+
+    //     if let Some(atype) = self.system.get_atomtype(iatom) {
+    //         let id = atype.;
+
+    //     }
+    //     0.0
+    // }
+
     fn hydrogen_bond_energy(&self) -> f64 {
         self.system
             .hydrogen

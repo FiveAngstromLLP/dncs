@@ -3,19 +3,19 @@ use serde::Deserialize;
 use std::fmt::Debug;
 use std::sync::LazyLock;
 
-pub(crate) static ALLAMINOMOLS_1: LazyLock<Polymer<Atom>> =
+pub static ALLAMINOMOLS_1: LazyLock<Polymer<Atom>> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/ALLAMINOMOLS_1.json")).unwrap());
-pub(crate) static ALLAMINOMOLS_2: LazyLock<Polymer<Atom>> =
+pub static ALLAMINOMOLS_2: LazyLock<Polymer<Atom>> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/ALLAMINOMOLS_2.json")).unwrap());
-pub(crate) static ALLCONN: LazyLock<Polymer<Bond>> =
+pub static ALLCONN: LazyLock<Polymer<Bond>> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/ALLCONN.json")).unwrap());
-pub(crate) static DIHEDS: LazyLock<Polymer<Diheds>> =
+pub static DIHEDS: LazyLock<Polymer<Diheds>> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/DIHEDS.json")).unwrap());
-pub(crate) static ENERGYPARAM: LazyLock<EnergyParam> =
+pub static ENERGYPARAM: LazyLock<EnergyParam> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/ENERGYPARAM.json")).unwrap());
-pub(crate) static VAR: LazyLock<Polymer<Diheds>> =
+pub static VAR: LazyLock<Polymer<Diheds>> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/VAR.json")).unwrap());
-pub(crate) static AMBER99SB: LazyLock<ForceField> =
+pub static AMBER99SB: LazyLock<ForceField> =
     LazyLock::new(|| quick_xml::de::from_str(include_str!("../data/amber99sb.xml")).unwrap());
 
 #[derive(Deserialize, Clone, PartialEq)]
@@ -41,19 +41,19 @@ pub struct Atom {
     /// Element symbol
     pub element: String,
     /// Atomic mass
-    pub(crate) mass: f64,
+    pub mass: f64,
     /// Atomic charge
-    pub(crate) charge: f64,
+    pub charge: f64,
     /// Atom type (for force field calculations)
-    pub(crate) atomtype: String,
+    pub atomtype: String,
     /// Lennard-Jones parameter sigma
-    pub(crate) sigma: f64,
+    pub sigma: f64,
     /// Lennard-Jones parameter epsilon
-    pub(crate) epsilon: f64,
+    pub epsilon: f64,
     /// Atomic velocity (vx, vy, vz)
-    pub(crate) velocity: [f64; 3],
+    pub velocity: [f64; 3],
     /// Force acting on the atom (fx, fy, fz)
-    pub(crate) force: [f64; 3],
+    pub force: [f64; 3],
 }
 
 impl Atom {
@@ -109,51 +109,51 @@ impl Debug for Atom {
 
 /// Bond
 #[derive(Deserialize, Clone)]
-pub(crate) struct Bond {
-    pub(crate) a: String,
-    pub(crate) b: String,
+pub struct Bond {
+    pub a: String,
+    pub b: String,
 }
 
 /// Diheds
 #[derive(Deserialize, Clone)]
-pub(crate) struct Diheds {
-    pub(crate) d: String,
-    pub(crate) a: String,
-    pub(crate) b: String,
-    pub(crate) c: String,
+pub struct Diheds {
+    pub d: String,
+    pub a: String,
+    pub b: String,
+    pub c: String,
 }
 
 /// Energy
 #[derive(Deserialize, Clone)]
-pub(crate) struct Energy {
-    pub(crate) atomtype: String,
-    pub(crate) sigma: f64,
-    pub(crate) epsilon: f64,
+pub struct Energy {
+    pub atomtype: String,
+    pub sigma: f64,
+    pub epsilon: f64,
 }
 
 /// EnergyParam
 #[derive(Deserialize, Clone)]
-pub(crate) struct EnergyParam {
-    pub(crate) seq: Vec<Energy>,
+pub struct EnergyParam {
+    pub seq: Vec<Energy>,
 }
 
 /// Monomer
 #[derive(Deserialize, Clone)]
-pub(crate) struct Monomer<T> {
+pub struct Monomer<T> {
     /// Three-letter code for the monomer type
-    pub(crate) tcode: String,
+    pub tcode: String,
     /// Single-letter code for the monomer type
-    pub(crate) scode: String,
+    pub scode: String,
     /// Number of atoms in the monomer
-    pub(crate) natom: usize,
+    pub natom: usize,
     /// Vector of atoms that make up the monomer
-    pub(crate) atoms: Vec<T>,
+    pub atoms: Vec<T>,
 }
 
 /// Polymer
 #[derive(Deserialize)]
-pub(crate) struct Polymer<T> {
-    pub(crate) seq: Vec<Monomer<T>>,
+pub struct Polymer<T> {
+    pub seq: Vec<Monomer<T>>,
 }
 
 /// Generates a polymer structure from a given amino acid sequence
@@ -326,7 +326,7 @@ pub fn pdb_to_atoms(pdb_string: &str) -> Vec<Atom> {
 }
 
 /// Atoms to Sequence
-pub(crate) fn atoms_to_seq(atoms: Vec<Atom>) -> String {
+pub fn atoms_to_seq(atoms: Vec<Atom>) -> String {
     let mut seq = "".to_string();
     let mut n = 0;
     for atom in atoms.iter() {
@@ -361,191 +361,191 @@ pub(crate) fn atoms_to_seq(atoms: Vec<Atom>) -> String {
     seq
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "PascalCase")]
-pub(crate) struct ForceField {
-    pub(crate) atom_types: AtomTypes,
-    pub(crate) residues: Residues,
-    pub(crate) harmonic_bond_force: HarmonicBondForce,
-    pub(crate) harmonic_angle_force: HarmonicAngleForce,
-    pub(crate) periodic_torsion_force: PeriodicTorsionForce,
-    pub(crate) nonbonded_force: NonbondedForce,
+pub struct ForceField {
+    pub atom_types: AtomTypes,
+    pub residues: Residues,
+    pub harmonic_bond_force: HarmonicBondForce,
+    pub harmonic_angle_force: HarmonicAngleForce,
+    pub periodic_torsion_force: PeriodicTorsionForce,
+    pub nonbonded_force: NonbondedForce,
 }
 
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub(crate) struct Residues {
-    pub(crate) residue: Vec<Residue>,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "PascalCase")]
-pub(crate) struct Residue {
-    #[serde(rename = "@name")]
-    pub(crate) name: String,
-    pub(crate) atom: Vec<ResidueAtom>,
-    pub(crate) bond: Option<Vec<ResidueBond>>,
-    pub(crate) external_bond: Option<Vec<ExternalBond>>,
-}
-
-#[derive(Debug, Deserialize)]
-pub(crate) struct ResidueAtom {
-    #[serde(rename = "@name")]
-    pub(crate) name: String,
-    #[serde(rename = "@type")]
-    pub(crate) atype: usize,
-}
-
-#[derive(Debug, Deserialize)]
-pub(crate) struct ResidueBond {
-    #[serde(rename = "@from")]
-    pub(crate) from: usize,
-    #[serde(rename = "@to")]
-    pub(crate) to: usize,
-}
-
-#[derive(Debug, Deserialize)]
-pub(crate) struct ExternalBond {
-    #[serde(rename = "@from")]
-    pub(crate) from: usize,
-}
-
-#[derive(Debug, Deserialize)]
-pub(crate) struct AtomTypes {
+#[derive(Debug, Deserialize, Clone)]
+pub struct AtomTypes {
     #[serde(rename = "Type")]
-    pub(crate) types: Vec<AtomType>,
+    pub types: Vec<AtomType>,
 }
 
-#[derive(Debug, Deserialize)]
-pub(crate) struct AtomType {
+#[derive(Debug, Deserialize, Clone)]
+pub struct AtomType {
     #[serde(rename = "@name")]
-    pub(crate) name: usize,
+    pub name: usize,
     #[serde(rename = "@class")]
-    pub(crate) class: String,
+    pub class: String,
     #[serde(rename = "@element")]
-    pub(crate) element: String,
+    pub element: String,
     #[serde(rename = "@mass")]
-    pub(crate) mass: f64,
+    pub mass: f64,
 }
 
-#[derive(Deserialize, Debug)]
-pub(crate) struct HarmonicBondForce {
-    #[serde(rename = "Bond")]
-    pub(crate) bonds: Vec<HarmonicBond>,
+#[derive(Debug, Deserialize, Clone)]
+#[serde(rename_all = "PascalCase")]
+pub struct Residues {
+    pub residue: Vec<Residue>,
 }
 
-#[derive(Deserialize, Debug)]
-pub(crate) struct HarmonicBond {
-    #[serde(rename = "@class1")]
-    pub(crate) class1: String,
-    #[serde(rename = "@class2")]
-    pub(crate) class2: String,
-    #[serde(rename = "@length")]
-    pub(crate) length: f64,
-    #[serde(rename = "@k")]
-    pub(crate) k: f64,
+#[derive(Debug, Deserialize, Clone)]
+#[serde(rename_all = "PascalCase")]
+pub struct Residue {
+    #[serde(rename = "@name")]
+    pub name: String,
+    pub atom: Vec<ResidueAtom>,
+    pub bond: Option<Vec<ResidueBond>>,
+    pub external_bond: Option<Vec<ExternalBond>>,
 }
 
-#[derive(Deserialize, Debug)]
-pub(crate) struct HarmonicAngleForce {
-    #[serde(rename = "Angle")]
-    pub(crate) angles: Vec<HarmonicAngle>,
-}
-
-#[derive(Deserialize, Debug)]
-pub(crate) struct HarmonicAngle {
-    #[serde(rename = "@class1")]
-    pub(crate) class1: String,
-    #[serde(rename = "@class2")]
-    pub(crate) class2: String,
-    #[serde(rename = "@class3")]
-    pub(crate) class3: String,
-    #[serde(rename = "@angle")]
-    pub(crate) angle: f64,
-    #[serde(rename = "@k")]
-    pub(crate) k: f64,
-}
-
-#[derive(Deserialize, Debug)]
-pub(crate) struct PeriodicTorsionForce {
-    #[serde(rename = "Proper")]
-    pub(crate) proper: Vec<ProperTorsion>,
-    #[serde(rename = "Improper")]
-    pub(crate) improper: Vec<ImproperTorsion>,
-}
-
-#[derive(Deserialize, Debug)]
-pub(crate) struct ProperTorsion {
-    #[serde(rename = "@class1")]
-    pub(crate) class1: String,
-    #[serde(rename = "@class2")]
-    pub(crate) class2: String,
-    #[serde(rename = "@class3")]
-    pub(crate) class3: String,
-    #[serde(rename = "@class4")]
-    pub(crate) class4: String,
-    #[serde(rename = "@periodicity1")]
-    pub(crate) periodicity1: f64,
-    #[serde(rename = "@phase1")]
-    pub(crate) phase1: f64,
-    #[serde(rename = "@k1")]
-    pub(crate) k1: f64,
-    #[serde(rename = "@periodicity2")]
-    pub(crate) periodicity2: Option<f64>,
-    #[serde(rename = "@phase2")]
-    pub(crate) phase2: Option<f64>,
-    #[serde(rename = "@k2")]
-    pub(crate) k2: Option<f64>,
-    #[serde(rename = "@periodicity3")]
-    pub(crate) periodicity3: Option<f64>,
-    #[serde(rename = "@phase3")]
-    pub(crate) phase3: Option<f64>,
-    #[serde(rename = "@k3")]
-    pub(crate) k3: Option<f64>,
-    #[serde(rename = "@periodicity4")]
-    pub(crate) periodicity4: Option<f64>,
-    #[serde(rename = "@phase4")]
-    pub(crate) phase4: Option<f64>,
-    #[serde(rename = "@k4")]
-    pub(crate) k4: Option<f64>,
-}
-
-#[derive(Deserialize, Debug)]
-pub(crate) struct ImproperTorsion {
-    #[serde(rename = "@class1")]
-    pub(crate) class1: String,
-    #[serde(rename = "@class2")]
-    pub(crate) class2: String,
-    #[serde(rename = "@class3")]
-    pub(crate) class3: String,
-    #[serde(rename = "@class4")]
-    pub(crate) class4: String,
-    #[serde(rename = "@periodicity1")]
-    pub(crate) periodicity1: f64,
-    #[serde(rename = "@phase1")]
-    pub(crate) phase1: f64,
-    #[serde(rename = "@k1")]
-    pub(crate) k1: f64,
-}
-
-#[derive(Deserialize, Debug)]
-pub(crate) struct NonbondedForce {
-    #[serde(rename = "@coulomb14scale")]
-    pub(crate) coulomb14scale: f64,
-    #[serde(rename = "@lj14scale")]
-    pub(crate) lj14scale: f64,
-    #[serde(rename = "Atom")]
-    pub(crate) atoms: Vec<NonbondedAtom>,
-}
-
-#[derive(Deserialize, Debug)]
-pub(crate) struct NonbondedAtom {
+#[derive(Debug, Deserialize, Clone)]
+pub struct ResidueAtom {
+    #[serde(rename = "@name")]
+    pub name: String,
     #[serde(rename = "@type")]
-    pub(crate) atom_type: usize,
+    pub atype: usize,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct ResidueBond {
+    #[serde(rename = "@from")]
+    pub from: usize,
+    #[serde(rename = "@to")]
+    pub to: usize,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct ExternalBond {
+    #[serde(rename = "@from")]
+    pub from: usize,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct HarmonicBondForce {
+    #[serde(rename = "Bond")]
+    pub bonds: Vec<HarmonicBond>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct HarmonicBond {
+    #[serde(rename = "@class1")]
+    pub class1: String,
+    #[serde(rename = "@class2")]
+    pub class2: String,
+    #[serde(rename = "@length")]
+    pub length: f64,
+    #[serde(rename = "@k")]
+    pub k: f64,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct HarmonicAngleForce {
+    #[serde(rename = "Angle")]
+    pub angles: Vec<HarmonicAngle>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct HarmonicAngle {
+    #[serde(rename = "@class1")]
+    pub class1: String,
+    #[serde(rename = "@class2")]
+    pub class2: String,
+    #[serde(rename = "@class3")]
+    pub class3: String,
+    #[serde(rename = "@angle")]
+    pub angle: f64,
+    #[serde(rename = "@k")]
+    pub k: f64,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct PeriodicTorsionForce {
+    #[serde(rename = "Proper")]
+    pub proper: Vec<ProperTorsion>,
+    #[serde(rename = "Improper")]
+    pub improper: Vec<ImproperTorsion>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct ProperTorsion {
+    #[serde(rename = "@class1")]
+    pub class1: String,
+    #[serde(rename = "@class2")]
+    pub class2: String,
+    #[serde(rename = "@class3")]
+    pub class3: String,
+    #[serde(rename = "@class4")]
+    pub class4: String,
+    #[serde(rename = "@periodicity1")]
+    pub periodicity1: f64,
+    #[serde(rename = "@phase1")]
+    pub phase1: f64,
+    #[serde(rename = "@k1")]
+    pub k1: f64,
+    #[serde(rename = "@periodicity2")]
+    pub periodicity2: Option<f64>,
+    #[serde(rename = "@phase2")]
+    pub phase2: Option<f64>,
+    #[serde(rename = "@k2")]
+    pub k2: Option<f64>,
+    #[serde(rename = "@periodicity3")]
+    pub periodicity3: Option<f64>,
+    #[serde(rename = "@phase3")]
+    pub phase3: Option<f64>,
+    #[serde(rename = "@k3")]
+    pub k3: Option<f64>,
+    #[serde(rename = "@periodicity4")]
+    pub periodicity4: Option<f64>,
+    #[serde(rename = "@phase4")]
+    pub phase4: Option<f64>,
+    #[serde(rename = "@k4")]
+    pub k4: Option<f64>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct ImproperTorsion {
+    #[serde(rename = "@class1")]
+    pub class1: String,
+    #[serde(rename = "@class2")]
+    pub class2: String,
+    #[serde(rename = "@class3")]
+    pub class3: String,
+    #[serde(rename = "@class4")]
+    pub class4: String,
+    #[serde(rename = "@periodicity1")]
+    pub periodicity1: f64,
+    #[serde(rename = "@phase1")]
+    pub phase1: f64,
+    #[serde(rename = "@k1")]
+    pub k1: f64,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct NonbondedForce {
+    #[serde(rename = "@coulomb14scale")]
+    pub coulomb14scale: f64,
+    #[serde(rename = "@lj14scale")]
+    pub lj14scale: f64,
+    #[serde(rename = "Atom")]
+    pub atoms: Vec<NonbondedAtom>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct NonbondedAtom {
+    #[serde(rename = "@type")]
+    pub atom_type: usize,
     #[serde(rename = "@charge")]
-    pub(crate) charge: f64,
+    pub charge: f64,
     #[serde(rename = "@sigma")]
-    pub(crate) sigma: f64,
+    pub sigma: f64,
     #[serde(rename = "@epsilon")]
-    pub(crate) epsilon: f64,
+    pub epsilon: f64,
 }

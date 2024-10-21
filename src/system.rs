@@ -1,6 +1,5 @@
 #![allow(dead_code)]
-use crate::parser::{self, Atom, ALLCONN, DIHEDS, ENERGYPARAM, VAR};
-
+use crate::parser::{self, Atom, ForceField, ALLCONN, DIHEDS, ENERGYPARAM, VAR};
 use std::io::Write;
 
 pub type Particles = Vec<Atom>;
@@ -9,6 +8,7 @@ pub type Particles = Vec<Atom>;
 #[derive(Debug, Clone)]
 pub struct System {
     pub seq: String,
+    pub forcefield: ForceField,
     pub particles: Particles,
     pub dihedral: Vec<(Atom, Atom, Atom, Atom)>,
     pub nonbonded: Vec<Particles>,
@@ -18,11 +18,12 @@ pub struct System {
 
 impl System {
     /// Creates a new System from a sequence string
-    pub fn new(seq: &str) -> Self {
+    pub fn new(seq: &str, forcefield: ForceField) -> Self {
         let sequence = parser::generate(seq);
         let total = sequence.len();
         Self {
             seq: seq.to_string(),
+            forcefield,
             particles: sequence,
             dihedral: Vec::new(),
             nonbonded: vec![Vec::new(); total],
@@ -31,19 +32,37 @@ impl System {
         }
     }
 
-    pub fn from_pdb(file: &str) -> Self {
+    pub fn from_pdb(file: &str, forcefield: ForceField) -> Self {
         let atoms: Vec<Atom>;
         atoms = parser::pdb_to_atoms(file);
 
         let total = atoms.len();
         Self {
             seq: parser::atoms_to_seq(atoms.clone()),
+            forcefield,
             particles: atoms,
             dihedral: Vec::new(),
             nonbonded: vec![Vec::new(); total],
             bonded1_4: vec![Vec::new(); total],
             hydrogen: Vec::new(),
         }
+    }
+
+    pub fn get_atomtype(&self, atom: &Atom) -> Option<parser::AtomType> {
+        for residue in &self.forcefield.residues.residue {
+            if residue.name == atom.residue {
+                for atom_type in &residue.atom {
+                    if atom_type.name == atom.name {
+                        for forcefield_type in &self.forcefield.atom_types.types {
+                            if forcefield_type.name == atom_type.atype {
+                                return Some(forcefield_type.clone());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        None
     }
 
     pub fn init_parameters(&mut self) {

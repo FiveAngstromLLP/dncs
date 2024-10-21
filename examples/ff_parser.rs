@@ -1,5 +1,32 @@
 #![allow(dead_code)]
 use serde::Deserialize;
+extern crate libdncs;
+
+use libdncs::parser::AMBER99SB;
+use libdncs::system::System;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Open the XML file
+    let file = std::fs::File::open("data/amber99sb.xml")?;
+    let reader = std::io::BufReader::new(file);
+
+    // Deserialize the XML into our ForceField structure
+    let ff: ForceField = quick_xml::de::from_reader(reader)?;
+
+    let sys = System::new("YGGFM", (*AMBER99SB).clone());
+
+    for atom in sys.particles {
+        if let Some(b) = ff.residues.residue.iter().find(|a| a.name == atom.residue) {
+            if let Some(bonds) = &b.bond {
+                for i in bonds.iter() {
+                    println!("{:?}", i)
+                }
+            }
+        }
+    }
+
+    Ok(())
+}
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "PascalCase")]
@@ -10,6 +37,24 @@ pub(crate) struct ForceField {
     pub(crate) harmonic_angle_force: HarmonicAngleForce,
     pub(crate) periodic_torsion_force: PeriodicTorsionForce,
     pub(crate) nonbonded_force: NonbondedForce,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct AtomTypes {
+    #[serde(rename = "Type")]
+    pub(crate) types: Vec<AtomType>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct AtomType {
+    #[serde(rename = "@name")]
+    pub(crate) name: usize,
+    #[serde(rename = "@class")]
+    pub(crate) class: String,
+    #[serde(rename = "@element")]
+    pub(crate) element: String,
+    #[serde(rename = "@mass")]
+    pub(crate) mass: f64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -48,24 +93,6 @@ pub(crate) struct ResidueBond {
 pub(crate) struct ExternalBond {
     #[serde(rename = "@from")]
     pub(crate) from: usize,
-}
-
-#[derive(Debug, Deserialize)]
-pub(crate) struct AtomTypes {
-    #[serde(rename = "Type")]
-    pub(crate) types: Vec<AtomType>,
-}
-
-#[derive(Debug, Deserialize)]
-pub(crate) struct AtomType {
-    #[serde(rename = "@name")]
-    pub(crate) name: usize,
-    #[serde(rename = "@class")]
-    pub(crate) class: String,
-    #[serde(rename = "@element")]
-    pub(crate) element: String,
-    #[serde(rename = "@mass")]
-    pub(crate) mass: f64,
 }
 
 #[derive(Deserialize, Debug)]
@@ -188,17 +215,4 @@ pub(crate) struct NonbondedAtom {
     pub(crate) sigma: f64,
     #[serde(rename = "@epsilon")]
     pub(crate) epsilon: f64,
-}
-
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Open the XML file
-    let file = std::fs::File::open("data/amber99sb.xml")?;
-    let reader = std::io::BufReader::new(file);
-
-    // Deserialize the XML into our ForceField structure
-    let force_field: ForceField = quick_xml::de::from_reader(reader)?;
-
-    println!("{:?}", force_field);
-
-    Ok(())
 }

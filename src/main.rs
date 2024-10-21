@@ -8,6 +8,7 @@ use crate::minimizer::Minimizer;
 use crate::sampling::Sampler;
 use crate::system::System;
 use clap::{Arg, Command};
+use parser::AMBER99SB;
 use serde_json;
 use std::fs;
 
@@ -57,7 +58,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let include_sidechain = generate["include_sidechain"].as_bool().unwrap_or(false);
     let samples = generate["n_samples"].as_u64().unwrap_or(10) as usize;
 
-    let mut system = System::new(sequence);
+    let mut system = System::new(sequence, (*AMBER99SB).clone());
     system.init_parameters();
     system.get_dihedralatoms(include_sidechain);
     let mut sample = Sampler::new(system);
