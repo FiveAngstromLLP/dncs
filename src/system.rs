@@ -65,6 +65,16 @@ impl System {
         None
     }
 
+    pub fn get_atomtype_by_id(&self, id: usize) -> Option<parser::AtomType> {
+        for forcefield_type in &self.forcefield.atom_types.types {
+            if forcefield_type.name == id {
+                return Some(forcefield_type.clone());
+            }
+        }
+
+        None
+    }
+
     pub fn init_parameters(&mut self) {
         self.get_neighbours();
         self.get_energyparameters();

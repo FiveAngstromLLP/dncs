@@ -7,6 +7,18 @@ fn main() {
 }
 
 fn convert() {
+    // let data1: Polymer<Atom> = Polymer::from_lib("examples/files/ALLAMINOMOLS_1.lib");
+    // data1.to_lib("examples/files/ALLAMINOMOLS_1.lib");
+    // let data2: Polymer<Atom> = Polymer::from_lib("examples/files/ALLAMINOMOLS_2.lib");
+    // data2.to_lib("examples/files/ALLAMINOMOLS_2.lib");
+    // let data3: Polymer<Bond> = Polymer::from_lib("examples/files/ALLCONN.lib");
+    // data3.to_lib("examples/files/ALLCONN.lib");
+    // let data4: Polymer<Diheds> = Polymer::from_lib("examples/files/DIHEDS.lib");
+    // data4.to_lib("examples/files/DIHEDS.lib");
+    // let data5 = EnergyParam::from_lib("examples/files/ENERGYPARAM.lib");
+    // data5.to_lib("examples/files/ENERGYPARAM.lib");
+    // let data6: Polymer<Diheds> = Polymer::from_lib("examples/files/VAR.lib");
+    // data6.to_lib("examples/files/VAR.lib");
     let data1: Polymer<Atom> = Polymer::from_lib("examples/files/ALLAMINOMOLS_1.lib");
     data1.to_json("data/ALLAMINOMOLS_1.json");
     let data2: Polymer<Atom> = Polymer::from_lib("examples/files/ALLAMINOMOLS_2.lib");
@@ -75,13 +87,14 @@ impl Convert for Atom {
         }
     }
     fn to_string(&self) -> String {
+        let name = convention(self.name.to_string());
         format!(
             "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}{:>6.2}{:>6.2}          {:>2}",
             self.record,
             self.serial,
             match self.name.len() {
-                3 => format!(" {}", self.name.to_string()),
-                _ => self.name.to_string(),
+                3 => format!(" {}", name),
+                _ => name,
             },
             self.residue,
             self.sequence,
@@ -95,16 +108,38 @@ impl Convert for Atom {
     }
 }
 
+fn convention(name: String) -> String {
+    if name.len() == 3
+        && (name.contains("HA")
+            || name.contains("HB")
+            || name.contains("HG")
+            || name.contains("HD"))
+    {
+        print!("{} ", name);
+        let d = name.chars().last().unwrap();
+        if d.is_numeric() {
+            let mdigit = 4 - d.to_digit(10).unwrap();
+            println!("{};", name.replace(d, &mdigit.to_string()));
+            return name.replace(d, &mdigit.to_string());
+        } else {
+            return name;
+        }
+    } else {
+        return name;
+    }
+}
+
 impl Debug for Atom {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let name = convention(self.name.to_string());
         write!(
             f,
             "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}{:>6.2}{:>6.2}          {:>2}",
             self.record,
             self.serial,
             match self.name.len() {
-                3 => format!(" {}", self.name.to_string()),
-                _ => self.name.to_string(),
+                3 => format!(" {}", name),
+                _ => name,
             },
             self.residue,
             self.sequence,
@@ -118,7 +153,7 @@ impl Debug for Atom {
     }
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Clone)]
 struct Bond {
     a: String,
     b: String,
@@ -136,7 +171,18 @@ impl Convert for Bond {
     }
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+impl Debug for Bond {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            " bond   {:^4} {:^4}",
+            self.a.to_string(),
+            self.b.to_string()
+        )
+    }
+}
+
+#[derive(Deserialize, Serialize, Clone)]
 struct Energy {
     atomtype: String,
     sigma: f64,
@@ -161,7 +207,17 @@ impl Convert for Energy {
     }
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+impl Debug for Energy {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "  {:<9}{:<9.3}{:<9.3}",
+            self.atomtype, self.sigma, self.epsilon
+        )
+    }
+}
+
+#[derive(Deserialize, Serialize, Clone)]
 struct Diheds {
     a: String,
     b: String,
@@ -191,11 +247,24 @@ impl Convert for Diheds {
             _ => s.to_string(),
         };
         format!(
-            "        {:^4}{:^4}{:^4}{:^4}",
+            "        {:^6}{:^6}{:^6}{:^6}",
             formt(&self.a),
             formt(&self.b),
             formt(&self.c),
             formt(&self.d)
+        )
+    }
+}
+
+impl Debug for Diheds {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "        {:^6}{:^6}{:^6}{:^6}",
+            self.a.to_string(),
+            self.b.to_string(),
+            self.c.to_string(),
+            self.d.to_string()
         )
     }
 }

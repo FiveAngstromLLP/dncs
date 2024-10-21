@@ -18,9 +18,14 @@ impl Amber {
             .system
             .particles
             .par_iter()
-            .map(|iatom| self.nonbonded_energy(iatom)) // Unit >> (kg.Å^2/s^2)
+            .map(|iatom| {
+                self.nonbonded_energy(iatom)
+                    + self.harmonic_bond_force(iatom)
+                    + self.harmonic_angle_force(iatom)
+            }) // Unit >> (kg.Å^2/s^2)
             .map(|energy| energy * 1e-10_f64.powi(2)) // Unit >> (kg.m^2/s^2)
-            .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
+            // .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
+            // .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
             .sum::<f64>();
         energy + self.hydrogen_bond_energy()
     }
@@ -87,14 +92,46 @@ impl Amber {
         lennard_jones + electrostatic // Unit >> (kg.Å/s^2)
     }
 
-    // fn harmonic_bond_force(&self, iatom: &Atom) -> f64 {
+    fn harmonic_bond_force(&self, iatom: &Atom) -> f64 {
+        let ff = self.system.forcefield.clone();
+        let hbforce = self.system.forcefield.harmonic_bond_force.bonds.clone();
+        if let Some(res) = ff.residues.residue.iter().find(|f| f.name == iatom.residue) {
+            for bond in res.bond.iter().flatten() {
+                if let Some(i) = self.system.get_atomtype_by_id(bond.from) {
+                    if let Some(j) = self.system.get_atomtype_by_id(bond.to) {
+                        if let Some(hbf) = hbforce
+                            .iter()
+                            .find(|h| h.class1 == i.class && h.class2 == j.class)
+                        {
+                            return 0.5 * hbf.k * hbf.length.powi(2);
+                        }
+                    }
+                }
+            }
+        }
+        0.0
+    }
 
-    //     if let Some(atype) = self.system.get_atomtype(iatom) {
-    //         let id = atype.;
-
-    //     }
-    //     0.0
-    // }
+    fn harmonic_angle_force(&self, iatom: &Atom) -> f64 {
+        let ff = self.system.forcefield.clone();
+        let haforce = self.system.forcefield.harmonic_angle_force.angles.clone();
+        if let Some(res) = ff.residues.residue.iter().find(|f| f.name == iatom.residue) {
+            for bond in res.bond.iter().flatten() {
+                if let Some(i) = self.system.get_atomtype_by_id(bond.from) {
+                    if let Some(j) = self.system.get_atomtype_by_id(bond.to) {
+                        if let Some(k) = self.system.get_atomtype_by_id(j.name) {
+                            if let Some(haf) = haforce.iter().find(|h| {
+                                h.class1 == i.class && h.class2 == j.class && h.class3 == k.class
+                            }) {
+                                return 0.5 * haf.k * haf.angle.powi(2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        0.0
+    }
 
     fn hydrogen_bond_energy(&self) -> f64 {
         self.system
