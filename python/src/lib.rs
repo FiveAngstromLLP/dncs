@@ -1,13 +1,14 @@
 #![allow(dead_code, non_snake_case)]
 
 use libdncs::forcefield::Amber;
+use libdncs::parser::AMBER99SB;
 use libdncs::sampling::{RotateAtDihedral, Sampler};
 use libdncs::system::System;
 use pyo3::prelude::*;
 
 #[pyfunction]
 fn getPDB(seq: String, filename: String) {
-    let polymer = System::new(&seq);
+    let polymer = System::new(&seq, (*AMBER99SB).clone());
     polymer.to_pdb(&filename);
 }
 
@@ -31,7 +32,7 @@ pub struct Polymer {
 impl Polymer {
     #[new]
     fn fromAminoSEQ(seq: String) -> PyResult<Polymer> {
-        let mut system = System::new(&seq);
+        let mut system = System::new(&seq, (*AMBER99SB).clone());
         system.init_parameters();
         Ok(Polymer { polymer: system })
     }
