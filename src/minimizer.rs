@@ -60,7 +60,7 @@ impl Minimizer {
                 .minimize(&mut theta, evaluate, |_| false);
             match prbs {
                 Ok(p) => {
-                    println!("Model {} Energy : {:?} KCal/Mol", i + 1, p.fx);
+                    println!("Model {} Energy : {:?} KJ/Mol", i + 1, p.fx);
                     let mut r = RotateAtDihedral::new(self.sample.system.clone());
                     r.rotate(theta.clone());
                     self.minimized[i] = r.system.clone();
@@ -75,7 +75,7 @@ impl Minimizer {
     }
 
     pub fn conformational_sort(&mut self) {
-        const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
+        const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23; // KJ/mol
         let weight: Vec<f64> = self.energy.iter().map(|e| (-e / KBT).exp()).collect();
         let z: f64 = weight.iter().sum();
         let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
@@ -105,7 +105,7 @@ impl Minimizer {
         let mut file = std::fs::File::create(filename).unwrap();
         for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(
-                "{}, {} KCal/mol, {}\n",
+                "{}, {} KJ/mol, {}\n",
                 i + 1,
                 energy,
                 angles

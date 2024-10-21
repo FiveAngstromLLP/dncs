@@ -29,7 +29,7 @@ impl Amber {
             .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
             // .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
             .sum::<f64>();
-        energy + self.hydrogen_bond_energy()
+        energy + self.hydrogen_bond_energy() + self.periodic_torsional_force()
     }
 
     pub fn potential(&mut self) {

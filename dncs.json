@@ -1,13 +1,8 @@
 {
   "Generate": {
     "molecule": "Molecule",
-<<<<<<< HEAD
     "sequence": "YGGFM",
     "include_sidechain": false,
-=======
-    "sequence": "AAAAA",
-    "include_sidechain": true,
->>>>>>> d13885b4ce9d733b5b99777864f76e44a12a19d6
     "n_samples": 10
   }
 }
