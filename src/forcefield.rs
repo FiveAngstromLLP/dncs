@@ -22,14 +22,15 @@ impl Amber {
             .par_iter()
             .map(|iatom| {
                 self.nonbonded_energy(iatom)
-                    + self.harmonic_bond_force(iatom)
-                    + self.harmonic_angle_force(iatom)
+                // + self.harmonic_bond_force(iatom)
+                // + self.harmonic_angle_force(iatom)
             }) // Unit >> (kg.Å^2/s^2)
             .map(|energy| energy * 1e-10_f64.powi(2)) // Unit >> (kg.m^2/s^2)
+            // .map(|energy| energy * 6.02214076e23) // Unit >> KJ/mol
             .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
-            // .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
             .sum::<f64>();
-        energy + self.hydrogen_bond_energy() + self.periodic_torsional_force()
+        // energy + self.hydrogen_bond_energy() + self.periodic_torsional_force()
+        energy + self.periodic_torsional_force()
     }
 
     pub fn potential(&mut self) {
@@ -139,33 +140,30 @@ impl Amber {
         let periodic = self.system.forcefield.periodic_torsion_force.clone();
         let mut energy = 0.0;
         for (a, b, c, d) in self.system.dihedral.iter() {
-            if let Some(i) = self.system.get_atomtype(&a) {
-                if let Some(j) = self.system.get_atomtype(&b) {
-                    if let Some(k) = self.system.get_atomtype(&c) {
-                        if let Some(l) = self.system.get_atomtype(&d) {
-                            if let Some(ptf) = periodic.proper.iter().find(|h| {
-                                h.class1.contains(i.class.as_str())
-                                    && h.class2.contains(j.class.as_str())
-                                    && h.class3.contains(k.class.as_str())
-                                    && h.class4.contains(l.class.as_str())
-                            }) {
-                                let dh = RotateAtDihedral::dihedral_angle(&a, &b, &c, &d);
-                                energy += ptf.k1 * (1.0 + (ptf.periodicity1 * dh - ptf.phase1));
-                                energy += match (ptf.k2, ptf.periodicity2, ptf.phase2) {
-                                    (Some(k), Some(n), Some(th)) => k * (1.0 + (n * dh - th)),
-                                    _ => 0.0,
-                                };
-                                energy += match (ptf.k3, ptf.periodicity3, ptf.phase3) {
-                                    (Some(k), Some(n), Some(th)) => k * (1.0 + (n * dh - th)),
-                                    _ => 0.0,
-                                };
-                                energy += match (ptf.k4, ptf.periodicity4, ptf.phase4) {
-                                    (Some(k), Some(n), Some(th)) => k * (1.0 + (n * dh - th)),
-                                    _ => 0.0,
-                                };
-                            }
-                        }
+            // if let Some(_i) = self.system.get_atomtype(&a) {
+            if let Some(j) = self.system.get_atomtype(&b) {
+                if let Some(k) = self.system.get_atomtype(&c) {
+                    // if let Some(_l) = self.system.get_atomtype(&d) {
+                    if let Some(ptf) = periodic.proper.iter().find(|h| {
+                        h.class2.contains(j.class.as_str()) && h.class3.contains(k.class.as_str())
+                    }) {
+                        let dh = RotateAtDihedral::dihedral_angle(&a, &b, &c, &d);
+                        energy += ptf.k1 * (1.0 + (ptf.periodicity1 * dh - ptf.phase1));
+                        energy += match (ptf.k2, ptf.periodicity2, ptf.phase2) {
+                            (Some(k), Some(n), Some(th)) => k * (1.0 + (n * dh - th)),
+                            _ => 0.0,
+                        };
+                        energy += match (ptf.k3, ptf.periodicity3, ptf.phase3) {
+                            (Some(k), Some(n), Some(th)) => k * (1.0 + (n * dh - th)),
+                            _ => 0.0,
+                        };
+                        energy += match (ptf.k4, ptf.periodicity4, ptf.phase4) {
+                            (Some(k), Some(n), Some(th)) => k * (1.0 + (n * dh - th)),
+                            _ => 0.0,
+                        };
                     }
+                    // }
+                    // }
                 }
             }
         }

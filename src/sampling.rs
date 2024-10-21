@@ -291,7 +291,7 @@ impl Sampler {
 
     pub fn sample(&mut self, maxsample: usize) {
         let n = self.system.dihedral.len();
-        for phi in Sobol::new(n).skip(32).take(maxsample) {
+        for phi in Sobol::new(n).skip(32).take(maxsample * 2) {
             let angle: Vec<f64> = phi.iter().map(|i| (i * 360.0) - 180.0).collect();
             self.rotatesample(angle.clone());
             let energy = self.rotate.energy();
@@ -311,7 +311,7 @@ impl Sampler {
     }
 
     fn conformational_sort(&mut self) {
-        const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23; // KJ/mol
+        const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
         let weight: Vec<f64> = self.energy.iter().map(|e| (-e / KBT).exp()).collect();
         let z: f64 = weight.iter().sum();
         let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
