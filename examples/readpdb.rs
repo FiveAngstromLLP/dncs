@@ -1,12 +1,11 @@
 extern crate libdncs;
 
-use libdncs::parser::atoms_to_pdbstring;
-use libdncs::parser::AMBER99SB;
+use libdncs::parser::{atoms_to_pdbstring, FF};
 use libdncs::sampling::{RotateAtDihedral, Sampler};
 use libdncs::system::System;
 
 fn main() {
-    let mut system = System::new("YG", (*AMBER99SB).clone()); // Sequence
+    let mut system = System::new("YG", FF::AMBER99SB.init()); // Sequence
     system.init_parameters();
     system.get_dihedral(); // include_sidechain
     let mut sample = Sampler::new(system);

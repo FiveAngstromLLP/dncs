@@ -1,10 +1,9 @@
 extern crate libdncs;
 
-use libdncs::parser::AMBER99SB;
-use libdncs::system::System;
+use libdncs::{parser::FF, system::System};
 
 fn main() {
-    let sys = System::new("ACDEFGHIKLMNPQRSTVWY", (*AMBER99SB).clone());
+    let sys = System::new("ACDEFGHIKLMNPQRSTVWY", FF::AMBER99SB.init());
     for i in &sys.particles {
         println!("{}: {:?}", i.residue, i.name);
     }

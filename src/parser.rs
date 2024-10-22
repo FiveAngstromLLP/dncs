@@ -15,8 +15,26 @@ pub static ENERGYPARAM: LazyLock<EnergyParam> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/ENERGYPARAM.json")).unwrap());
 pub static VAR: LazyLock<Polymer<Diheds>> =
     LazyLock::new(|| serde_json::from_str(include_str!("../data/VAR.json")).unwrap());
-pub static AMBER99SB: LazyLock<ForceField> =
-    LazyLock::new(|| quick_xml::de::from_str(include_str!("../data/amber99sb.xml")).unwrap());
+
+pub enum FF {
+    AMBER03,
+    AMBER10,
+    AMBER96,
+    AMBER99SB,
+}
+
+impl FF {
+    pub fn init(&self) -> ForceField {
+        match self {
+            FF::AMBER03 => quick_xml::de::from_str(include_str!("../data/amber03.xml")).unwrap(),
+            FF::AMBER10 => quick_xml::de::from_str(include_str!("../data/amber10.xml")).unwrap(),
+            FF::AMBER96 => quick_xml::de::from_str(include_str!("../data/amber96.xml")).unwrap(),
+            FF::AMBER99SB => {
+                quick_xml::de::from_str(include_str!("../data/amber99sb.xml")).unwrap()
+            }
+        }
+    }
+}
 
 #[derive(Deserialize, Clone, PartialEq)]
 pub struct Atom {
@@ -291,15 +309,15 @@ pub fn pdb_to_atoms(pdb_string: &str) -> Vec<Atom> {
             if atom.name == "OXT" {
                 let mut newatom = atom.clone();
                 newatom.name = "HO".to_string();
-                // if newatom.sequence % 2 == 1 {
-                //     newatom.position[0] += 0.250;
-                //     newatom.position[1] += 0.927;
-                //     newatom.position[2] += 0.013;
-                // } else {
-                //     newatom.position[0] += 0.935;
-                //     newatom.position[1] += -0.218;
-                //     newatom.position[2] += -0.003;
-                // }
+                if newatom.sequence % 2 == 1 {
+                    newatom.position[0] += 0.250;
+                    newatom.position[1] += 0.927;
+                    newatom.position[2] += 0.013;
+                } else {
+                    newatom.position[0] += 0.935;
+                    newatom.position[1] += -0.218;
+                    newatom.position[2] += -0.003;
+                }
                 return newatom;
             } else {
                 return atom;

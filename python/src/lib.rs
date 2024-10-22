@@ -1,14 +1,14 @@
 #![allow(dead_code, non_snake_case)]
 
 use libdncs::forcefield::Amber;
-use libdncs::parser::AMBER99SB;
+use libdncs::parser::FF;
 use libdncs::sampling::{RotateAtDihedral, Sampler};
 use libdncs::system::System;
 use pyo3::prelude::*;
 
 #[pyfunction]
 fn getPDB(seq: String, filename: String) {
-    let polymer = System::new(&seq, (*AMBER99SB).clone());
+    let polymer = System::new(&seq, FF::AMBER99SB.init());
     polymer.to_pdb(&filename);
 }
 
@@ -31,8 +31,22 @@ pub struct Polymer {
 #[pymethods]
 impl Polymer {
     #[new]
-    fn fromAminoSEQ(seq: String) -> PyResult<Polymer> {
-        let mut system = System::new(&seq, (*AMBER99SB).clone());
+    fn fromAminoSEQ(seq: String, forcefield: String) -> PyResult<Polymer> {
+        // Validate forcefield
+        let ff = match forcefield.as_str() {
+            "amber03" => FF::AMBER03,
+            "amber10" => FF::AMBER10,
+            "amber96" => FF::AMBER96,
+            "amber99sb" => FF::AMBER99SB,
+            _ => {
+                eprintln!(
+                    "Unsupported forcefield: {}. Must be one of: amber03, amber10, amber96, amber99sb",
+                    forcefield
+                );
+                std::process::exit(1);
+            }
+        };
+        let mut system = System::new(&seq, ff.init());
         system.init_parameters();
         Ok(Polymer { polymer: system })
     }

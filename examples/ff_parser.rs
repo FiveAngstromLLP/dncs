@@ -2,8 +2,7 @@
 use serde::Deserialize;
 extern crate libdncs;
 
-use libdncs::parser::AMBER99SB;
-use libdncs::system::System;
+use libdncs::{parser::FF, system::System};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Open the XML file
@@ -13,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Deserialize the XML into our ForceField structure
     let ff: ForceField = quick_xml::de::from_reader(reader)?;
 
-    let sys = System::new("YGGFM", (*AMBER99SB).clone());
+    let sys = System::new("YGGFM", FF::AMBER99SB.init());
 
     for atom in sys.particles {
         if let Some(b) = ff.residues.residue.iter().find(|a| a.name == atom.residue) {

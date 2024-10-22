@@ -26,11 +26,9 @@ impl Amber {
                     + self.harmonic_angle_force(iatom)
             }) // Unit >> (kg.Å^2/s^2)
             .map(|energy| energy * 1e-10_f64.powi(2)) // Unit >> (kg.m^2/s^2)
-            // .map(|energy| energy * 6.02214076e23) // Unit >> KJ/mol
             .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
             .sum::<f64>();
         energy + self.hydrogen_bond_energy() + self.periodic_torsional_force()
-        // energy + self.periodic_torsional_force()
     }
 
     pub fn potential(&mut self) {
@@ -47,6 +45,7 @@ impl Amber {
         }
     }
 
+    #[inline]
     fn nonbonded_energy(&self, iatom: &Atom) -> f64 {
         let mut lennard_jones = 0.0;
         let mut electrostatic = 0.0;
@@ -64,8 +63,9 @@ impl Amber {
         }
         for j in self.system.bonded1_4[iatom.serial - 1].iter() {
             if let Some(jatom) = self.system.particles.iter().find(|a| a.serial == j.serial) {
-                lennard_jones += 0.500 * Self::lennard_jones_energy(iatom, jatom);
-                electrostatic += 0.500 * Self::electrostatic_energy(iatom, jatom);
+                let nb = self.system.forcefield.nonbonded_force.clone();
+                lennard_jones += nb.lj14scale * Self::lennard_jones_energy(iatom, jatom);
+                electrostatic += nb.coulomb14scale * Self::electrostatic_energy(iatom, jatom);
             }
         }
         lennard_jones + electrostatic // Unit >> (kg.Å^2/s^2)
@@ -95,6 +95,7 @@ impl Amber {
         lennard_jones + electrostatic // Unit >> (kg.Å/s^2)
     }
 
+    #[inline]
     fn harmonic_bond_force(&self, iatom: &Atom) -> f64 {
         let hbforce = self.system.forcefield.harmonic_bond_force.bonds.clone();
         let mut energy = 0.0;
@@ -111,6 +112,7 @@ impl Amber {
         energy
     }
 
+    #[inline]
     fn harmonic_angle_force(&self, iatom: &Atom) -> f64 {
         let haforce = self.system.forcefield.harmonic_angle_force.angles.clone();
         let mut energy = 0.0;
@@ -129,12 +131,11 @@ impl Amber {
         energy
     }
 
+    #[inline]
     fn periodic_torsional_force(&self) -> f64 {
         let periodic = self.system.forcefield.periodic_torsion_force.clone();
         let mut energy = 0.0; // KJ/Mol/nm
-
         for (a, b, c, d) in self.system.dihedral_angle.iter() {
-            // Early continue if any atomtype is None
             let (at, bt, ct, dt) = match (&a.atomtype, &b.atomtype, &c.atomtype, &d.atomtype) {
                 (Some(at), Some(bt), Some(ct), Some(dt)) => (at, bt, ct, dt),
                 _ => continue,
@@ -166,6 +167,7 @@ impl Amber {
         energy * 10.0 / 4184.0 // Convert to KCal/Mol
     }
 
+    #[inline]
     fn hydrogen_bond_energy(&self) -> f64 {
         self.system
             .hydrogen

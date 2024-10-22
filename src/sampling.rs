@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use crate::forcefield::Amber;
-use crate::parser::{self, Atom, AMBER99SB};
+use crate::parser::{self, Atom, FF};
 use crate::system::{Particles, System};
 use nalgebra::{Matrix3, Vector3};
 use rand::Rng;
@@ -154,7 +154,7 @@ impl RotateAtDihedral {
     }
 
     pub fn from_pdb(file: &str) -> Vec<f64> {
-        let mut s = System::from_pdb(file, (*AMBER99SB).clone());
+        let mut s = System::from_pdb(file, FF::AMBER99SB.init());
         let mut scopy = s.clone();
         scopy.get_dihedral();
         s.get_dihedral();

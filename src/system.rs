@@ -76,6 +76,7 @@ impl System {
                                     {
                                         atom.epsilon = nb.epsilon;
                                         atom.sigma = nb.sigma;
+                                        atom.charge = nb.charge;
                                     }
                                 }
                             }

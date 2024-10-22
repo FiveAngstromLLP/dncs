@@ -2,6 +2,7 @@
   "Generate": {
     "molecule": "Sample",
     "sequence": "YGGFM",
-    "n_samples": 10
+    "n_samples": 10,
+    "forcefield": "amber03"
   }
 }
