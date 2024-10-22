@@ -67,6 +67,16 @@ impl System {
                                 if forcefield_type.name == atom_type.atype {
                                     atom.typeid = Some(forcefield_type.name);
                                     atom.atomtype = Some(forcefield_type.class.to_string());
+                                    if let Some(nb) = self
+                                        .forcefield
+                                        .nonbonded_force
+                                        .atoms
+                                        .iter()
+                                        .find(|n| n.atom_type == forcefield_type.name)
+                                    {
+                                        atom.epsilon = nb.epsilon;
+                                        atom.sigma = nb.sigma;
+                                    }
                                 }
                             }
                         }
