@@ -9,7 +9,7 @@ use liblbfgs::lbfgs;
 fn main() {
     let mut s = System::new("AAAA", (*AMBER99SB).clone());
     s.init_parameters();
-    s.get_dihedralatoms(false);
+    s.get_dihedral();
     println!("{:?}", s.dihedral);
     let ff = Amber::new(s.clone());
     println!("Energy: {}", ff.energy());

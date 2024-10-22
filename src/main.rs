@@ -55,12 +55,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let molecule = generate["molecule"].as_str().unwrap_or("");
     let sequence = generate["sequence"].as_str().unwrap_or("");
-    let include_sidechain = generate["minimier"].as_bool().unwrap_or(false);
     let samples = generate["n_samples"].as_u64().unwrap_or(10) as usize;
 
     let mut system = System::new(sequence, (*AMBER99SB).clone());
     system.init_parameters();
-    system.get_dihedralatoms(include_sidechain);
+    system.get_dihedral();
     let mut sample = Sampler::new(system);
     sample.sample(samples);
 
@@ -78,6 +77,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     mini.conformational_sort();
     mini.write_sampled_angles(&format!("Result/{}/{}.out", molecule, molecule));
     mini.to_pdb(&format!("Result/{}/{}.pdb", molecule, molecule));
+
     Ok(())
 }
 
@@ -86,8 +86,7 @@ fn generate_config_file() -> Result<(), std::io::Error> {
 {
     "Generate": {
         "molecule": "Sample",
-        "sequence": "AAAAA",
-        "minimizer": true,
+        "sequence": "YGGFM",
         "n_samples": 10
     }
 }

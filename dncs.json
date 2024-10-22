@@ -1,8 +1,7 @@
 {
   "Generate": {
-    "molecule": "Molecule",
+    "molecule": "Sample",
     "sequence": "YGGFM",
-    "minimizer": false,
     "n_samples": 10
   }
 }

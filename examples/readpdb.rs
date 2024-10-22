@@ -5,12 +5,10 @@ use libdncs::parser::AMBER99SB;
 use libdncs::sampling::{RotateAtDihedral, Sampler};
 use libdncs::system::System;
 
-const S: bool = true;
-
 fn main() {
     let mut system = System::new("YG", (*AMBER99SB).clone()); // Sequence
     system.init_parameters();
-    system.get_dihedralatoms(S); // include_sidechain
+    system.get_dihedral(); // include_sidechain
     let mut sample = Sampler::new(system);
     for (e, i) in sample.system.dihedral.iter().enumerate() {
         println!(
@@ -35,7 +33,7 @@ fn main() {
     let string = atoms_to_pdbstring(sample.system.particles);
     std::fs::write("system.pdb", string).unwrap();
 
-    let angle = RotateAtDihedral::from_pdb("test.pdb", S);
+    let angle = RotateAtDihedral::from_pdb("test.pdb");
 
     println!("{:?}", sample.angles[0].clone());
     println!("{:6.3?}", angle);

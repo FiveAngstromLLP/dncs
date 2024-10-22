@@ -6,6 +6,6 @@ use libdncs::system::System;
 fn main() {
     let sys = System::new("ACDEFGHIKLMNPQRSTVWY", (*AMBER99SB).clone());
     for i in &sys.particles {
-        println!("{}: {:?}; {:?}", i.residue, i.name, sys.get_atomtype(i));
+        println!("{}: {:?}", i.residue, i.name);
     }
 }

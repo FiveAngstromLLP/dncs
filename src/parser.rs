@@ -45,7 +45,9 @@ pub struct Atom {
     /// Atomic charge
     pub charge: f64,
     /// Atom type (for force field calculations)
-    pub atomtype: String,
+    pub atomtype: Option<String>,
+    /// Atom TypeId
+    pub typeid: Option<usize>,
     /// Lennard-Jones parameter sigma
     pub sigma: f64,
     /// Lennard-Jones parameter epsilon
@@ -75,7 +77,8 @@ impl Atom {
             element: line.get(76..78).unwrap_or("").trim().to_string(),
             mass: line.get(78..87).unwrap_or("").trim().parse().unwrap_or(0.0),
             charge: line.get(87..97).unwrap_or("").trim().parse().unwrap_or(0.0),
-            atomtype: line.get(97..).unwrap_or("").trim().to_string(),
+            atomtype: Some(line.get(97..).unwrap_or("").trim().to_string()),
+            typeid: None,
             epsilon: 0.0,
             sigma: 0.0,
             velocity: [0.0; 3],

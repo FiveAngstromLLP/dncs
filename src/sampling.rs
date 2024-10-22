@@ -153,17 +153,17 @@ impl RotateAtDihedral {
         }
     }
 
-    pub fn from_pdb(file: &str, sidechain: bool) -> Vec<f64> {
+    pub fn from_pdb(file: &str) -> Vec<f64> {
         let mut s = System::from_pdb(file, (*AMBER99SB).clone());
         let mut scopy = s.clone();
-        scopy.get_dihedralatoms(sidechain);
-        s.get_dihedral_for_angle(sidechain);
+        scopy.get_dihedral();
+        s.get_dihedral();
 
         let mut dihedral = Vec::new();
 
         for dih in scopy.dihedral {
             if let Some((a, b, c, d)) = s
-                .dihedral
+                .dihedral_angle
                 .iter()
                 .find(|i| dih.0.serial == i.1.serial && dih.1.serial == i.2.serial)
             {
@@ -299,7 +299,7 @@ impl Sampler {
             self.angles.push(angle.clone());
             self.sample.push(self.rotate.system.clone());
         }
-        // self.conformational_sort();
+        self.conformational_sort();
         self.energy = self.energy.clone().into_iter().take(maxsample).collect();
         self.angles = self.angles.clone().into_iter().take(maxsample).collect();
         self.sample = self.sample.clone().into_iter().take(maxsample).collect();
@@ -328,7 +328,7 @@ impl Sampler {
             .map(|(((e, a), s), w)| (e, a, s, w))
             .collect();
 
-        combined.sort_by(|a, b| b.3.partial_cmp(&a.3).unwrap());
+        combined.sort_by(|a, b| b.3.partial_cmp(&a.3).unwrap_or(std::cmp::Ordering::Equal));
 
         self.energy = combined.iter().map(|(e, _, _, _)| *e).collect();
         self.angles = combined.iter().map(|(_, a, _, _)| a.clone()).collect();

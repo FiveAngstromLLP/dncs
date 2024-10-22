@@ -22,15 +22,15 @@ impl Amber {
             .par_iter()
             .map(|iatom| {
                 self.nonbonded_energy(iatom)
-                // + self.harmonic_bond_force(iatom)
-                // + self.harmonic_angle_force(iatom)
+                    + self.harmonic_bond_force(iatom)
+                    + self.harmonic_angle_force(iatom)
             }) // Unit >> (kg.Å^2/s^2)
             .map(|energy| energy * 1e-10_f64.powi(2)) // Unit >> (kg.m^2/s^2)
             // .map(|energy| energy * 6.02214076e23) // Unit >> KJ/mol
             .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
             .sum::<f64>();
-        // energy + self.hydrogen_bond_energy() + self.periodic_torsional_force()
-        energy + self.periodic_torsional_force()
+        energy + self.hydrogen_bond_energy() + self.periodic_torsional_force()
+        // energy + self.periodic_torsional_force()
     }
 
     pub fn potential(&mut self) {
@@ -96,78 +96,74 @@ impl Amber {
     }
 
     fn harmonic_bond_force(&self, iatom: &Atom) -> f64 {
-        let ff = self.system.forcefield.clone();
         let hbforce = self.system.forcefield.harmonic_bond_force.bonds.clone();
-        if let Some(res) = ff.residues.residue.iter().find(|f| f.name == iatom.residue) {
-            for bond in res.bond.iter().flatten() {
-                if let Some(i) = self.system.get_atomtype_by_id(bond.from) {
-                    if let Some(j) = self.system.get_atomtype_by_id(bond.to) {
-                        if let Some(hbf) = hbforce
-                            .iter()
-                            .find(|h| h.class1 == i.class && h.class2 == j.class)
-                        {
-                            return 0.5 * hbf.k * hbf.length.powi(2);
-                        }
-                    }
-                }
+        let mut energy = 0.0;
+        for jatom in self.system.firstbonded[iatom.serial - 1].iter() {
+            if let Some(hbf) = hbforce.iter().find(|h| {
+                Some(h.class1.to_string()) == iatom.atomtype
+                    && Some(h.class2.to_string()) == jatom.atomtype
+            }) {
+                let d = Self::distance(iatom, jatom);
+                let eng = 0.5 * (hbf.k * 10.0 / 6.02214076e23) * (d - hbf.length * 10.0).powi(2);
+                energy += eng
             }
         }
-        0.0
+        energy
     }
 
     fn harmonic_angle_force(&self, iatom: &Atom) -> f64 {
-        let ff = self.system.forcefield.clone();
         let haforce = self.system.forcefield.harmonic_angle_force.angles.clone();
-        if let Some(res) = ff.residues.residue.iter().find(|f| f.name == iatom.residue) {
-            for bond in res.bond.iter().flatten() {
-                if let Some(i) = self.system.get_atomtype_by_id(bond.from) {
-                    if let Some(j) = self.system.get_atomtype_by_id(bond.to) {
-                        if let Some(k) = self.system.get_atomtype_by_id(j.name) {
-                            if let Some(haf) = haforce.iter().find(|h| {
-                                h.class1 == i.class && h.class2 == j.class && h.class3 == k.class
-                            }) {
-                                return 0.5 * haf.k * haf.angle.powi(2);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        0.0
-    }
-
-    fn periodic_torsional_force(&self) -> f64 {
-        let periodic = self.system.forcefield.periodic_torsion_force.clone();
         let mut energy = 0.0;
-        for (a, b, c, d) in self.system.dihedral.iter() {
-            // if let Some(_i) = self.system.get_atomtype(&a) {
-            if let Some(j) = self.system.get_atomtype(&b) {
-                if let Some(k) = self.system.get_atomtype(&c) {
-                    // if let Some(_l) = self.system.get_atomtype(&d) {
-                    if let Some(ptf) = periodic.proper.iter().find(|h| {
-                        h.class2.contains(j.class.as_str()) && h.class3.contains(k.class.as_str())
-                    }) {
-                        let dh = RotateAtDihedral::dihedral_angle(&a, &b, &c, &d);
-                        energy += ptf.k1 * (1.0 + (ptf.periodicity1 * dh - ptf.phase1));
-                        energy += match (ptf.k2, ptf.periodicity2, ptf.phase2) {
-                            (Some(k), Some(n), Some(th)) => k * (1.0 + (n * dh - th)),
-                            _ => 0.0,
-                        };
-                        energy += match (ptf.k3, ptf.periodicity3, ptf.phase3) {
-                            (Some(k), Some(n), Some(th)) => k * (1.0 + (n * dh - th)),
-                            _ => 0.0,
-                        };
-                        energy += match (ptf.k4, ptf.periodicity4, ptf.phase4) {
-                            (Some(k), Some(n), Some(th)) => k * (1.0 + (n * dh - th)),
-                            _ => 0.0,
-                        };
-                    }
-                    // }
-                    // }
+        for jatom in self.system.firstbonded[iatom.serial - 1].iter() {
+            for katom in self.system.secondbonded[iatom.serial - 1].iter() {
+                if let Some(haf) = haforce.iter().find(|h| {
+                    Some(h.class1.to_string()) == iatom.atomtype
+                        && Some(h.class2.to_string()) == jatom.atomtype
+                        && Some(h.class2.to_string()) == katom.atomtype
+                }) {
+                    let a = Self::angle(iatom, jatom, katom);
+                    energy += 0.5 * (haf.k * 10.0 / 6.02214076e23) * (a - haf.angle).powi(2);
                 }
             }
         }
         energy
+    }
+
+    fn periodic_torsional_force(&self) -> f64 {
+        let periodic = self.system.forcefield.periodic_torsion_force.clone();
+        let mut energy = 0.0; // KJ/Mol/nm
+
+        for (a, b, c, d) in self.system.dihedral_angle.iter() {
+            // Early continue if any atomtype is None
+            let (at, bt, ct, dt) = match (&a.atomtype, &b.atomtype, &c.atomtype, &d.atomtype) {
+                (Some(at), Some(bt), Some(ct), Some(dt)) => (at, bt, ct, dt),
+                _ => continue,
+            };
+
+            let dh = RotateAtDihedral::dihedral_angle(&a, &b, &c, &d);
+
+            if let Some(ptf) = periodic.proper.iter().find(|h| {
+                h.class1.contains(at)
+                    && h.class2.contains(bt)
+                    && h.class3.contains(ct)
+                    && h.class4.contains(dt)
+            }) {
+                energy += ptf.k1 * (1.0 + (ptf.periodicity1 * dh - ptf.phase1).cos());
+
+                if let (Some(k), Some(n), Some(th)) = (ptf.k2, ptf.periodicity2, ptf.phase2) {
+                    energy += k * (1.0 + (n * dh - th).cos());
+                }
+
+                if let (Some(k), Some(n), Some(th)) = (ptf.k3, ptf.periodicity3, ptf.phase3) {
+                    energy += k * (1.0 + (n * dh - th).cos());
+                }
+
+                if let (Some(k), Some(n), Some(th)) = (ptf.k4, ptf.periodicity4, ptf.phase4) {
+                    energy += k * (1.0 + (n * dh - th).cos());
+                }
+            }
+        }
+        energy * 10.0 / 4184.0 // Convert to KCal/Mol
     }
 
     fn hydrogen_bond_energy(&self) -> f64 {
@@ -180,7 +176,7 @@ impl Amber {
                 hb_energy += 7557.0 * (1.0 / r).powi(12) - 4184.0 * (1.0 / r).powi(10); // Unit >> Kcal/mol
                 let hb_ljenergy = Self::lennard_jones_energy(iatom, jatom); // Unit >> (kg.Å^2/s^2)
                 let hb_ljenergy = hb_ljenergy * 1e-10_f64.powi(2); // Unit >> (kg.m^2/s^2)
-                let hb_ljenergy = hb_ljenergy * 6.02214076e23 / 4184.0; // // Unit >> Kcal/mol
+                let hb_ljenergy = hb_ljenergy * 6.02214076e23 / 4184.0; // Unit >> Kcal/mol
                 hb_energy - hb_ljenergy
             })
             .sum::<f64>()
@@ -225,6 +221,23 @@ impl Amber {
         let k = 8.9875517923e9 * 1e10_f64.powi(3); // Unit >> (Kg.Å^3)/(s^2.C^2)
         let force = -k * q1 * q2 / r.powi(2); // Unit >> Kg.Å/s^2
         force * Self::vector_distance(i, j) / r // Unit >> Kg.Å/s^2
+    }
+
+    #[inline]
+    fn angle(i: &Atom, j: &Atom, k: &Atom) -> f64 {
+        let rij = Vector3::new(
+            j.position[0] - i.position[0],
+            j.position[1] - i.position[1],
+            j.position[2] - i.position[2],
+        );
+        let rkj = Vector3::new(
+            j.position[0] - k.position[0],
+            j.position[1] - k.position[1],
+            j.position[2] - k.position[2],
+        );
+
+        let cos_theta = rij.dot(&rkj) / (rij.magnitude() * rkj.magnitude());
+        cos_theta.acos().to_degrees()
     }
 
     #[inline]

@@ -13,8 +13,8 @@ fn getPDB(seq: String, filename: String) {
 }
 
 #[pyfunction]
-fn pdb_to_angle(filename: String, include_side_chain: bool) -> String {
-    let angle = RotateAtDihedral::from_pdb(&filename, include_side_chain);
+fn pdb_to_angle(filename: String) -> String {
+    let angle = RotateAtDihedral::from_pdb(&filename);
     let angle_csv = angle
         .iter()
         .map(|&a| a.to_string())
@@ -46,8 +46,8 @@ impl Polymer {
         self.polymer.to_pdb(&filename);
     }
 
-    fn dihedral(&mut self, sidechain: bool, foldername: String) {
-        self.polymer.get_dihedralatoms(sidechain);
+    fn dihedral(&mut self, foldername: String) {
+        self.polymer.get_dihedral();
         self.polymer.dihedral_log(&foldername)
     }
 }
@@ -60,9 +60,9 @@ pub struct SobolSampler {
 #[pymethods]
 impl SobolSampler {
     #[new]
-    fn new(system: &Polymer, no_of_samples: usize, sidechain: bool) -> PyResult<SobolSampler> {
+    fn new(system: &Polymer, no_of_samples: usize) -> PyResult<SobolSampler> {
         let mut sample = Sampler::new(system.polymer.clone());
-        sample.system.get_dihedralatoms(sidechain);
+        sample.system.get_dihedral();
         sample.sample(no_of_samples);
         Ok(SobolSampler { sampler: sample })
     }

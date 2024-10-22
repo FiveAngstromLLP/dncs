@@ -11,6 +11,9 @@ pub struct System {
     pub forcefield: ForceField,
     pub particles: Particles,
     pub dihedral: Vec<(Atom, Atom, Atom, Atom)>,
+    pub dihedral_angle: Vec<(Atom, Atom, Atom, Atom)>,
+    pub firstbonded: Vec<Particles>,
+    pub secondbonded: Vec<Particles>,
     pub nonbonded: Vec<Particles>,
     pub bonded1_4: Vec<Particles>,
     pub hydrogen: Vec<(Atom, Atom)>,
@@ -26,6 +29,9 @@ impl System {
             forcefield,
             particles: sequence,
             dihedral: Vec::new(),
+            dihedral_angle: Vec::new(),
+            firstbonded: vec![Vec::new(); total],
+            secondbonded: vec![Vec::new(); total],
             nonbonded: vec![Vec::new(); total],
             bonded1_4: vec![Vec::new(); total],
             hydrogen: Vec::new(),
@@ -42,40 +48,36 @@ impl System {
             forcefield,
             particles: atoms,
             dihedral: Vec::new(),
+            dihedral_angle: Vec::new(),
+            firstbonded: vec![Vec::new(); total],
+            secondbonded: vec![Vec::new(); total],
             nonbonded: vec![Vec::new(); total],
             bonded1_4: vec![Vec::new(); total],
             hydrogen: Vec::new(),
         }
     }
 
-    pub fn get_atomtype(&self, atom: &Atom) -> Option<parser::AtomType> {
-        for residue in &self.forcefield.residues.residue {
-            if residue.name == atom.residue {
-                for atom_type in &residue.atom {
-                    if atom_type.name == atom.name {
-                        for forcefield_type in &self.forcefield.atom_types.types {
-                            if forcefield_type.name == atom_type.atype {
-                                return Some(forcefield_type.clone());
+    pub fn get_atomtype(&mut self) {
+        for atom in self.particles.iter_mut() {
+            for residue in &self.forcefield.residues.residue {
+                if residue.name == atom.residue {
+                    for atom_type in &residue.atom {
+                        if atom_type.name == atom.name {
+                            for forcefield_type in &self.forcefield.atom_types.types {
+                                if forcefield_type.name == atom_type.atype {
+                                    atom.typeid = Some(forcefield_type.name);
+                                    atom.atomtype = Some(forcefield_type.class.to_string());
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        None
-    }
-
-    pub fn get_atomtype_by_id(&self, id: usize) -> Option<parser::AtomType> {
-        for forcefield_type in &self.forcefield.atom_types.types {
-            if forcefield_type.name == id {
-                return Some(forcefield_type.clone());
-            }
-        }
-
-        None
     }
 
     pub fn init_parameters(&mut self) {
+        self.get_atomtype();
         self.get_neighbours();
         self.get_energyparameters();
         self.get_hydrogen_bonded();
@@ -88,14 +90,18 @@ impl System {
                 atom.sigma = 1.0000_f64;
                 atom.epsilon = 0.0200_f64;
             } else {
-                let typ = atom.atomtype.to_string();
+                let typ = atom.atomtype.to_owned();
                 if atom.sequence == 1 && atom.name == "N" {
                     if let Some(enp) = ENERGYPARAM.seq.iter().find(|f| f.atomtype == "NT") {
                         atom.sigma = enp.sigma;
                         atom.epsilon = enp.epsilon;
                     }
                 } else {
-                    if let Some(enp) = ENERGYPARAM.seq.iter().find(|f| f.atomtype == typ) {
+                    if let Some(enp) = ENERGYPARAM
+                        .seq
+                        .iter()
+                        .find(|f| Some(f.atomtype.to_string()) == typ)
+                    {
                         atom.sigma = enp.sigma;
                         atom.epsilon = enp.epsilon;
                     }
@@ -104,8 +110,23 @@ impl System {
         });
     }
 
+    pub fn get_atomtype_by_id(&self, id: usize) -> Option<parser::AtomType> {
+        for forcefield_type in &self.forcefield.atom_types.types {
+            if forcefield_type.name == id {
+                return Some(forcefield_type.clone());
+            }
+        }
+        None
+    }
+
+    pub fn get_dihedral(&mut self) {
+        let sidechain = false;
+        self.get_dihedralatoms(sidechain);
+        self.get_dihedral_for_angle(sidechain);
+    }
+
     /// Get Dihedral Atoms
-    pub fn get_dihedralatoms(&mut self, sidechain: bool) {
+    fn get_dihedralatoms(&mut self, sidechain: bool) {
         let mut val: (Atom, Atom, Atom, Atom) = (
             Atom::new("".to_string()),
             Atom::new("".to_string()),
@@ -139,7 +160,7 @@ impl System {
         }
     }
 
-    pub fn get_dihedral_for_angle(&mut self, sidechain: bool) {
+    fn get_dihedral_for_angle(&mut self, sidechain: bool) {
         let lastseq = self.particles.last().unwrap().sequence;
         let mut val: (Atom, Atom, Atom, Atom) = (
             Atom::new("".to_string()),
@@ -159,7 +180,7 @@ impl System {
                 val.3 = atom.clone();
             }
         }
-        self.dihedral.push(val.clone());
+        self.dihedral_angle.push(val.clone());
 
         for (i, s) in self.seq.chars().enumerate() {
             if let Some(m) = VAR.seq.iter().find(|f| f.scode == s.to_string()) {
@@ -187,7 +208,7 @@ impl System {
                     let d = get_atom(&d.d, seqd);
 
                     if let (Some(a), Some(b), Some(c), Some(d)) = (a, b, c, d) {
-                        self.dihedral
+                        self.dihedral_angle
                             .push((a.clone(), b.clone(), c.clone(), d.clone()));
                     }
                 }
@@ -205,7 +226,7 @@ impl System {
                 val.3 = atom.clone();
             }
         }
-        self.dihedral.push(val);
+        self.dihedral_angle.push(val);
     }
 
     /// Find hydrogen-bonded atom pairs
@@ -234,6 +255,8 @@ impl System {
         for (i, atom) in self.particles.iter().enumerate() {
             let mut neighbor = Neighbor::new(self.particles.clone(), atom.clone());
             neighbor.get_neighbours();
+            self.firstbonded[i] = neighbor.firstbonded;
+            self.secondbonded[i] = neighbor.secondbonded;
             self.nonbonded[i] = neighbor.nonbonded;
             self.bonded1_4[i] = neighbor.bonded1_4;
         }
@@ -296,6 +319,8 @@ impl System {
 struct Neighbor {
     atom: Atom,
     polymer: Particles,
+    firstbonded: Particles,
+    secondbonded: Particles,
     nonbonded: Particles,
     bonded1_4: Particles,
 }
@@ -305,6 +330,8 @@ impl Neighbor {
         Self {
             atom,
             polymer,
+            firstbonded: Vec::new(),
+            secondbonded: Vec::new(),
             nonbonded: Vec::new(),
             bonded1_4: Vec::new(),
         }
@@ -421,6 +448,8 @@ impl Neighbor {
     /// Calculate 1-4_bonded terms for given atom
     fn get_bonded1_4(&mut self) {
         let (first, second) = self.second_bonded();
+        self.firstbonded = first.clone();
+        self.secondbonded = second.clone();
         let mut bonded = Vec::new();
         for satom in second {
             for conn in ALLCONN.seq.iter().filter(|f| f.tcode == satom.residue) {
