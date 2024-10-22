@@ -55,7 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let molecule = generate["molecule"].as_str().unwrap_or("");
     let sequence = generate["sequence"].as_str().unwrap_or("");
-    let include_sidechain = generate["include_sidechain"].as_bool().unwrap_or(false);
+    let include_sidechain = generate["minimier"].as_bool().unwrap_or(false);
     let samples = generate["n_samples"].as_u64().unwrap_or(10) as usize;
 
     let mut system = System::new(sequence, (*AMBER99SB).clone());
@@ -87,7 +87,7 @@ fn generate_config_file() -> Result<(), std::io::Error> {
     "Generate": {
         "molecule": "Sample",
         "sequence": "AAAAA",
-        "include_sidechain": true,
+        "minimizer": true,
         "n_samples": 10
     }
 }

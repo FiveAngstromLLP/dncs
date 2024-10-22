@@ -2,7 +2,7 @@
   "Generate": {
     "molecule": "Molecule",
     "sequence": "YGGFM",
-    "include_sidechain": false,
+    "minimizer": false,
     "n_samples": 10
   }
 }
