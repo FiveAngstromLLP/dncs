@@ -328,9 +328,9 @@ pub fn pdb_to_atoms(pdb_string: &str) -> Vec<Atom> {
                     newatom.position[1] += -0.218;
                     newatom.position[2] += -0.003;
                 }
-                return newatom;
+                newatom
             } else {
-                return atom;
+                atom
             }
         })
         .map(|atom| {
@@ -345,12 +345,12 @@ pub fn pdb_to_atoms(pdb_string: &str) -> Vec<Atom> {
                     let mut newatom = atom;
                     let mdigit = 4 - d.to_digit(10).unwrap();
                     newatom.name = newatom.name.replace(d, &mdigit.to_string());
-                    return newatom;
+                    newatom
                 } else {
-                    return atom;
+                    atom
                 }
             } else {
-                return atom;
+                atom
             }
         })
         .collect()

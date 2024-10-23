@@ -9,7 +9,7 @@ use rayon::prelude::*;
 use std::io::Write;
 use std::sync::LazyLock;
 
-const DIRECTION: LazyLock<Vec<String>> = LazyLock::new(|| {
+static DIRECTION: LazyLock<Vec<String>> = LazyLock::new(|| {
     include_str!("../data/new-joe-kuo-6.21201")
         .lines()
         .map(String::from)
@@ -28,7 +28,7 @@ pub struct Sobol {
 impl Sobol {
     pub fn new(dimension: usize) -> Self {
         assert!(
-            dimension >= 1 && dimension <= 21201,
+            (1..=21201).contains(&dimension),
             "DIMESNSION must in range (1-21201)"
         );
         let mut sobol = Self {
@@ -186,11 +186,9 @@ impl RotateAtDihedral {
     /// Rotate the atoms at Dihedral angle
     pub fn rotate(&mut self, angle: Vec<f64>) {
         for (i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {
-            let mut phi = theta.clone();
-            if i == 0 || i == self.system.dihedral.len() - 1 {
-                phi = phi
-            } else {
-                phi = phi + 180.0
+            let mut phi = theta;
+            if i != 0 || i != self.system.dihedral.len() - 1 {
+                phi += 180.0
             }
             if let Some(p) = self.rotated.iter().find(|i| i.serial == a.0.serial) {
                 let v1 = Vector3::new(p.position[0], p.position[1], p.position[2]);
@@ -227,7 +225,7 @@ impl RotateAtDihedral {
         (b - a) / (a - b).norm()
     }
 
-    /// Rotate vector <a> at the axis of vector <b> with angle theta
+    /// Rotate vector a at the axis of vector b with angle theta
     #[inline]
     fn rotor(a: Vector3<f64>, b: Vector3<f64>, theta: f64) -> Vector3<f64> {
         let phi = theta.to_radians();
@@ -322,9 +320,9 @@ impl Sampler {
 
         let mut combined: Vec<(f64, Vec<f64>, System, f64)> = energies
             .into_iter()
-            .zip(angles.into_iter())
-            .zip(samples.into_iter())
-            .zip(normalized.into_iter())
+            .zip(angles)
+            .zip(samples)
+            .zip(normalized)
             .map(|(((e, a), s), w)| (e, a, s, w))
             .collect();
 
@@ -360,7 +358,7 @@ impl Sampler {
     pub fn to_pdb(&self, filename: &str) {
         let mut file = std::fs::File::create(filename).unwrap();
         let eng = Amber::new(self.system.clone()).energy();
-        let pdb = RotateAtDihedral::new(self.system.clone()).to_pdbstring(0 + 1, eng);
+        let pdb = RotateAtDihedral::new(self.system.clone()).to_pdbstring(1, eng);
         file.write_all(pdb.as_bytes()).unwrap();
         for (i, s) in self.sample.iter().enumerate() {
             let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i + 1, self.energy[i]);

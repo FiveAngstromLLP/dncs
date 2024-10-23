@@ -5,7 +5,6 @@ use crate::system::System;
 use liblbfgs::lbfgs;
 use std::io::Write;
 use std::sync::Arc;
-use tokio;
 use tokio::io::AsyncWriteExt;
 
 pub struct Minimizer {
@@ -41,7 +40,6 @@ impl Minimizer {
             let mut dx = angle.clone();
             dx[i] += h;
             let func = Arc::clone(&func);
-            let fx = fx;
             futures.push(tokio::task::spawn_blocking(move || ((func)(dx) - fx) / h));
         }
 
@@ -153,7 +151,7 @@ impl Minimizer {
     pub async fn to_pdb(&self, filename: &str) -> std::io::Result<()> {
         let mut file = tokio::fs::File::create(filename).await?;
         let eng = Amber::new(self.sample.system.clone()).energy();
-        let pdb = RotateAtDihedral::new(self.sample.system.clone()).to_pdbstring(0 + 1, eng);
+        let pdb = RotateAtDihedral::new(self.sample.system.clone()).to_pdbstring(1, eng);
         file.write_all(pdb.as_bytes()).await?;
 
         for (i, s) in self.minimized.iter().enumerate() {

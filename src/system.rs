@@ -39,8 +39,7 @@ impl System {
     }
 
     pub fn from_pdb(file: &str, forcefield: ForceField) -> Self {
-        let atoms: Vec<Atom>;
-        atoms = parser::pdb_to_atoms(file);
+        let atoms: Vec<Atom> = parser::pdb_to_atoms(file);
 
         let total = atoms.len();
         Self {
@@ -107,15 +106,13 @@ impl System {
                         atom.sigma = enp.sigma;
                         atom.epsilon = enp.epsilon;
                     }
-                } else {
-                    if let Some(enp) = ENERGYPARAM
-                        .seq
-                        .iter()
-                        .find(|f| Some(f.atomtype.to_string()) == typ)
-                    {
-                        atom.sigma = enp.sigma;
-                        atom.epsilon = enp.epsilon;
-                    }
+                } else if let Some(enp) = ENERGYPARAM
+                    .seq
+                    .iter()
+                    .find(|f| Some(f.atomtype.to_string()) == typ)
+                {
+                    atom.sigma = enp.sigma;
+                    atom.epsilon = enp.epsilon;
                 }
             }
         });
@@ -245,7 +242,7 @@ impl System {
         for i in self.particles.iter().take(self.particles.len() - 1) {
             if i.name == "H" || i.name == "HN" {
                 for j in self.particles.iter().skip(i.serial + 1) {
-                    if i.sequence < i.sequence && j.name == "O" {
+                    if j.sequence < i.sequence && j.name == "O" {
                         self.hydrogen.push((i.clone(), j.clone()))
                     }
                 }

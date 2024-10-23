@@ -141,7 +141,7 @@ impl Amber {
                 _ => continue,
             };
 
-            let dh = RotateAtDihedral::dihedral_angle(&a, &b, &c, &d);
+            let dh = RotateAtDihedral::dihedral_angle(a, b, c, d);
 
             if let Some(ptf) = periodic.proper.iter().find(|h| {
                 h.class1.contains(at)
