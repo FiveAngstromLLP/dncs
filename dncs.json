@@ -1,8 +1,8 @@
 {
   "Generate": {
-    "molecule": "Sample",
-    "sequence": "YGGFM",
+    "molecule": "DECALANINE",
+    "sequence": "AAAAAAAAAA",
     "n_samples": 10,
-    "forcefield": "amber03"
+   "forcefield": "amber99sb"
   }
 }
