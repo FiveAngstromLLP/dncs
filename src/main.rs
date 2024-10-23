@@ -86,13 +86,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Validate forcefield
     let ff = match params.forcefield.as_str() {
-        "amber03" => FF::AMBER03,
-        "amber10" => FF::AMBER10,
-        "amber96" => FF::AMBER96,
-        "amber99sb" => FF::AMBER99SB,
+        "amber03.xml" => FF::AMBER03,
+        "amber10.xml" => FF::AMBER10,
+        "amber96.xml" => FF::AMBER96,
+        "amber99sb.xml" => FF::AMBER99SB,
+        "amberfb15.xml" => FF::AMBERFB15,
         _ => {
             eprintln!(
-                "Unsupported forcefield: {}. Must be one of: amber03, amber10, amber96, amber99sb",
+                "
+Unsupported forcefield: {}.
+Must be one of below:
+    - amber03.xml
+    - amber10.xml
+    - amber96.xml
+    - amber99sb.xml
+    - amberfb15.xml
+",
                 params.forcefield
             );
             std::process::exit(1);
@@ -198,7 +207,7 @@ fn generate_config_file() -> Result<(), std::io::Error> {
             "molecule": "Sample",
             "sequence": "YGGFM",
             "n_samples": 10,
-            "forcefield": "amber99sb"
+            "forcefield": "amberfb15.xml"
         }
     });
 

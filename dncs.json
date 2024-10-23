@@ -3,6 +3,6 @@
     "molecule": "DECALANINE",
     "sequence": "AAAAAAAAAA",
     "n_samples": 10,
-   "forcefield": "amber99sb"
+    "forcefield": "amberfb15.xml"
   }
 }

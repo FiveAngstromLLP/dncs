@@ -21,16 +21,26 @@ pub enum FF {
     AMBER10,
     AMBER96,
     AMBER99SB,
+    AMBERFB15,
 }
 
 impl FF {
     pub fn init(&self) -> ForceField {
         match self {
-            FF::AMBER03 => quick_xml::de::from_str(include_str!("../data/amber03.xml")).unwrap(),
-            FF::AMBER10 => quick_xml::de::from_str(include_str!("../data/amber10.xml")).unwrap(),
-            FF::AMBER96 => quick_xml::de::from_str(include_str!("../data/amber96.xml")).unwrap(),
+            FF::AMBER03 => {
+                quick_xml::de::from_str(include_str!("../data/ForceFields/amber03.xml")).unwrap()
+            }
+            FF::AMBER10 => {
+                quick_xml::de::from_str(include_str!("../data/ForceFields/amber10.xml")).unwrap()
+            }
+            FF::AMBER96 => {
+                quick_xml::de::from_str(include_str!("../data/ForceFields/amber96.xml")).unwrap()
+            }
             FF::AMBER99SB => {
-                quick_xml::de::from_str(include_str!("../data/amber99sb.xml")).unwrap()
+                quick_xml::de::from_str(include_str!("../data/ForceFields/amber99sb.xml")).unwrap()
+            }
+            FF::AMBERFB15 => {
+                quick_xml::de::from_str(include_str!("../data/ForceFields/amberfb15.xml")).unwrap()
             }
         }
     }
@@ -490,13 +500,13 @@ pub struct HarmonicAngle {
 #[derive(Deserialize, Debug, Clone)]
 pub struct PeriodicTorsionForce {
     #[serde(rename = "Proper")]
-    pub proper: Vec<ProperTorsion>,
+    pub proper: Vec<TorsionEntry>,
     #[serde(rename = "Improper")]
-    pub improper: Vec<ImproperTorsion>,
+    pub improper: Vec<TorsionEntry>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
-pub struct ProperTorsion {
+pub struct TorsionEntry {
     #[serde(rename = "@class1")]
     pub class1: String,
     #[serde(rename = "@class2")]
@@ -529,24 +539,18 @@ pub struct ProperTorsion {
     pub phase4: Option<f64>,
     #[serde(rename = "@k4")]
     pub k4: Option<f64>,
-}
-
-#[derive(Deserialize, Debug, Clone)]
-pub struct ImproperTorsion {
-    #[serde(rename = "@class1")]
-    pub class1: String,
-    #[serde(rename = "@class2")]
-    pub class2: String,
-    #[serde(rename = "@class3")]
-    pub class3: String,
-    #[serde(rename = "@class4")]
-    pub class4: String,
-    #[serde(rename = "@periodicity1")]
-    pub periodicity1: f64,
-    #[serde(rename = "@phase1")]
-    pub phase1: f64,
-    #[serde(rename = "@k1")]
-    pub k1: f64,
+    #[serde(rename = "@periodicity4")]
+    pub periodicity5: Option<f64>,
+    #[serde(rename = "@phase5")]
+    pub phase5: Option<f64>,
+    #[serde(rename = "@k5")]
+    pub k5: Option<f64>,
+    #[serde(rename = "@periodicity4")]
+    pub periodicity6: Option<f64>,
+    #[serde(rename = "@phase6")]
+    pub phase6: Option<f64>,
+    #[serde(rename = "@k6")]
+    pub k6: Option<f64>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
