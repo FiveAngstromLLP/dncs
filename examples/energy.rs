@@ -1,16 +1,14 @@
-extern crate libdncs;
+use libdncs::*;
 
-use libdncs::forcefield::Amber;
-use libdncs::parser::FF;
-use libdncs::system::System;
+// Configuration
+const SEQUENCE: &str = "YGGFM";
+const FORCE_FIELD: FF = FF::AMBERFB15;
 
 fn main() {
-    let mut polymer = System::new("YGGFM", FF::AMBER99SB.init());
-    polymer.init_parameters();
-    polymer.get_dihedral();
-    for (a, b, c, d) in polymer.dihedral.iter() {
-        println!("{} {} {} {}", a.name, b.name, c.name, d.name)
-    }
-    let ff = Amber::new(polymer);
-    println!("Energy: {}", ff.energy());
+    // System
+    let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());
+    sys.init_parameters();
+    let amber = Amber::new(sys);
+    let eng = amber.energy();
+    println!("Energy: {} KCal/Mol", eng);
 }

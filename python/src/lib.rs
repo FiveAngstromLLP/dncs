@@ -1,9 +1,6 @@
 #![allow(dead_code, non_snake_case)]
 
-use libdncs::forcefield::Amber;
-use libdncs::parser::FF;
-use libdncs::sampling::{RotateAtDihedral, Sampler};
-use libdncs::system::System;
+use libdncs::*;
 use pyo3::prelude::*;
 
 #[pyfunction]
@@ -41,11 +38,11 @@ impl Polymer {
             "amberfb15.xml" => FF::AMBERFB15,
             _ => {
                 eprintln!(
-                    "Unsupported forcefield: {}. 
-Must be one of the below: 
-  - amber03.xml 
+                    "Unsupported forcefield: {}.
+Must be one of the below:
+  - amber03.xml
   - amber10.xml
-  - amber96.xml 
+  - amber96.xml
   - amber99sb.xml
   - amberfb15.xml
   ",
@@ -69,7 +66,6 @@ Must be one of the below:
     }
 
     fn dihedral(&mut self, foldername: String) {
-        self.polymer.get_dihedral();
         self.polymer.dihedral_log(&foldername)
     }
 }
@@ -84,13 +80,12 @@ impl SobolSampler {
     #[new]
     fn new(system: &Polymer, no_of_samples: usize) -> PyResult<SobolSampler> {
         let mut sample = Sampler::new(system.polymer.clone());
-        sample.system.get_dihedral();
         sample.sample(no_of_samples);
         Ok(SobolSampler { sampler: sample })
     }
 
     fn write_angles(&self, filename: String) {
-        self.sampler.write_sampled_angles(&filename)
+        self.sampler.write_angles(&filename)
     }
 
     fn toPDB(&self, filename: String) {

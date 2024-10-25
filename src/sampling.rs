@@ -338,7 +338,7 @@ impl Sampler {
         self.rotate = RotateAtDihedral::new(self.system.clone());
     }
 
-    pub fn write_sampled_angles(&self, filename: &str) {
+    pub fn write_angles(&self, filename: &str) {
         let mut file = std::fs::File::create(filename).unwrap();
         for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(

@@ -1,7 +1,5 @@
 #![allow(dead_code, unused_imports)]
-use crate::forcefield::Amber;
-use crate::sampling::{RotateAtDihedral, Sampler};
-use crate::system::System;
+use crate::{Amber, RotateAtDihedral, Sampler, System};
 use liblbfgs::lbfgs;
 use std::io::Write;
 use std::sync::Arc;
@@ -130,7 +128,7 @@ impl Minimizer {
         self.minimized = combined.into_iter().map(|(_, _, s, _)| s).collect();
     }
 
-    pub async fn write_sampled_angles(&self, filename: &str) -> std::io::Result<()> {
+    pub async fn write_angles(&self, filename: &str) -> std::io::Result<()> {
         let mut file = tokio::fs::File::create(filename).await?;
         for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(

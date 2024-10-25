@@ -1,13 +1,5 @@
-mod forcefield;
-mod minimizer;
-mod parser;
-mod sampling;
-mod system;
-use crate::minimizer::Minimizer;
-use crate::sampling::Sampler;
-use crate::system::System;
 use clap::{Arg, Command};
-use parser::FF;
+use libdncs::*;
 use serde_json::{json, Value};
 use std::fs;
 use std::path::Path;
@@ -112,7 +104,6 @@ Must be one of below:
     println!("Generating Samples..");
     let mut system = System::new(&params.sequence, ff.init());
     system.init_parameters();
-    system.get_dihedral();
 
     let mut sample = Sampler::new(system);
     sample.sample(params.n_samples);
@@ -125,7 +116,7 @@ Must be one of below:
     fs::create_dir_all(&result_dir)?;
 
     // Write initial samples
-    sample.write_sampled_angles(&format!("Result/{}/Sampled.out", params.molecule));
+    sample.write_angles(&format!("Result/{}/Sampled.out", params.molecule));
     sample.to_pdb(&format!("Result/{}/Sampled.pdb", params.molecule));
 
     println!("Executing Minimizer");
@@ -136,7 +127,7 @@ Must be one of below:
     mini.conformational_sort().await;
 
     // Write minimized results
-    mini.write_sampled_angles(&format!(
+    mini.write_angles(&format!(
         "Result/{}/{}.out",
         params.molecule, params.molecule
     ))
