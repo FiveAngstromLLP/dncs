@@ -9,12 +9,13 @@ struct SimulationParams {
     sequence: String,
     n_samples: usize,
     forcefield: String,
+    minimize: bool,
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = Command::new("DNCS")
-        .version("0.1.3")
+        .version("0.1.4")
         .about("Digital Nets Conformational Sample (DNCS)")
         .arg(
             Arg::new("config")
@@ -25,7 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .arg(
             Arg::new("molecule")
-                .short('m')
+                .short('N')
                 .long("molecule")
                 .help("Molecule name")
                 .value_name("NAME"),
@@ -49,8 +50,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             Arg::new("forcefield")
                 .short('f')
                 .long("forcefield")
-                .help("Force field (amber03, amber10, amber96, amber99sb)")
+                .help("Force field (amber03.xml, amber10.xml, amber96.xml, amber99sb.xml, amberfb15.xml)")
                 .value_name("FF"),
+        )
+        .arg(
+            Arg::new("minimize")
+                .short('m')
+                .long("minimize")
+                .help("Bool parameter to ensure minimize")
+                .action(clap::ArgAction::SetTrue)
         )
         .get_matches();
 
@@ -119,25 +127,26 @@ Must be one of below:
     sample.write_angles(&format!("Result/{}/Sampled.out", params.molecule));
     sample.to_pdb(&format!("Result/{}/Sampled.pdb", params.molecule));
 
-    println!("Executing Minimizer");
+    if params.minimize {
+        println!("Executing Minimizer");
 
-    // Initialize and run parallel minimizer
-    let mut mini = Minimizer::new(sample);
-    mini.minimize().await;
-    mini.conformational_sort().await;
+        // Initialize and run parallel minimizer
+        let mut mini = Minimizer::new(sample);
+        mini.minimize().await;
+        mini.conformational_sort().await;
 
-    // Write minimized results
-    mini.write_angles(&format!(
-        "Result/{}/{}.out",
-        params.molecule, params.molecule
-    ))
-    .await?;
-    mini.to_pdb(&format!(
-        "Result/{}/{}.pdb",
-        params.molecule, params.molecule
-    ))
-    .await?;
-
+        // Write minimized results
+        mini.write_angles(&format!(
+            "Result/{}/{}.out",
+            params.molecule, params.molecule
+        ))
+        .await?;
+        mini.to_pdb(&format!(
+            "Result/{}/{}.pdb",
+            params.molecule, params.molecule
+        ))
+        .await?;
+    }
     Ok(())
 }
 
@@ -146,12 +155,14 @@ fn get_params_from_cli(matches: &clap::ArgMatches) -> Option<SimulationParams> {
     let sequence = matches.get_one::<String>("sequence")?;
     let n_samples = matches.get_one::<u64>("samples")?.to_owned() as usize;
     let forcefield = matches.get_one::<String>("forcefield")?;
+    let minimize = matches.get_one::<bool>("minimize");
 
     Some(SimulationParams {
         molecule: molecule.to_string(),
         sequence: sequence.to_string(),
         n_samples,
         forcefield: forcefield.to_string(),
+        minimize: minimize.unwrap_or(&false).to_owned(),
     })
 }
 
@@ -189,6 +200,7 @@ fn get_params_from_config() -> Option<SimulationParams> {
         sequence: generate["sequence"].as_str().unwrap_or("").to_string(),
         n_samples: generate["n_samples"].as_u64().unwrap_or(10) as usize,
         forcefield: generate["forcefield"].as_str().unwrap_or("").to_string(),
+        minimize: generate["minimize"].as_bool().unwrap_or(false) as bool,
     })
 }
 
@@ -198,7 +210,8 @@ fn generate_config_file() -> Result<(), std::io::Error> {
             "molecule": "Sample",
             "sequence": "YGGFM",
             "n_samples": 10,
-            "forcefield": "amberfb15.xml"
+            "forcefield": "amberfb15.xml",
+            "minimize": true
         }
     });
 
