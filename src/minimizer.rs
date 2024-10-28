@@ -69,7 +69,7 @@ impl Minimizer {
 
             let mut theta: Vec<f64> = angle.clone();
             let prbs = lbfgs()
-                .with_max_iterations(10)
+                .with_max_iterations(5)
                 .minimize(&mut theta, evaluate, |_| false);
 
             match prbs {
