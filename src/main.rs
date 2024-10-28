@@ -12,8 +12,7 @@ struct SimulationParams {
     minimize: bool,
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = Command::new("DNCS")
         .version("0.1.4")
         .about("Digital Nets Conformational Sample (DNCS)")
@@ -132,20 +131,18 @@ Must be one of below:
 
         // Initialize and run parallel minimizer
         let mut mini = Minimizer::new(sample);
-        mini.minimize().await;
-        mini.conformational_sort().await;
+        mini.minimize();
+        mini.conformational_sort();
 
         // Write minimized results
         mini.write_angles(&format!(
             "Result/{}/{}.out",
             params.molecule, params.molecule
-        ))
-        .await?;
+        ))?;
         mini.to_pdb(&format!(
             "Result/{}/{}.pdb",
             params.molecule, params.molecule
-        ))
-        .await?;
+        ))?;
     }
     Ok(())
 }

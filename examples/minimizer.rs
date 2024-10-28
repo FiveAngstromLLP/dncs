@@ -6,8 +6,7 @@ const SEQUENCE: &str = "YGGFM";
 const FORCE_FIELD: FF = FF::AMBERFB15;
 const NO_OF_SAMPLE: usize = 10;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     // System
     let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());
     sys.init_parameters();
@@ -18,10 +17,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Minimizer
     let mut minimizer = Minimizer::new(sample);
     println!("Executing Minimizer..");
-    minimizer.minimize().await;
-    minimizer.conformational_sort().await;
-    minimizer.write_angles(&format!("{}.out", NAME)).await?;
-    minimizer.to_pdb("minimized.pdb").await?;
+    minimizer.minimize();
+    minimizer.conformational_sort();
+    minimizer.write_angles(&format!("{}.out", NAME))?;
+    minimizer.to_pdb("minimized.pdb")?;
     println!("Completed!");
     Ok(())
 }

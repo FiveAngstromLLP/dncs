@@ -1,9 +1,9 @@
 #![allow(dead_code, unused_imports)]
 use crate::{Amber, RotateAtDihedral, Sampler, System};
 use liblbfgs::lbfgs;
+use std::fs::File;
 use std::io::Write;
 use std::sync::Arc;
-use tokio::io::AsyncWriteExt;
 
 pub struct Minimizer {
     pub sample: Sampler,
@@ -26,84 +26,69 @@ impl Minimizer {
 
     /// Automatic Differentiation of Energy Function
     #[inline]
-    async fn diff(
+    fn diff(
         func: Arc<dyn Fn(Vec<f64>) -> f64 + Send + Sync + 'static>,
         angle: Vec<f64>,
     ) -> (f64, Vec<f64>) {
         let h = 1.0 / 32.0;
         let fx: f64 = (func)(angle.clone());
 
-        let mut futures = Vec::new();
+        let mut dfx = Vec::with_capacity(angle.len());
         for (i, _) in angle.iter().enumerate() {
             let mut dx = angle.clone();
             dx[i] += h;
             let func = Arc::clone(&func);
-            futures.push(tokio::task::spawn_blocking(move || ((func)(dx) - fx) / h));
-        }
-
-        let mut dfx = Vec::with_capacity(angle.len());
-        for future in futures {
-            dfx.push(future.await.unwrap());
+            dfx.push(((func)(dx) - fx) / h);
         }
 
         (fx, dfx)
     }
 
     /// Energy minimizer
-    pub async fn minimize(&mut self) {
+    pub fn minimize(&mut self) {
         let s = self.sample.sample.clone();
         let a = self.sample.angles.clone();
 
-        let mut futures = Vec::new();
         for (i, (sys, angle)) in s.iter().zip(a).enumerate() {
             let sys = sys.clone();
             let angle = angle.clone();
             let system_clone = self.sample.system.clone();
 
-            futures.push(tokio::task::spawn_blocking(move || {
-                let sys = Arc::new(sys.clone());
-                let evaluate = move |x: &[f64], gx: &mut [f64]| {
-                    let sys = Arc::clone(&sys);
-                    let val = futures::executor::block_on(Self::diff(
-                        Arc::new(move |x: Vec<f64>| {
-                            RotateAtDihedral::new((*sys).clone()).rotated_energy(x)
-                        }),
-                        x.to_vec(),
-                    ));
-                    gx.copy_from_slice(&val.1);
-                    Ok(val.0)
-                };
+            let sys = Arc::new(sys.clone());
+            let evaluate = |x: &[f64], gx: &mut [f64]| {
+                let sys = Arc::clone(&sys);
+                let val = Self::diff(
+                    Arc::new(move |x: Vec<f64>| {
+                        RotateAtDihedral::new((*sys).clone()).rotated_energy(x)
+                    }),
+                    x.to_vec(),
+                );
+                gx.copy_from_slice(&val.1);
+                Ok(val.0)
+            };
 
-                let mut theta: Vec<f64> = angle.clone();
-                let prbs = lbfgs()
-                    .with_max_iterations(10)
-                    .minimize(&mut theta, evaluate, |_| false);
+            let mut theta: Vec<f64> = angle.clone();
+            let prbs = lbfgs()
+                .with_max_iterations(10)
+                .minimize(&mut theta, evaluate, |_| false);
 
-                match prbs {
-                    Ok(p) => {
-                        println!("Model {} Energy : {:?} KCal/Mol", i + 1, p.fx);
-                        let mut r = RotateAtDihedral::new(system_clone);
-                        r.rotate(theta.clone());
-                        Ok((r.system, theta, p.fx))
-                    }
-                    Err(e) => {
-                        println!("{:?}", e);
-                        Err(e)
-                    }
+            match prbs {
+                Ok(p) => {
+                    println!("Model {} Energy : {:?} KCal/Mol", i + 1, p.fx);
+                    let mut r = RotateAtDihedral::new(system_clone);
+                    r.rotate(theta.clone());
+                    self.minimized[i] = r.system;
+                    self.angles[i] = theta;
+                    self.energy[i] = p.fx;
                 }
-            }));
-        }
-
-        for (i, future) in futures.into_iter().enumerate() {
-            if let Ok(Ok((system, theta, energy))) = future.await {
-                self.minimized[i] = system;
-                self.angles[i] = theta;
-                self.energy[i] = energy;
+                Err(e) => {
+                    println!("{:?}", e);
+                }
             }
         }
     }
 
-    pub async fn conformational_sort(&mut self) {
+    pub fn conformational_sort(&mut self) {
         const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
         let weight: Vec<f64> = self.energy.iter().map(|e| (-e / KBT).exp()).collect();
         let z: f64 = weight.iter().sum();
@@ -128,8 +113,8 @@ impl Minimizer {
         self.minimized = combined.into_iter().map(|(_, _, s, _)| s).collect();
     }
 
-    pub async fn write_angles(&self, filename: &str) -> std::io::Result<()> {
-        let mut file = tokio::fs::File::create(filename).await?;
+    pub fn write_angles(&self, filename: &str) -> std::io::Result<()> {
+        let mut file = File::create(filename)?;
         for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(
                 "{}, {} KCal/mol, {}\n",
@@ -141,20 +126,20 @@ impl Minimizer {
                     .collect::<Vec<String>>()
                     .join(", ")
             );
-            file.write_all(line.as_bytes()).await?;
+            file.write_all(line.as_bytes())?;
         }
         Ok(())
     }
 
-    pub async fn to_pdb(&self, filename: &str) -> std::io::Result<()> {
-        let mut file = tokio::fs::File::create(filename).await?;
+    pub fn to_pdb(&self, filename: &str) -> std::io::Result<()> {
+        let mut file = File::create(filename)?;
         let eng = Amber::new(self.sample.system.clone()).energy();
         let pdb = RotateAtDihedral::new(self.sample.system.clone()).to_pdbstring(1, eng);
-        file.write_all(pdb.as_bytes()).await?;
+        file.write_all(pdb.as_bytes())?;
 
         for (i, s) in self.minimized.iter().enumerate() {
             let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i + 1, self.energy[i]);
-            file.write_all(pdb.as_bytes()).await?;
+            file.write_all(pdb.as_bytes())?;
         }
         Ok(())
     }
