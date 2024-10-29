@@ -116,7 +116,10 @@ Must be one of below:
     };
 
     // Run simulation
-    println!("Generating Samples..");
+    println!(
+        "Generating Best {} Samples from 2048 Samples..",
+        &params.n_samples
+    );
     let mut system = System::new(&params.sequence, ff.init());
     system.init_parameters();
 

@@ -299,7 +299,7 @@ impl Sampler {
             self.energy.push(energy);
             self.angles.push(angle.clone());
             self.sample.push(self.rotate.system.clone());
-            println!("Sampling {}/{}", self.angles.len(), maxsample);
+            println!("Sampling {}/2048", self.angles.len());
         }
         self.conformational_sort();
         self.energy = self.energy.clone().into_iter().take(maxsample).collect();
@@ -389,9 +389,7 @@ impl Sampler {
 
     pub fn to_pdb(&self, filename: &str) {
         let mut file = std::fs::File::create(filename).unwrap();
-        let eng = Amber::new(self.system.clone()).energy();
-        let pdb = RotateAtDihedral::new(self.system.clone()).to_pdbstring(1, eng);
-        file.write_all(pdb.as_bytes()).unwrap();
+
         for (i, s) in self.sample.iter().enumerate() {
             let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i + 1, self.energy[i]);
             file.write_all(pdb.as_bytes()).unwrap();
@@ -400,11 +398,17 @@ impl Sampler {
 
     pub fn to_pdbfiles(&self, foldername: &str) {
         std::fs::create_dir_all(foldername).unwrap();
+
         for (i, s) in self.sample.iter().enumerate() {
             let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(1, self.energy[i]);
             let filename = format!("{}/sample_{:04}.pdb", foldername, i);
             let mut file = std::fs::File::create(filename).unwrap();
             file.write_all(pdb.as_bytes()).unwrap();
         }
+
+        let mut file = std::fs::File::create(format!("{}/linear.pdb", foldername)).unwrap();
+        let eng = Amber::new(self.system.clone()).energy();
+        let pdb = RotateAtDihedral::new(self.system.clone()).to_pdbstring(1, eng);
+        file.write_all(pdb.as_bytes()).unwrap();
     }
 }
