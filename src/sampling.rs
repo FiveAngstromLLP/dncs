@@ -323,7 +323,7 @@ impl Sampler {
                 angle = all_angles.into_iter().take(angle.len()).collect();
             }
             4 => {
-                let s = scale / 16.0;
+                let s = scale / self.grid as f64;
                 let angle_a: Vec<f64> = angle.iter().map(|x| x * s).collect();
                 let angle_b: Vec<f64> = angle.iter().map(|x| x - s).collect();
                 let angle_c: Vec<f64> = angle_a.iter().map(|x| x - s).collect();
