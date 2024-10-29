@@ -299,12 +299,12 @@ impl Sampler {
             self.energy.push(energy);
             self.angles.push(angle.clone());
             self.sample.push(self.rotate.system.clone());
+            println!("Sampling {}/{}", self.angles.len(), maxsample);
         }
         self.conformational_sort();
         self.energy = self.energy.clone().into_iter().take(maxsample).collect();
         self.angles = self.angles.clone().into_iter().take(maxsample).collect();
         self.sample = self.sample.clone().into_iter().take(maxsample).collect();
-        println!("Sampling {}/{}", self.angles.len(), maxsample);
     }
 
     pub fn transform_angle(&self, angle: Vec<f64>) -> Vec<f64> {
