@@ -1,6 +1,7 @@
 {
   "Generate": {
     "forcefield": "amberfb15.xml",
+    "grid": 2,
     "minimize": true,
     "molecule": "Sample",
     "n_samples": 10,

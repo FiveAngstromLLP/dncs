@@ -78,8 +78,8 @@ pub struct SobolSampler {
 #[pymethods]
 impl SobolSampler {
     #[new]
-    fn new(system: &Polymer, no_of_samples: usize) -> PyResult<SobolSampler> {
-        let mut sample = Sampler::new(system.polymer.clone());
+    fn new(system: &Polymer, no_of_samples: usize, grid: usize) -> PyResult<SobolSampler> {
+        let mut sample = Sampler::new(system.polymer.clone(), grid);
         sample.sample(no_of_samples);
         Ok(SobolSampler { sampler: sample })
     }

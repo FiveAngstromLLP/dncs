@@ -4,6 +4,7 @@ use crate::forcefield::Amber;
 use crate::parser::{self, Atom, FF};
 use crate::system::{Particles, System};
 use nalgebra::{Matrix3, Vector3};
+use rand::seq::SliceRandom;
 use rand::Rng;
 use rayon::prelude::*;
 use std::io::Write;
@@ -271,16 +272,18 @@ impl RotateAtDihedral {
 pub struct Sampler {
     pub system: System,
     pub rotate: RotateAtDihedral,
+    pub grid: usize,
     pub angles: Vec<Vec<f64>>,
     pub sample: Vec<System>,
     pub energy: Vec<f64>,
 }
 
 impl Sampler {
-    pub fn new(system: System) -> Self {
+    pub fn new(system: System, grid: usize) -> Self {
         Self {
             system: system.clone(),
             rotate: RotateAtDihedral::new(system.clone()),
+            grid,
             angles: Vec::new(),
             sample: Vec::new(),
             energy: Vec::new(),
@@ -290,7 +293,7 @@ impl Sampler {
     pub fn sample(&mut self, maxsample: usize) {
         let n = self.system.dihedral.len();
         for phi in Sobol::new(n).skip(32).take(maxsample * 2) {
-            let angle: Vec<f64> = phi.iter().map(|i| (i * 360.0) - 180.0).collect();
+            let angle: Vec<f64> = self.transform_angle(phi);
             self.rotatesample(angle.clone());
             let energy = self.rotate.energy();
             self.energy.push(energy);
@@ -301,6 +304,40 @@ impl Sampler {
         self.energy = self.energy.clone().into_iter().take(maxsample).collect();
         self.angles = self.angles.clone().into_iter().take(maxsample).collect();
         self.sample = self.sample.clone().into_iter().take(maxsample).collect();
+    }
+
+    pub fn transform_angle(&self, angle: Vec<f64>) -> Vec<f64> {
+        let scale = 360.0;
+        let mut angle = angle;
+        match self.grid {
+            1 => {
+                angle = angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect();
+            }
+            2 | 8 => {
+                let s = scale / self.grid as f64;
+                let angle_a: Vec<f64> = angle.iter().map(|x| x * s).collect();
+                let angle_b: Vec<f64> = angle_a.iter().map(|x| x - s).collect();
+                let mut all_angles = angle_a.clone();
+                all_angles.extend(angle_b);
+                all_angles.shuffle(&mut rand::thread_rng());
+                angle = all_angles.into_iter().take(angle.len()).collect();
+            }
+            16 => {
+                let s = scale / 16.0;
+                let angle_a: Vec<f64> = angle.iter().map(|x| x * s).collect();
+                let angle_b: Vec<f64> = angle.iter().map(|x| x - s).collect();
+                let angle_c: Vec<f64> = angle_a.iter().map(|x| x - s).collect();
+                let angle_d: Vec<f64> = angle_a.iter().map(|x| x * s).collect();
+                let mut all_angles = angle_a.clone();
+                all_angles.extend(angle_b);
+                all_angles.extend(angle_c);
+                all_angles.extend(angle_d);
+                all_angles.shuffle(&mut rand::thread_rng());
+                angle = all_angles.into_iter().take(angle.len()).collect();
+            }
+            _ => {}
+        }
+        angle
     }
 
     fn rotatesample(&mut self, angle: Vec<f64>) {

@@ -10,6 +10,7 @@ struct SimulationParams {
     n_samples: usize,
     forcefield: String,
     minimize: bool,
+    grid: usize,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -58,6 +59,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .long("minimize")
                 .help("Bool parameter to ensure minimize")
                 .action(clap::ArgAction::SetTrue)
+        )
+        .arg(
+            Arg::new("grid")
+                .short('g')
+                .long("grid")
+                .help("No of grid to divide sample")
+                .value_name("grid")
         )
         .get_matches();
 
@@ -112,7 +120,7 @@ Must be one of below:
     let mut system = System::new(&params.sequence, ff.init());
     system.init_parameters();
 
-    let mut sample = Sampler::new(system);
+    let mut sample = Sampler::new(system, params.grid);
     sample.sample(params.n_samples);
 
     // Create result directory
@@ -151,6 +159,7 @@ fn get_params_from_cli(matches: &clap::ArgMatches) -> Option<SimulationParams> {
     let molecule = matches.get_one::<String>("molecule")?;
     let sequence = matches.get_one::<String>("sequence")?;
     let n_samples = matches.get_one::<u64>("samples")?.to_owned() as usize;
+    let grid = matches.get_one::<u64>("grid")?.to_owned() as usize;
     let forcefield = matches.get_one::<String>("forcefield")?;
     let minimize = matches.get_one::<bool>("minimize");
 
@@ -158,6 +167,7 @@ fn get_params_from_cli(matches: &clap::ArgMatches) -> Option<SimulationParams> {
         molecule: molecule.to_string(),
         sequence: sequence.to_string(),
         n_samples,
+        grid,
         forcefield: forcefield.to_string(),
         minimize: minimize.unwrap_or(&false).to_owned(),
     })
@@ -196,6 +206,7 @@ fn get_params_from_config() -> Option<SimulationParams> {
         molecule: generate["molecule"].as_str().unwrap_or("").to_string(),
         sequence: generate["sequence"].as_str().unwrap_or("").to_string(),
         n_samples: generate["n_samples"].as_u64().unwrap_or(10) as usize,
+        grid: generate["grid"].as_u64().unwrap_or(10) as usize,
         forcefield: generate["forcefield"].as_str().unwrap_or("").to_string(),
         minimize: generate["minimize"].as_bool().unwrap_or(false) as bool,
     })
@@ -208,7 +219,8 @@ fn generate_config_file() -> Result<(), std::io::Error> {
             "sequence": "YGGFM",
             "n_samples": 10,
             "forcefield": "amberfb15.xml",
-            "minimize": true
+            "minimize": true,
+            "grid": 4
         }
     });
 
