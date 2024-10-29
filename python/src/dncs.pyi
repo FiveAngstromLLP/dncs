@@ -64,7 +64,7 @@ class Polymer:
 class SobolSampler:
     """Sobol sequence sampler for polymer conformations."""
 
-    def __init__(self, system: Polymer, no_of_samples: int) -> None:
+    def __init__(self, system: Polymer, no_of_samples: int, grid: int) -> None:
         """Initialize Sobol sampler.
 
         Args:

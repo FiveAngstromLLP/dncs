@@ -313,7 +313,7 @@ impl Sampler {
             1 => {
                 angle = angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect();
             }
-            2 | 8 => {
+            2 => {
                 let s = scale / self.grid as f64;
                 let angle_a: Vec<f64> = angle.iter().map(|x| x * s).collect();
                 let angle_b: Vec<f64> = angle_a.iter().map(|x| x - s).collect();
@@ -322,7 +322,7 @@ impl Sampler {
                 all_angles.shuffle(&mut rand::thread_rng());
                 angle = all_angles.into_iter().take(angle.len()).collect();
             }
-            16 => {
+            4 => {
                 let s = scale / 16.0;
                 let angle_a: Vec<f64> = angle.iter().map(|x| x * s).collect();
                 let angle_b: Vec<f64> = angle.iter().map(|x| x - s).collect();
