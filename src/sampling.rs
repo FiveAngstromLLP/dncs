@@ -357,7 +357,7 @@ impl Sampler {
             .map(|(((e, a), s), w)| (e, a, s, w))
             .collect();
 
-        combined.sort_by(|a, b| b.3.partial_cmp(&a.3).unwrap_or(std::cmp::Ordering::Equal));
+        combined.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap_or(std::cmp::Ordering::Equal));
 
         self.energy = combined.iter().map(|(e, _, _, _)| *e).collect();
         self.angles = combined.iter().map(|(_, a, _, _)| a.clone()).collect();
