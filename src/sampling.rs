@@ -313,10 +313,14 @@ impl Sampler {
             1 => {
                 angle = angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect();
             }
+<<<<<<< HEAD
             2 => {
+=======
+            2  => {
+>>>>>>> af01786 (Grids)
                 let s = scale / self.grid as f64;
                 let angle_a: Vec<f64> = angle.iter().map(|x| x * s).collect();
-                let angle_b: Vec<f64> = angle_a.iter().map(|x| x - s).collect();
+                let angle_b: Vec<f64> = angle_a.iter().map(|x| (x*s) - s).collect();
                 let mut all_angles = angle_a.clone();
                 all_angles.extend(angle_b);
                 all_angles.shuffle(&mut rand::thread_rng());
@@ -325,9 +329,9 @@ impl Sampler {
             4 => {
                 let s = scale / self.grid as f64;
                 let angle_a: Vec<f64> = angle.iter().map(|x| x * s).collect();
-                let angle_b: Vec<f64> = angle.iter().map(|x| x - s).collect();
-                let angle_c: Vec<f64> = angle_a.iter().map(|x| x - s).collect();
-                let angle_d: Vec<f64> = angle_a.iter().map(|x| x * s).collect();
+                let angle_b: Vec<f64> = angle.iter().map(|x| ((x*s)-s) ).collect();
+                let angle_c: Vec<f64> = angle.iter().map(|x| ((x*s)-(2.0*s))).collect();
+                let angle_d: Vec<f64> = angle.iter().map(|x| ((x*s)+s)).collect();
                 let mut all_angles = angle_a.clone();
                 all_angles.extend(angle_b);
                 all_angles.extend(angle_c);
