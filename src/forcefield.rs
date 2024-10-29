@@ -35,7 +35,7 @@ impl Amber {
         let potentials: Vec<_> = self
             .system
             .particles
-            .par_iter()
+            .iter()
             .map(|iatom| self.nonbonded_potential(iatom)) // Unit >> (kg.Å/s^2)
             .collect();
         for (iatom, potential) in self.system.particles.iter_mut().zip(potentials) {
