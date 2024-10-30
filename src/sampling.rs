@@ -330,6 +330,21 @@ impl Sampler {
                 let options = vec![angle_a, angle_b, angle_c, angle_d];
                 angle = options.choose(&mut rand::thread_rng()).unwrap().clone();
             }
+            5 => {
+                let s1 = scale / 2.0;
+                let s = scale / 4.0;
+                let angle_a: Vec<f64> = angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect();
+                let angle_b: Vec<f64> = angle.iter().map(|x| x * s1).collect();
+                let angle_c: Vec<f64> = angle_a.iter().map(|x| (x * s1) - s1).collect();
+                let angle_d: Vec<f64> = angle.iter().map(|x| x * s).collect();
+                let angle_e: Vec<f64> = angle.iter().map(|x| ((x * s) - s)).collect();
+                let angle_f: Vec<f64> = angle.iter().map(|x| ((x * s) - (2.0 * s))).collect();
+                let angle_g: Vec<f64> = angle.iter().map(|x| ((x * s) + s)).collect();
+                let options = vec![
+                    angle_a, angle_b, angle_c, angle_d, angle_e, angle_f, angle_g,
+                ];
+                angle = options.choose(&mut rand::thread_rng()).unwrap().clone();
+            }
             _ => {}
         }
         angle
