@@ -2,6 +2,7 @@
 
 use libdncs::*;
 use pyo3::prelude::*;
+use std::sync::Arc;
 
 #[pyfunction]
 fn getPDB(seq: String, filename: String) {
@@ -57,7 +58,7 @@ Must be one of the below:
     }
 
     fn getEnergy(&mut self) -> PyResult<f64> {
-        let ff = Amber::new(self.polymer.clone());
+        let ff = Amber::new(Arc::new(self.polymer.clone()));
         Ok(ff.energy())
     }
 
@@ -79,7 +80,7 @@ pub struct SobolSampler {
 impl SobolSampler {
     #[new]
     fn new(system: &Polymer, no_of_samples: usize, grid: usize) -> PyResult<SobolSampler> {
-        let mut sample = Sampler::new(system.polymer.clone(), grid);
+        let mut sample = Sampler::new(Arc::new(system.polymer.clone()), grid);
         sample.sample(no_of_samples);
         Ok(SobolSampler { sampler: sample })
     }
