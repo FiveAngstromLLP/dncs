@@ -4,11 +4,10 @@ use crate::forcefield::Amber;
 use crate::parser::{self, Atom, FF};
 use crate::system::{Particles, System};
 use nalgebra::{Matrix3, Vector3};
-use rand::seq::SliceRandom;
 use rand::Rng;
-use rayon::prelude::*;
+// use rayon::prelude::*;
 use std::io::Write;
-use std::sync::LazyLock;
+use std::sync::{Arc, LazyLock};
 
 static DIRECTION: LazyLock<Vec<String>> = LazyLock::new(|| {
     include_str!("../data/new-joe-kuo-6.21201")
@@ -43,7 +42,7 @@ impl Sobol {
     }
     fn get_direction(&self, d: usize) -> Vec<Vec<usize>> {
         (1..=d)
-            .into_par_iter()
+            .into_iter()
             .map(|d| match d {
                 1 => (1..=SIZE).map(|i| 1 << (SIZE - i)).collect(),
                 _ => {
@@ -84,12 +83,12 @@ impl Iterator for Sobol {
             let val: Vec<usize> = self.current.clone();
             self.count += 1;
             self.current = val
-                .par_iter()
+                .iter()
                 .enumerate()
                 .map(|(d, m)| self.direction[d][rmz] ^ m)
                 .collect();
             let num: Vec<f64> = val
-                .par_iter()
+                .iter()
                 .map(|i| *i as f64 / f64::powi(2.0, SIZE as i32))
                 .collect();
             // let num = bakers_transform(num);
@@ -142,15 +141,15 @@ fn sobol() {
 
 #[derive(Clone)]
 pub struct RotateAtDihedral {
-    pub system: System,
+    pub system: Arc<System>,
     pub rotated: Particles,
 }
 
 impl RotateAtDihedral {
-    pub fn new(system: System) -> Self {
+    pub fn new(system: Arc<System>) -> Self {
         Self {
-            system: system.clone(),
-            rotated: system.particles.clone(),
+            system: Arc::clone(&system),
+            rotated: system.particles.to_vec(),
         }
     }
 
@@ -168,20 +167,10 @@ impl RotateAtDihedral {
                 .iter()
                 .find(|i| dih.0.serial == i.1.serial && dih.1.serial == i.2.serial)
             {
-                // println!(
-                //     "{}:{} {}:{} {}:{} {}:{}",
-                //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.serial, d.name,
-                // );
                 dihedral.push(Self::dihedral_angle(a, b, c, d))
             }
         }
-
         dihedral
-
-        // s.dihedral
-        //     .iter()
-        //     .map(|(a, b, c, d)| Self::dihedral_angle(a, b, c, d))
-        //     .collect()
     }
 
     /// Rotate the atoms at Dihedral angle
@@ -211,12 +200,13 @@ impl RotateAtDihedral {
                 }
             }
         }
-        self.system.particles = self.rotated.clone();
+        let sys = Arc::make_mut(&mut self.system);
+        sys.particles = self.rotated.clone();
     }
 
     pub fn rotated_energy(&mut self, angle: Vec<f64>) -> f64 {
         self.rotate(angle);
-        let ff = Amber::new(self.system.clone());
+        let ff = Amber::new(Arc::clone(&self.system));
         ff.energy()
     }
 
@@ -259,7 +249,7 @@ impl RotateAtDihedral {
     }
 
     pub fn energy(&self) -> f64 {
-        Amber::new(self.system.clone()).energy()
+        Amber::new(Arc::clone(&self.system)).energy()
     }
 
     pub fn to_pdbstring(&self, model: usize, energy: f64) -> String {
@@ -270,19 +260,19 @@ impl RotateAtDihedral {
 
 #[derive(Clone)]
 pub struct Sampler {
-    pub system: System,
+    pub system: Arc<System>,
     pub rotate: RotateAtDihedral,
     pub grid: usize,
     pub angles: Vec<Vec<f64>>,
-    pub sample: Vec<System>,
+    pub sample: Vec<Arc<System>>,
     pub energy: Vec<f64>,
 }
 
 impl Sampler {
-    pub fn new(system: System, grid: usize) -> Self {
+    pub fn new(system: Arc<System>, grid: usize) -> Self {
         Self {
-            system: system.clone(),
-            rotate: RotateAtDihedral::new(system.clone()),
+            system: Arc::clone(&system),
+            rotate: RotateAtDihedral::new(Arc::clone(&system)),
             grid,
             angles: Vec::new(),
             sample: Vec::new(),
@@ -298,56 +288,65 @@ impl Sampler {
             let energy = self.rotate.energy();
             self.energy.push(energy);
             self.angles.push(angle.clone());
-            self.sample.push(self.rotate.system.clone());
+            self.sample.push(Arc::clone(&self.rotate.system));
             println!("Sampling {}/2048", self.angles.len());
         }
         self.conformational_sort();
-        self.energy = self.energy.clone().into_iter().take(maxsample).collect();
-        self.angles = self.angles.clone().into_iter().take(maxsample).collect();
-        self.sample = self.sample.clone().into_iter().take(maxsample).collect();
+        self.energy = self.energy.iter().take(maxsample).map(|e| *e).collect();
+        self.angles = self
+            .angles
+            .iter()
+            .take(maxsample)
+            .map(|a| a.clone())
+            .collect();
+        self.sample = self
+            .sample
+            .iter()
+            .take(maxsample)
+            .map(|s| Arc::clone(&s))
+            .collect();
     }
 
     pub fn transform_angle(&self, angle: Vec<f64>) -> Vec<f64> {
         let scale = 360.0;
-        let mut angle = angle;
+        let mut rng = rand::thread_rng();
+
         match self.grid {
-            1 => {
-                angle = angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect();
-            }
+            1 => angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect(),
             2 => {
                 let s = scale / self.grid as f64;
-                let angle_a: Vec<f64> = angle.iter().map(|x| x * s).collect();
-                let angle_b: Vec<f64> = angle_a.iter().map(|x| (x * s) - s).collect();
-                let options = vec![angle_a, angle_b];
-                angle = options.choose(&mut rand::thread_rng()).unwrap().clone();
+                let transform_idx = rng.gen_range(0..2);
+                match transform_idx {
+                    0 => angle.iter().map(|x| x * s).collect(),
+                    _ => angle.iter().map(|x| (x * s) - s).collect(),
+                }
             }
             4 => {
                 let s = scale / self.grid as f64;
-                let angle_a: Vec<f64> = angle.iter().map(|x| x * s).collect();
-                let angle_b: Vec<f64> = angle.iter().map(|x| ((x * s) - s)).collect();
-                let angle_c: Vec<f64> = angle.iter().map(|x| ((x * s) - (2.0 * s))).collect();
-                let angle_d: Vec<f64> = angle.iter().map(|x| ((x * s) + s)).collect();
-                let options = vec![angle_a, angle_b, angle_c, angle_d];
-                angle = options.choose(&mut rand::thread_rng()).unwrap().clone();
+                let transform_idx = rng.gen_range(0..4);
+                match transform_idx {
+                    0 => angle.iter().map(|x| x * s).collect(),
+                    1 => angle.iter().map(|x| (x * s) - s).collect(),
+                    2 => angle.iter().map(|x| (x * s) - (2.0 * s)).collect(),
+                    _ => angle.iter().map(|x| (x * s) + s).collect(),
+                }
             }
             5 => {
                 let s1 = scale / 2.0;
                 let s = scale / 4.0;
-                let angle_a: Vec<f64> = angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect();
-                let angle_b: Vec<f64> = angle.iter().map(|x| x * s1).collect();
-                let angle_c: Vec<f64> = angle_a.iter().map(|x| (x * s1) - s1).collect();
-                let angle_d: Vec<f64> = angle.iter().map(|x| x * s).collect();
-                let angle_e: Vec<f64> = angle.iter().map(|x| ((x * s) - s)).collect();
-                let angle_f: Vec<f64> = angle.iter().map(|x| ((x * s) - (2.0 * s))).collect();
-                let angle_g: Vec<f64> = angle.iter().map(|x| ((x * s) + s)).collect();
-                let options = vec![
-                    angle_a, angle_b, angle_c, angle_d, angle_e, angle_f, angle_g,
-                ];
-                angle = options.choose(&mut rand::thread_rng()).unwrap().clone();
+                let transform_idx = rng.gen_range(0..7);
+                match transform_idx {
+                    0 => angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect(),
+                    1 => angle.iter().map(|x| x * s1).collect(),
+                    2 => angle.iter().map(|x| (x * s1) - s1).collect(),
+                    3 => angle.iter().map(|x| x * s).collect(),
+                    4 => angle.iter().map(|x| (x * s) - s).collect(),
+                    5 => angle.iter().map(|x| (x * s) - (2.0 * s)).collect(),
+                    _ => angle.iter().map(|x| (x * s) + s).collect(),
+                }
             }
-            _ => {}
+            _ => angle,
         }
-        angle
     }
 
     fn rotatesample(&mut self, angle: Vec<f64>) {
@@ -357,32 +356,33 @@ impl Sampler {
 
     fn conformational_sort(&mut self) {
         const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
-        let weight: Vec<f64> = self.energy.iter().map(|e| (-e / KBT).exp()).collect();
-        let z: f64 = weight.iter().sum();
-        let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
-        // println!("Normalized : {normalized:?}");
-        let energies = std::mem::take(&mut self.energy);
-        let angles = std::mem::take(&mut self.angles);
-        let samples = std::mem::take(&mut self.sample);
 
-        let mut combined: Vec<(f64, Vec<f64>, System, f64)> = energies
-            .into_iter()
-            .zip(angles)
-            .zip(samples)
-            .zip(normalized)
-            .map(|(((e, a), s), w)| (e, a, s, w))
+        // Create indices and sort them based on energy values
+        let mut indices: Vec<usize> = (0..self.energy.len()).collect();
+        indices.sort_by(|&a, &b| {
+            self.energy[a]
+                .partial_cmp(&self.energy[b])
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
+
+        // Create new sorted vectors using the indices
+        let sorted_energy: Vec<f64> = indices.iter().map(|&i| self.energy[i]).collect();
+        let sorted_angles: Vec<Vec<f64>> =
+            indices.iter().map(|&i| self.angles[i].clone()).collect();
+        let sorted_sample: Vec<Arc<System>> = indices
+            .iter()
+            .map(|&i| Arc::clone(&self.sample[i]))
             .collect();
 
-        combined.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap_or(std::cmp::Ordering::Equal));
-
-        self.energy = combined.iter().map(|(e, _, _, _)| *e).collect();
-        self.angles = combined.iter().map(|(_, a, _, _)| a.clone()).collect();
-        self.sample = combined.into_iter().map(|(_, _, s, _)| s).collect();
+        // Replace original vectors with sorted ones
+        self.energy = sorted_energy;
+        self.angles = sorted_angles;
+        self.sample = sorted_sample;
     }
 
     #[inline]
     fn reinit(&mut self) {
-        self.rotate = RotateAtDihedral::new(self.system.clone());
+        self.rotate = RotateAtDihedral::new(Arc::clone(&self.system));
     }
 
     pub fn write_angles(&self, filename: &str) {
@@ -406,7 +406,7 @@ impl Sampler {
         let mut file = std::fs::File::create(filename).unwrap();
 
         for (i, s) in self.sample.iter().enumerate() {
-            let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i + 1, self.energy[i]);
+            let pdb = RotateAtDihedral::new(Arc::clone(s)).to_pdbstring(i + 1, self.energy[i]);
             file.write_all(pdb.as_bytes()).unwrap();
         }
     }
@@ -422,8 +422,8 @@ impl Sampler {
         }
 
         let mut file = std::fs::File::create(format!("{}/../structure.pdb", foldername)).unwrap();
-        let eng = Amber::new(self.system.clone()).energy();
-        let pdb = RotateAtDihedral::new(self.system.clone()).to_pdbstring(1, eng);
+        let eng = Amber::new(Arc::clone(&self.system)).energy();
+        let pdb = RotateAtDihedral::new(Arc::clone(&self.system)).to_pdbstring(1, eng);
         file.write_all(pdb.as_bytes()).unwrap();
     }
 }

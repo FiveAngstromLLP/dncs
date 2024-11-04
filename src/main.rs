@@ -3,6 +3,7 @@ use libdncs::*;
 use serde_json::{json, Value};
 use std::fs;
 use std::path::Path;
+use std::sync::Arc;
 
 struct SimulationParams {
     molecule: String,
@@ -123,7 +124,7 @@ Must be one of below:
     let mut system = System::new(&params.sequence, ff.init());
     system.init_parameters();
 
-    let mut sample = Sampler::new(system, params.grid);
+    let mut sample = Sampler::new(Arc::new(system), params.grid);
     sample.sample(params.n_samples);
 
     // Create result directory

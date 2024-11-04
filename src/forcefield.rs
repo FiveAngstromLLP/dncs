@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 
+use std::sync::Arc;
+
 use crate::parser::Atom;
 use crate::sampling::RotateAtDihedral;
 use crate::system::System;
@@ -7,11 +9,11 @@ use nalgebra::Vector3;
 use rayon::prelude::*;
 
 pub struct Amber {
-    pub system: System,
+    pub system: Arc<System>,
 }
 
 impl Amber {
-    pub fn new(system: System) -> Self {
+    pub fn new(system: Arc<System>) -> Self {
         Self { system }
     }
 
@@ -29,20 +31,6 @@ impl Amber {
             .map(|energy| energy * 6.02214076e23 / 4184.0) // Unit >> Kcal/mol
             .sum::<f64>();
         energy + self.hydrogen_bond_energy() + self.periodic_torsional_force()
-    }
-
-    pub fn potential(&mut self) {
-        let potentials: Vec<_> = self
-            .system
-            .particles
-            .iter()
-            .map(|iatom| self.nonbonded_potential(iatom)) // Unit >> (kg.Å/s^2)
-            .collect();
-        for (iatom, potential) in self.system.particles.iter_mut().zip(potentials) {
-            iatom.force[0] = potential.x; // Unit >> (kg.Å/s^2)
-            iatom.force[1] = potential.y; // Unit >> (kg.Å/s^2)
-            iatom.force[2] = potential.z; // Unit >> (kg.Å/s^2)
-        }
     }
 
     #[inline]

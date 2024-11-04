@@ -5,6 +5,6 @@
     "minimize": false,
     "molecule": "DECALANINE",
     "n_samples": 100,
-    "sequence": "AAAAAAAAAA"
+    "sequence": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
   }
 }

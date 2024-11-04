@@ -7,7 +7,7 @@ use std::sync::Arc;
 
 pub struct Minimizer {
     pub sample: Sampler,
-    pub minimized: Vec<System>,
+    pub minimized: Vec<Arc<System>>,
     pub energy: Vec<f64>,
     pub angles: Vec<Vec<f64>>,
 }
@@ -18,7 +18,7 @@ impl Minimizer {
         let len = sample.angles.len();
         Self {
             sample: sample.clone(),
-            minimized: vec![sample.system.clone(); len],
+            minimized: vec![Arc::clone(&sample.system); len],
             energy: vec![0.0; len],
             angles: vec![vec![0.0]; len],
         }
@@ -98,7 +98,7 @@ impl Minimizer {
         let angles = std::mem::take(&mut self.angles);
         let minimized = std::mem::take(&mut self.minimized);
 
-        let mut combined: Vec<(f64, Vec<f64>, System, f64)> = energies
+        let mut combined: Vec<(f64, Vec<f64>, Arc<System>, f64)> = energies
             .into_iter()
             .zip(angles.into_iter())
             .zip(minimized.into_iter())
@@ -133,12 +133,12 @@ impl Minimizer {
 
     pub fn to_pdb(&self, filename: &str) -> std::io::Result<()> {
         let mut file = File::create(filename)?;
-        let eng = Amber::new(self.sample.system.clone()).energy();
+        let eng = Amber::new(Arc::clone(&self.sample.system)).energy();
         let pdb = RotateAtDihedral::new(self.sample.system.clone()).to_pdbstring(1, eng);
         file.write_all(pdb.as_bytes())?;
 
         for (i, s) in self.minimized.iter().enumerate() {
-            let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(i + 1, self.energy[i]);
+            let pdb = RotateAtDihedral::new(Arc::clone(&s)).to_pdbstring(i + 1, self.energy[i]);
             file.write_all(pdb.as_bytes())?;
         }
         Ok(())

@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use libdncs::*;
 
 // Configuration
@@ -11,7 +13,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());
     sys.init_parameters();
     // Sample
-    let mut sample = Sampler::new(sys, 4);
+    let mut sample = Sampler::new(Arc::new(sys), 4);
     println!("Generating Samples..");
     sample.sample(NO_OF_SAMPLE);
     // Minimizer
