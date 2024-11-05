@@ -5,7 +5,7 @@ use std::fs;
 use std::path::Path;
 use std::sync::Arc;
 
-struct SimulationParams {
+struct SamplingParams {
     molecule: String,
     sequence: String,
     n_samples: usize,
@@ -16,7 +16,7 @@ struct SimulationParams {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = Command::new("DNCS")
-        .version("0.1.5")
+        .version("1.0.0")
         .about("Digital Nets Conformational Sample (DNCS)")
         .arg(
             Arg::new("config")
@@ -116,7 +116,7 @@ Must be one of below:
         }
     };
 
-    // Run simulation
+    // Run Sampling
     println!(
         "Generating Best {} Samples from 2048 Samples..",
         &params.n_samples
@@ -159,7 +159,7 @@ Must be one of below:
     Ok(())
 }
 
-fn get_params_from_cli(matches: &clap::ArgMatches) -> Option<SimulationParams> {
+fn get_params_from_cli(matches: &clap::ArgMatches) -> Option<SamplingParams> {
     let molecule = matches.get_one::<String>("molecule")?;
     let sequence = matches.get_one::<String>("sequence")?;
     let n_samples = matches.get_one::<u64>("samples")?.to_owned() as usize;
@@ -167,7 +167,7 @@ fn get_params_from_cli(matches: &clap::ArgMatches) -> Option<SimulationParams> {
     let forcefield = matches.get_one::<String>("forcefield")?;
     let minimize = matches.get_one::<bool>("minimize");
 
-    Some(SimulationParams {
+    Some(SamplingParams {
         molecule: molecule.to_string(),
         sequence: sequence.to_string(),
         n_samples,
@@ -177,7 +177,7 @@ fn get_params_from_cli(matches: &clap::ArgMatches) -> Option<SimulationParams> {
     })
 }
 
-fn get_params_from_config() -> Option<SimulationParams> {
+fn get_params_from_config() -> Option<SamplingParams> {
     if !Path::new("dncs.json").exists() {
         return None;
     }
@@ -206,7 +206,7 @@ fn get_params_from_config() -> Option<SimulationParams> {
         }
     };
 
-    Some(SimulationParams {
+    Some(SamplingParams {
         molecule: generate["molecule"].as_str().unwrap_or("").to_string(),
         sequence: generate["sequence"].as_str().unwrap_or("").to_string(),
         n_samples: generate["n_samples"].as_u64().unwrap_or(10) as usize,

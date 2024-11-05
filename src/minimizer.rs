@@ -74,7 +74,7 @@ impl Minimizer {
 
             match prbs {
                 Ok(p) => {
-                    println!("Model {} Energy : {:?} KCal/Mol", i + 1, p.fx);
+                    println!("Minimizing Model {}", i + 1);
                     let mut r = RotateAtDihedral::new(system_clone);
                     r.rotate(theta.clone());
                     self.minimized[i] = r.system;
@@ -89,35 +89,37 @@ impl Minimizer {
     }
 
     pub fn conformational_sort(&mut self) {
-        const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
-        let weight: Vec<f64> = self.energy.iter().map(|e| (-e / KBT).exp()).collect();
-        let z: f64 = weight.iter().sum();
-        let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
+        // const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
 
-        let energies = std::mem::take(&mut self.energy);
-        let angles = std::mem::take(&mut self.angles);
-        let minimized = std::mem::take(&mut self.minimized);
+        // Create indices and sort them based on energy values
+        let mut indices: Vec<usize> = (0..self.energy.len()).collect();
+        indices.sort_by(|&a, &b| {
+            self.energy[a]
+                .partial_cmp(&self.energy[b])
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
 
-        let mut combined: Vec<(f64, Vec<f64>, Arc<System>, f64)> = energies
-            .into_iter()
-            .zip(angles.into_iter())
-            .zip(minimized.into_iter())
-            .zip(normalized.into_iter())
-            .map(|(((e, a), s), w)| (e, a, s, w))
+        // Create new sorted vectors using the indices
+        let sorted_energy: Vec<f64> = indices.iter().map(|&i| self.energy[i]).collect();
+        let sorted_angles: Vec<Vec<f64>> =
+            indices.iter().map(|&i| self.angles[i].clone()).collect();
+        let sorted_minimized: Vec<Arc<System>> = indices
+            .iter()
+            .map(|&i| Arc::clone(&self.minimized[i]))
             .collect();
 
-        combined.sort_by(|a, b| b.3.partial_cmp(&a.3).unwrap_or(std::cmp::Ordering::Equal));
-
-        self.energy = combined.iter().map(|(e, _, _, _)| *e).collect();
-        self.angles = combined.iter().map(|(_, a, _, _)| a.clone()).collect();
-        self.minimized = combined.into_iter().map(|(_, _, s, _)| s).collect();
+        // Replace original vectors with sorted ones
+        let minenergy = sorted_energy.iter().copied().fold(f64::INFINITY, f64::min);
+        self.energy = sorted_energy.iter().map(|eng| eng - minenergy).collect();
+        self.angles = sorted_angles;
+        self.minimized = sorted_minimized;
     }
 
     pub fn write_angles(&self, filename: &str) -> std::io::Result<()> {
         let mut file = File::create(filename)?;
         for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(
-                "{}, {} KCal/mol, {}\n",
+                "{}, {:<6.3}, {}\n",
                 i + 1,
                 energy,
                 angles

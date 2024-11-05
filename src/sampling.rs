@@ -355,7 +355,11 @@ impl Sampler {
     }
 
     fn conformational_sort(&mut self) {
-        const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
+        // const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
+
+        // let weight: Vec<f64> = self.energy.iter().map(|e| (-e / KBT).exp()).collect();
+        // let z: f64 = weight.iter().sum();
+        // let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
 
         // Create indices and sort them based on energy values
         let mut indices: Vec<usize> = (0..self.energy.len()).collect();
@@ -375,7 +379,8 @@ impl Sampler {
             .collect();
 
         // Replace original vectors with sorted ones
-        self.energy = sorted_energy;
+        let minenergy = sorted_energy.iter().copied().fold(f64::INFINITY, f64::min);
+        self.energy = sorted_energy.iter().map(|eng| eng - minenergy).collect();
         self.angles = sorted_angles;
         self.sample = sorted_sample;
     }
@@ -389,7 +394,7 @@ impl Sampler {
         let mut file = std::fs::File::create(filename).unwrap();
         for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(
-                "{}, {} KCal/mol, {}\n",
+                "{}, {:<6.3}, {}\n",
                 i + 1,
                 energy,
                 angles

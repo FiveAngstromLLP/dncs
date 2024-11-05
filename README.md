@@ -64,7 +64,7 @@ This creates a `dncs.json` file with some example parameters:
 }
 ```
 
-2. Run simulation with command-line arguments:
+2. Run Sampling with command-line arguments:
 ```bash
 dncs -N molecule_name -s SEQUENCE -n NUMBER_OF_SAMPLES -f FORCEFIELD [-m] [-g GRID_SIZE]
 ```
@@ -74,7 +74,7 @@ Example:
 dncs -N test -s YGGFM -n 100 -f amberfb15.xml -m -g 4
 ```
 
-3. Run simulation using config file:
+3. Run Sampling using config file:
 ```bash
 dncs
 ```
@@ -132,4 +132,4 @@ Result/
 
 ## Integration with openmm
 
-You can find a template for OpenMM integration in the https://github.com/FiveAngstromLLP/dncs-simulation.git repository.
+You can find a template for OpenMM integration in the https://github.com/FiveAngstromLLP/dncs-Sampling.git repository.
