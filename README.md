@@ -129,3 +129,7 @@ Result/
     ├── molecule_name.out # Minimized angles (if -m is used)
     └── molecule_name.pdb # Minimized structures (if -m is used)
 ```
+
+## Integration with openmm
+
+You can find a template for OpenMM integration in the https://github.com/FiveAngstromLLP/dncs-simulation.git repository.
