@@ -16,7 +16,7 @@ struct SimulationParams {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = Command::new("DNCS")
-        .version("0.1.4")
+        .version("0.1.5")
         .about("Digital Nets Conformational Sample (DNCS)")
         .arg(
             Arg::new("config")

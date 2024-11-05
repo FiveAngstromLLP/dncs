@@ -2,9 +2,9 @@
   "Generate": {
     "forcefield": "amberfb15.xml",
     "grid": 4,
-    "minimize": false,
-    "molecule": "DECALANINE",
-    "n_samples": 100,
-    "sequence": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    "minimize": true,
+    "molecule": "Sample",
+    "n_samples": 10,
+    "sequence": "YGGFM"
   }
 }
