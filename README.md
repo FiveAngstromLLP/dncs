@@ -141,7 +141,7 @@ Result/moleculename/
     │   ├── Equilibrated_*.pdb      # Equilibrated structures
     │   └── equilibrated.out        # Angle measurements
     ├── MDSimulation/               # Molecular dynamics results
-    │   └── simulates_*.pdb         # Simulation trajectory structures
+    │   └── simulated_*.pdb         # Simulation trajectory structures
     ├── Minimized/                  # Energy minimization results
     │   ├── Minimized_*.pdb        # Minimized structures
     │   └── minimized.out          # Final angles
