@@ -58,7 +58,7 @@ Create a configuration file for CLI sampling:
 dncs -c
 ```
 
-This creates `dncs.json` with parameters for conformational sampling:
+This creates `dncs.json` with parameters for enhanced conformational sampling:
 ```json
 {
   "Generate": {
