@@ -24,7 +24,7 @@ use std::io::Write;
 use std::sync::{Arc, LazyLock};
 
 static DIRECTION: LazyLock<Vec<String>> = LazyLock::new(|| {
-    include_str!("../data/new-joe-kuo-6.21201")
+    include_str!("../data/sobol/new-joe-kuo-6.21201")
         .lines()
         .map(String::from)
         .collect()
