@@ -116,19 +116,19 @@ For Python OpenMM simulation, create a `dncs.toml` file:
 
 ```toml
 [simulation]
-moleculename = "YGGFM"
-sequence = "AAAAA"
-interface = "openmm"
-n_samples = 10
-temp = 300.0
-forcefield = ["amber99sb.xml", "amber14/tip3pfb.xml"]
-device = "CPU"
-solvent = 100
-steps = 5000
-gamma = 1.0
-dt = 0.002
-md_steps = 5000
-grid = 5
+moleculename = "Met-Enkephalin" #MOLECULE NAME
+sequence = "YGGFM" #INPUT SEQUENCE
+interface = "openmm" #INTERFACE TO OPENMM (OpenMM Should be installed from https://openmm.org/
+n_samples = 100 # Number of Samples (This divides the timesteps into segments)
+temp = 300.0 # NVT equilibration temperature.
+forcefield = ["amber14.xml", "amber14/tip3pfb.xml"] #Force Field specification
+device = "CUDA" #Device to run MD simulation
+solvent = 10000 # Solvation
+steps = 5000 # Equlibration timesteps (uses Langevin Integrator from OpenMM)
+gamma = 1.0 # Friction coefficient 
+dt = 0.002 # Integrator timestep
+md_steps = 5000 # MD timestep
+grid = 4 # Adaptive Sampling
 ```
 
 ### Output Structure [Python Simulation]
