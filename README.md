@@ -95,7 +95,7 @@ CLI Options:
 - `-n, --samples`: Number of samples to generate
 - `-f, --forcefield`: Force field selection (amber03.xml|amber10.xml|amber96.xml|amber99sb.xml|amberfb15.xml)
 - `-m, --minimize`: Enable energy minimization
-- `-g, --grid`: Grid size for sample division
+- `-g, --grid`: Grid size for adaptive sampling.
 - `-c, --config`: Generate default configuration file
 
 ### Output Structure [Rust Sampling]
