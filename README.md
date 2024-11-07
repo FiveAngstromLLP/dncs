@@ -54,7 +54,7 @@ This creates a `dncs.json` file with some example parameters:
 ```json
 {
   "Generate": {
-    "molecule": "Sample",
+    "molecule": "Met-Enkephalin",
     "sequence": "YGGFM",
     "n_samples": 10,
     "forcefield": "amberfb15.xml",
