@@ -16,7 +16,7 @@ publisher  ="The Royal Society of Chemistry",
 doi  ="10.1039/D4CP01891E",
 url  ="http://dx.doi.org/10.1039/D4CP01891E",
 abstract  ="We propose digital nets conformational sampling (DNCS) – an enhanced sampling technique to explore the conformational ensembles of peptides{,} especially intrinsically disordered peptides (IDPs). The DNCS algorithm relies on generating history-dependent samples of dihedral variables using bitwise XOR operations and binary angle measurements (BAM). The algorithm was initially studied using met-enkephalin{,} a highly elusive neuropeptide. The DNCS method predicted near-native structures and the energy landscape of met-enkephalin was observed to be in direct correlation with earlier studies on the neuropeptide. Clustering analysis revealed that there are only 24 low-lying conformations of the molecule. The DNCS method has then been tested for predicting optimal conformations of 42 oligopeptides of length varying from 3 to 8 residues. The closest-to-native structures of 86% of cases are near-native and 24% of them have a root mean square deviation of less than 1.00 Å with respect to their crystal structures. The results obtained reveal that the DNCS method performs well{,} that too in less computational time."}
-
+```
 
 ## Installation
 
