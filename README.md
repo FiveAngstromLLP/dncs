@@ -152,25 +152,25 @@ grid = 5
 
 The Python interface generates the following directory structure:
 ```
-./
-├── dncs.log                    # Log file
-├── Langevin/                   # Langevin dynamics results
-│   ├── Equilibrated_*.pdb      # Equilibrated structures
-│   └── equilibrated.out        # Angle measurements
-├── MDSimulation/               # Molecular dynamics results
-│   └── simulates_*.pdb         # Simulation trajectory structures
-├── Minimized/                  # Energy minimization results
-│   ├── Minimized_*.pdb        # Minimized structures
-│   └── minimized.out          # Final angles
-├── Sampled/                    # Initial sampling results
-│   ├── angles.out             # Initial angles
-│   └── sample_*.pdb           # Initial structures
-├── multi_structure.pdb         # Combined structure file
-├── result.pdb                 # Final structure
-└── structure.pdb              # Input structure
+Result/moleculename/
+    ├── dncs.log                    # Log file
+    ├── Langevin/                   # Langevin dynamics results
+    │   ├── Equilibrated_*.pdb      # Equilibrated structures
+    │   └── equilibrated.out        # Angle measurements
+    ├── MDSimulation/               # Molecular dynamics results
+    │   └── simulates_*.pdb         # Simulation trajectory structures
+    ├── Minimized/                  # Energy minimization results
+    │   ├── Minimized_*.pdb        # Minimized structures
+    │   └── minimized.out          # Final angles
+    ├── Sampled/                    # Initial sampling results
+    │   ├── angles.out             # Initial angles
+    │   └── sample_*.pdb           # Initial structures
+    ├── multi_structure.pdb         # Combined structure file
+    ├── result.pdb                 # Final structure
+    └── structure.pdb              # Input structure
 ```
 
-## Development Tools
+## Usage
 
 ### Using the Justfile
 
