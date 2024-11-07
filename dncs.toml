@@ -1,0 +1,39 @@
+[simulation]
+# Name of the molecule to simulate
+moleculename = "YGGFM"
+
+# Amino acid sequence
+sequence = "AAAAA"
+
+# Simulation interface to use (options: openmm)
+interface = "openmm"
+
+# Number of simulation samples to generate
+n_samples = 10
+
+# Temperature in Kelvin
+temp = 300.0
+
+# List of forcefield files
+forcefield = ["amber99sb.xml", "amber14/tip3pfb.xml"]
+
+# Computation device (options: CPU, CUDA, OpenCL)
+device = "CPU"
+
+# Solvent box size in angstroms
+solvent = 100
+
+# Number of simulation steps
+steps = 5000
+
+# Friction coefficient for Langevin dynamics
+gamma = 1.0
+
+# Integration timestep in picoseconds
+dt = 0.002
+
+# Number of molecular dynamics steps
+md_steps = 5000
+
+# Grid size for spatial decomposition
+grid = 5

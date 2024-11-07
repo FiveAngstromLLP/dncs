@@ -1,7 +1,12 @@
-# DNCS 1.0 (Digital Nets Conformational Sampling)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![DOI](https://img.shields.io/badge/DOI-10.1039%2FD4CP01891E-blue)](https://doi.org/10.1039/D4CP01891E)
 
-DNCS 1.0 is an Enhanced Conformational Sampling tool using digital nets. It provides both a command-line interface and Python bindings for generating and analyzing molecular conformations.The DNCS tool is based on the following publications.
-Please cite the following publication.
+# DNCS 1.0 (Digital Nets Conformational Sampling)
+## © 2024 FiveAngstrom LLP. All rights reserved.
+
+DNCS 1.0 is an Enhanced Conformational Sampling tool using digital nets. It provides both a command-line interface and Python bindings for generating and analyzing molecular conformations.
+
+If you use DNCS in your research, please cite:
 
 ```bibtex
 @Article{D4CP01891E,
@@ -18,16 +23,18 @@ url  ="http://dx.doi.org/10.1039/D4CP01891E",
 abstract  ="We propose digital nets conformational sampling (DNCS) – an enhanced sampling technique to explore the conformational ensembles of peptides{,} especially intrinsically disordered peptides (IDPs). The DNCS algorithm relies on generating history-dependent samples of dihedral variables using bitwise XOR operations and binary angle measurements (BAM). The algorithm was initially studied using met-enkephalin{,} a highly elusive neuropeptide. The DNCS method predicted near-native structures and the energy landscape of met-enkephalin was observed to be in direct correlation with earlier studies on the neuropeptide. Clustering analysis revealed that there are only 24 low-lying conformations of the molecule. The DNCS method has then been tested for predicting optimal conformations of 42 oligopeptides of length varying from 3 to 8 residues. The closest-to-native structures of 86% of cases are near-native and 24% of them have a root mean square deviation of less than 1.00 Å with respect to their crystal structures. The results obtained reveal that the DNCS method performs well{,} that too in less computational time."}
 ```
 
-## Installation
+## Prerequisites
 
-### Prerequisites
+Before installing DNCS, ensure you have:
 
 - Rust toolchain (1.70.0 or later)
 - Cargo (Rust's package manager)
 - Python 3.7+ (for Python bindings)
 - Maturin (for building Python bindings)
 
-### Installing Rust
+## Installation
+
+### 1. Installing Rust
 
 **For Unix-based systems (Linux, macOS):**
 ```bash
@@ -37,8 +44,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 **For Windows:**
 - Download and run [rustup-init.exe](https://rustup.rs)
 
-
-### Installing from Source
+### 2. Installing DNCS
 
 1. Clone the repository:
 ```bash
@@ -51,22 +57,25 @@ cd dncs
 cargo install --path .
 ```
 
-3. (Optional) Install Python bindings:
+3. Install Python bindings (optional):
 ```bash
 pip install maturin
 cd python
 maturin develop --release
 ```
 
-## Usage
+## Configuration
 
-### Command-line Interface
+### Rust CLI Configuration Options
 
-1. Generate a configuration file:
+#### JSON Configuration File
+
+Create a configuration file for CLI sampling:
 ```bash
 dncs -c
 ```
-This creates a `dncs.json` file with some example parameters:
+
+This creates `dncs.json` with parameters for conformational sampling:
 ```json
 {
   "Generate": {
@@ -80,7 +89,9 @@ This creates a `dncs.json` file with some example parameters:
 }
 ```
 
-2. Run Sampling with command-line arguments:
+#### Command-line Options
+
+Basic usage:
 ```bash
 dncs -N molecule_name -s SEQUENCE -n NUMBER_OF_SAMPLES -f FORCEFIELD [-m] [-g GRID_SIZE]
 ```
@@ -90,53 +101,23 @@ Example:
 dncs -N test -s YGGFM -n 100 -f amberfb15.xml -m -g 4
 ```
 
-3. Run Sampling using config file:
+Run with config file:
 ```bash
 dncs
 ```
 
-### Command-line Options
-
+CLI Options:
 - `-N, --molecule`: Molecule name
 - `-s, --sequence`: Amino acid sequence
 - `-n, --samples`: Number of samples to generate
-- `-f, --forcefield`: Force field selection
-  - Available options:
-    - amber03.xml
-    - amber10.xml
-    - amber96.xml
-    - amber99sb.xml
-    - amberfb15.xml
+- `-f, --forcefield`: Force field selection (amber03.xml|amber10.xml|amber96.xml|amber99sb.xml|amberfb15.xml)
 - `-m, --minimize`: Enable energy minimization
 - `-g, --grid`: Grid size for sample division
 - `-c, --config`: Generate default configuration file
 
-### Python Interface
+### Output Structure [Rust Sampling]
 
-```python
-import dncs
-
-# Create a polymer system
-polymer = dncs.Polymer("YGGFM", "amberfb15.xml")
-
-# Get energy
-energy = polymer.getEnergy()
-
-# Generate PDB file
-polymer.toPDB("output.pdb")
-
-# Generate conformational samples
-sampler = dncs.SobolSampler(polymer, n_samples=100, grid=4)
-
-# Write output files
-sampler.write_angles("angles.out")
-sampler.toPDB("conformations.pdb")
-sampler.toPDBFiles("conformations")
-```
-
-## Output Files
-
-The program creates a `Result` directory with the following structure:
+Results are stored in:
 ```
 Result/
 └── molecule_name/
@@ -146,6 +127,67 @@ Result/
     └── molecule_name.pdb # Minimized structures (if -m is used)
 ```
 
-## Integration with openmm
+### Advanced Configuration for OpenMM Simulation
 
-You can find a template for OpenMM integration in the https://github.com/FiveAngstromLLP/dncs-Sampling.git repository.
+For Python OpenMM simulation, create a `dncs.toml` file:
+
+```toml
+[simulation]
+moleculename = "YGGFM"
+sequence = "AAAAA"
+interface = "openmm"
+n_samples = 10
+temp = 300.0
+forcefield = ["amber99sb.xml", "amber14/tip3pfb.xml"]
+device = "CPU"
+solvent = 100
+steps = 5000
+gamma = 1.0
+dt = 0.002
+md_steps = 5000
+grid = 5
+```
+
+### Output Structure [Python Simulation]
+
+The Python interface generates the following directory structure:
+```
+./
+├── dncs.log                    # Log file
+├── Langevin/                   # Langevin dynamics results
+│   ├── Equilibrated_*.pdb      # Equilibrated structures
+│   └── equilibrated.out        # Angle measurements
+├── MDSimulation/               # Molecular dynamics results
+│   └── simulates_*.pdb         # Simulation trajectory structures
+├── Minimized/                  # Energy minimization results
+│   ├── Minimized_*.pdb        # Minimized structures
+│   └── minimized.out          # Final angles
+├── Sampled/                    # Initial sampling results
+│   ├── angles.out             # Initial angles
+│   └── sample_*.pdb           # Initial structures
+├── multi_structure.pdb         # Combined structure file
+├── result.pdb                 # Final structure
+└── structure.pdb              # Input structure
+```
+
+## Development Tools
+
+### Using the Justfile
+
+For development tasks:
+
+Installation:
+```bash
+just install
+```
+- Installs Python requirements
+- Installs maturin
+- Builds Rust components
+
+Running:
+```bash
+just run
+```
+- Executes main DNCS script
+
+Note: Uses DNCS_FOLDER environment variable for path management
