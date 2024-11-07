@@ -93,6 +93,11 @@ class DncsIntegrator:
         self.log.info(f"ENERGY FOR MODEL {i} = {state.getPotentialEnergy()}")
         print(f"Initial energy for model {i}: {state.getPotentialEnergy()}")
 
+        os.makedirs(f"{self.outfolder}/Minimized", exist_ok=True)
+        simulation.minimizeEnergy()
+        minimized_state = simulation.context.getState(getEnergy=True, getPositions=True)
+        self.log.info(f"MINIMIZED ENERGY FOR MODEL {i} = {minimized_state.getPotentialEnergy()}")
+        print(f"Minimized energy for model {i}: {minimized_state.getPotentialEnergy()}")
         simulation.step(self.config.steps)
         equilibrated_state = simulation.context.getState(getEnergy=True, getPositions=True)
         self.log.info(f"EQUILIBRATED ENERGY AFTER {self.config.steps} STEPS FOR MODEL {i} = {equilibrated_state.getPotentialEnergy()}")
@@ -104,19 +109,14 @@ class DncsIntegrator:
         energy = float(str(equilibrated_state.getPotentialEnergy()).split(" ")[0])
         weight = math.exp(-energy / (self.config.temp * 1.380649e-23 * 6.02214076e23))
 
-        os.makedirs(f"{self.outfolder}/Minimized", exist_ok=True)
 
 
         if weight > 1.0:
-            simulation.minimizeEnergy()
-            minimized_state = simulation.context.getState(getEnergy=True, getPositions=True)
-            self.log.info(f"MINIMIZED ENERGY FOR MODEL {i} = {minimized_state.getPotentialEnergy()}")
-            print(f"Minimized energy for model {i}: {minimized_state.getPotentialEnergy()}")
 
             self.save_pdb(
                 f"{self.outfolder}/Minimized/Minimized_{i:04}.pdb",
                 simulation.topology,
-                minimized_state.getPositions()
+                equilibrated_state.getPositions()
             )
 
     @staticmethod
