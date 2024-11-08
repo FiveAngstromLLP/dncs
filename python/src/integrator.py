@@ -15,13 +15,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
+import sys
 import re
 import dncs
 import math
 import logging
 import datetime
 import concurrent.futures
-from openmm.app import ForceField, PDBFile,Simulation,Modeller
+from openmm.app import ForceField, PDBFile,Simulation,Modeller, PDBReporter, StateDataReporter
 from openmm.openmm import Platform, LangevinMiddleIntegrator
 from openmm.unit import kelvin, nano, pico
 
@@ -202,6 +203,7 @@ class MDSimulation:
 
         steps_per_segment = int(self.config.md_steps / len(self.pdbs))
         for i, pdb in enumerate(self.pdbs):
+
             print(f"processing {i}th structure..")
             pdbdata = PDBFile(f"{self.inpfolder}/{pdb}")
             system = self.forcefield.createSystem(pdbdata.topology)
@@ -213,13 +215,17 @@ class MDSimulation:
 
             s = Simulation(pdbdata.topology, system, integrator, platform)
             s.context.setPositions(pdbdata.positions)
-
+            s.reporters.append(StateDataReporter(sys.stdout, 100, step=True,
+                                              potentialEnergy=True,
+                                              kineticEnergy=True,
+                                              temperature=True))
+            s.reporters.append(PDBReporter(f"{folder}/Result/{self.config.moleculename}/MDSimulation/trajectory{i}.pdb", 100))
             s.step(steps_per_segment)
 
             position = s.context.getState(getPositions=True).getPositions()
-            save_pdb(f"{self.outfolder}/simulates_{i}.pdb", s.topology, position)
+            save_pdb(f"{self.outfolder}/simulated_{i}.pdb", s.topology, position)
 
-            del s
+
 
 
 def save_pdb(filename: str, topology, positions):
