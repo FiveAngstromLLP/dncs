@@ -131,6 +131,7 @@ class CleanUp:
         self.config = config
         self.inpfolder = f"{folder}/Result/{self.config.moleculename}"
         self.process_files()
+        self.write_equilibrated()
         self.write_minimized()
 
     def process_files(self):
@@ -174,6 +175,21 @@ class CleanUp:
         match = re.search(pattern.format(model_num=model_num), data)
         return f"{match.group().split('=')[-1].strip()}" if match else "N/A"
 
+    def write_equilibrated(self):
+        with open(f"{self.inpfolder}/Langevin/equilibrated.out", "r") as f:
+            minimized_lines = f.readlines()
+        weng = []
+        for line in minimized_lines:
+            data = line.split(",")
+            weng.append((data[0], data[1]))
+
+        with open(f"{self.inpfolder}/equilibrated.pdb", "a") as file:
+            for i,(m,e) in enumerate(sorted(weng, key=lambda x: x[1])):
+                f = f"{self.inpfolder}/Langevin/Equilibrated_{int(m):04}.pdb"
+                pdb = PDBFile(f)
+                PDBFile.writeModel(pdb.topology, pdb.positions , file, modelIndex=i+1)
+
+
     def write_minimized(self):
         with open(f"{self.inpfolder}/Minimized/minimized.out", "r") as f:
             minimized_lines = f.readlines()
@@ -182,7 +198,7 @@ class CleanUp:
             data = line.split(",")
             weng.append((data[0], data[1]))
 
-        with open(f"{self.inpfolder}/Minimized.pdb", "a") as file:
+        with open(f"{self.inpfolder}/minimized.pdb", "a") as file:
             for i,(m,e) in enumerate(sorted(weng, key=lambda x: x[1])):
                 f = f"{self.inpfolder}/Minimized/Minimized_{int(m):04}.pdb"
                 pdb = PDBFile(f)

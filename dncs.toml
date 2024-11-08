@@ -1,14 +1,17 @@
 [simulation]
-moleculename = "6RRO"                                 #MOLECULE NAME
-sequence = "GFIVKRFKILV"                              #INPUT SEQUENCE
-interface = "openmm"                                  #INTERFACE TO OPENMM (OpenMM Should be installed from https://openmm.org/
-n_samples = 1024                                      # Number of Samples (This divides the timesteps into segments)
-temp = 300.0                                          # equilibration temperature.
-forcefield = ["amber14-all.xml", "amber14/tip3p.xml"] #Force Field specification
-device = "CPU"                                        #Device to run MD simulation
-solvent = 1000                                        # Solvation
-steps = 5000                                          # Equlibration timesteps (uses Langevin Integrator from OpenMM)
-gamma = 1.0                                           # Friction coefficient
-dt = 0.002                                            # Integrator timestep
-md_steps = 1                                          # MD timestep
-grid = 5                                              # Adaptive Sampling
+moleculename = "6RRO" # MOLECULE NAME
+sequence = "GFIV" # INPUT SEQUENCE
+interface = "openmm" # INTERFACE TO OPENMM (OpenMM Should be installed from https://openmm.org/
+n_samples = 10 # Number of Samples (This divides the timesteps into segments)
+temp = 300.0 # equilibration temperature.
+forcefield = [
+    "amber14-all.xml",
+    "amber14/tip3p.xml",
+] # Force Field specification
+device = "CPU" # Device to run MD simulation
+solvent = 1000 # Solvation
+steps = 5000 # Equlibration timesteps (uses Langevin Integrator from OpenMM)
+gamma = 1.0 # Friction coefficient
+dt = 0.002 # Integrator timestep
+md_steps = 1 # MD timestep
+grid = 5 # Adaptive Sampling

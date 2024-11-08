@@ -1,0 +1,209 @@
+[[seq]]
+atomtype = "C"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "C*"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CA"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CB"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CC"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CD"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CE"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CF"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CG"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CH"
+sigma = 1.85
+epsilon = 0.09
+
+[[seq]]
+atomtype = "CI"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CJ"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CM"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CN"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CP"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CR"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "CT"
+sigma = 1.8
+epsilon = 0.06
+
+[[seq]]
+atomtype = "CW"
+sigma = 1.8
+epsilon = 0.06
+
+[[seq]]
+atomtype = "C2"
+sigma = 1.925
+epsilon = 0.12
+
+[[seq]]
+atomtype = "C3"
+sigma = 2.0
+epsilon = 0.15
+
+[[seq]]
+atomtype = "H"
+sigma = 1.0
+epsilon = 0.02
+
+[[seq]]
+atomtype = "HC"
+sigma = 1.375
+epsilon = 0.038
+
+[[seq]]
+atomtype = "HO"
+sigma = 1.0
+epsilon = 0.02
+
+[[seq]]
+atomtype = "HS"
+sigma = 1.0
+epsilon = 0.02
+
+[[seq]]
+atomtype = "H2"
+sigma = 1.0
+epsilon = 0.02
+
+[[seq]]
+atomtype = "H3"
+sigma = 1.0
+epsilon = 0.02
+
+[[seq]]
+atomtype = "LP"
+sigma = 1.2
+epsilon = 0.016
+
+[[seq]]
+atomtype = "N"
+sigma = 1.75
+epsilon = 0.16
+
+[[seq]]
+atomtype = "N*"
+sigma = 1.75
+epsilon = 0.16
+
+[[seq]]
+atomtype = "NA"
+sigma = 1.75
+epsilon = 0.16
+
+[[seq]]
+atomtype = "NB"
+sigma = 1.75
+epsilon = 0.16
+
+[[seq]]
+atomtype = "NC"
+sigma = 1.75
+epsilon = 0.16
+
+[[seq]]
+atomtype = "NT"
+sigma = 1.85
+epsilon = 0.12
+
+[[seq]]
+atomtype = "N2"
+sigma = 1.75
+epsilon = 0.16
+
+[[seq]]
+atomtype = "N3"
+sigma = 1.85
+epsilon = 0.08
+
+[[seq]]
+atomtype = "O"
+sigma = 1.6
+epsilon = 0.2
+
+[[seq]]
+atomtype = "OH"
+sigma = 1.65
+epsilon = 0.15
+
+[[seq]]
+atomtype = "OS"
+sigma = 1.65
+epsilon = 0.15
+
+[[seq]]
+atomtype = "O2"
+sigma = 1.6
+epsilon = 0.2
+
+[[seq]]
+atomtype = "P"
+sigma = 2.1
+epsilon = 0.2
+
+[[seq]]
+atomtype = "S"
+sigma = 2.0
+epsilon = 0.2
+
+[[seq]]
+atomtype = "SH"
+sigma = 2.0
+epsilon = 0.2

@@ -140,12 +140,12 @@ impl Minimizer {
         let mut file = File::create(filename)?;
         for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(
-                "{}, {:<6.3}, {}\n",
+                "{}, {:.3}, {}\n",
                 i + 1,
                 energy,
                 angles
                     .iter()
-                    .map(|&a| a.to_string())
+                    .map(|&a| format!("{:.2}", a))
                     .collect::<Vec<String>>()
                     .join(", ")
             );

@@ -27,7 +27,7 @@ use std::io::Write;
 use std::sync::{Arc, LazyLock};
 
 static DIRECTION: LazyLock<Vec<String>> = LazyLock::new(|| {
-    include_str!("../data/sobol/new-joe-kuo-6.21201")
+    include_str!("../library/sobol/new-joe-kuo-6.21201")
         .lines()
         .map(String::from)
         .collect()
@@ -271,7 +271,7 @@ impl RotateAtDihedral {
 
     pub fn to_pdbstring(&self, model: usize, energy: f64) -> String {
         let pdb = parser::atoms_to_pdbstring(self.rotated.clone());
-        format!("MODEL{:>9}{:>16.10}\n{}\nENDMDL\n\n", model, energy, pdb)
+        format!("MODEL{:>9}{:>10.3}\n{}\nENDMDL\n\n", model, energy, pdb)
     }
 }
 
@@ -410,12 +410,12 @@ impl Sampler {
         let mut file = std::fs::File::create(filename).unwrap();
         for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(
-                "{}, {:<6.3}, {}\n",
+                "{}, {:.3}, {}\n",
                 i + 1,
                 energy,
                 angles
                     .iter()
-                    .map(|&a| a.to_string())
+                    .map(|&a| format!("{:.2}", a))
                     .collect::<Vec<String>>()
                     .join(", ")
             );
@@ -442,8 +442,7 @@ impl Sampler {
             file.write_all(pdb.as_bytes()).unwrap();
         }
 
-        let mut file =
-            std::fs::File::create(format!("{}/../initial_structure.pdb", foldername)).unwrap();
+        let mut file = std::fs::File::create(format!("{}/../linear.pdb", foldername)).unwrap();
         let eng = Amber::new(Arc::clone(&self.system)).energy();
         let pdb = RotateAtDihedral::new(Arc::clone(&self.system)).to_pdbstring(1, eng);
         file.write_all(pdb.as_bytes()).unwrap();

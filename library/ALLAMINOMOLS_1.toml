@@ -1,0 +1,7087 @@
+[[seq]]
+tcode = "NH"
+scode = ""
+natom = 2
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 1
+name = "N"
+residue = "NH"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "L"
+mass = 0.0
+charge = 0.0
+atomtype = ""
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 2
+name = "HN"
+residue = "NH"
+chain_id = "A"
+sequence = 5
+position = [-0.349, -0.482, -0.841]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "ALA"
+scode = "A"
+natom = 11
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 12
+name = "N"
+residue = "ALA"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 17
+name = "H"
+residue = "ALA"
+chain_id = "A"
+sequence = 5
+position = [-0.562, 0.921, 0.043]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 13
+name = "CA"
+residue = "ALA"
+chain_id = "A"
+sequence = 5
+position = [1.46, -0.014, -0.029]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 18
+name = "HA"
+residue = "ALA"
+chain_id = "A"
+sequence = 5
+position = [1.826, -0.536, 0.875]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 16
+name = "CB"
+residue = "ALA"
+chain_id = "A"
+sequence = 5
+position = [1.893, -0.796, -1.282]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.098
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "HB3"
+residue = "ALA"
+chain_id = "A"
+sequence = 5
+position = [2.993, -0.866, -1.364]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "HB1"
+residue = "ALA"
+chain_id = "A"
+sequence = 5
+position = [1.508, -1.833, -1.273]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "HB2"
+residue = "ALA"
+chain_id = "A"
+sequence = 5
+position = [1.527, -0.324, -2.215]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 14
+name = "C"
+residue = "ALA"
+chain_id = "A"
+sequence = 5
+position = [2.016, 1.389, 0.007]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 15
+name = "O"
+residue = "ALA"
+chain_id = "A"
+sequence = 5
+position = [1.283, 2.383, 0.066]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 22
+name = "N"
+residue = "ALA"
+chain_id = "A"
+sequence = 6
+position = [3.49, 1.503, -0.019]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "ARG"
+scode = "R"
+natom = 25
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "N"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 36
+name = "H"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [-0.581, 0.764, 0.007]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "CA"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [1.454, 0.133, -0.007]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 37
+name = "HA"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [1.848, -0.33, 0.917]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "CB"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [2.022, -0.612, -1.246]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.08
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 38
+name = "HB3"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [1.543, -1.607, -1.336]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.056
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 39
+name = "HB2"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [1.719, -0.074, -2.169]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.056
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "CG"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [3.56, -0.813, -1.24]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.103
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 40
+name = "HG1"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [4.088, 0.157, -1.154]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.074
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 41
+name = "HG2"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [3.866, -1.389, -0.343]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.074
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "CD"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [4.065, -1.527, -2.5]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.228
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 42
+name = "HD1"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [3.57, -2.513, -2.612]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.133
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 43
+name = "HD2"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [3.815, -0.935, -3.405]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.133
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "NE"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [5.536, -1.696, -2.384]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.324
+atomtype = "N2"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "HE"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [5.987, -1.333, -1.532]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.269
+atomtype = "H3"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "CZ"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [6.318, -2.275, -3.285]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.76
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 34
+name = "NH1"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [5.897, -2.775, -4.409]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.624
+atomtype = "N2"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 44
+name = "HH12"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [6.595, -3.195, -5.02]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.361
+atomtype = "H3"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 45
+name = "HH11"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [4.89, -2.677, -4.538]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.361
+atomtype = "H3"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 35
+name = "NH2"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [7.576, -2.343, -3.023]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.624
+atomtype = "N2"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 46
+name = "HH21"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [7.801, -1.922, -2.12]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.361
+atomtype = "H3"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 47
+name = "HH22"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [8.181, -2.788, -3.709]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.361
+atomtype = "H3"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "C"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [1.864, 1.586, -0.002]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "O"
+residue = "ARG"
+chain_id = "A"
+sequence = 5
+position = [1.038, 2.496, 0.007]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 48
+name = "N"
+residue = "ARG"
+chain_id = "A"
+sequence = 6
+position = [3.319, 1.849, 0.021]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "ASN"
+scode = "N"
+natom = 15
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 16
+name = "N"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "H"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [-0.626, 0.88, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 17
+name = "CA"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [1.457, 0.086, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "HA"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [1.836, -0.377, 0.929]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "CB"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [2.022, -0.671, -1.238]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.086
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "HB1"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [1.689, -0.164, -2.164]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "HB2"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [3.125, -0.595, -1.266]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "CG"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [1.639, -2.148, -1.382]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.675
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "OD1"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [0.756, -2.521, -2.139]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.47
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "ND2"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [2.263, -3.034, -0.653]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.867
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "HD21"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [1.831, -3.96, -0.711]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.344
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "HD22"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [2.93, -2.682, 0.034]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.344
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 18
+name = "C"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [1.914, 1.526, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "O"
+residue = "ASN"
+chain_id = "A"
+sequence = 5
+position = [1.116, 2.462, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 30
+name = "N"
+residue = "ASN"
+chain_id = "A"
+sequence = 6
+position = [3.377, 1.742, -0.002]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "ASP"
+scode = "D"
+natom = 14
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 15
+name = "N"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.445
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "H"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [-0.694, 0.828, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.274
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 16
+name = "CA"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [1.446, 0.204, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.01
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "HA"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [1.824, -0.211, 0.952]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "CB"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [2.092, -0.539, -1.198]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.227
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "HB1"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [1.737, -1.583, -1.257]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "HB2"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [1.748, -0.076, -2.145]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "CG"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [3.627, -0.573, -1.241]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.668
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "OD1"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [4.268, -0.443, -2.274]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.492
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "OD2"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [4.188, -0.739, -0.006]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.384
+atomtype = "OH"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "HD2"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [5.141, -0.74, -0.056]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.303
+atomtype = "HO"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 17
+name = "C"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [1.785, 1.675, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.587
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 18
+name = "O"
+residue = "ASP"
+chain_id = "A"
+sequence = 5
+position = [0.887, 2.573, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.492
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 28
+name = "N"
+residue = "ASP"
+chain_id = "A"
+sequence = 6
+position = [3.226, 2.008, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.445
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "CYS"
+scode = "C"
+natom = 14
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 13
+name = "N"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "H"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [-0.642, 0.868, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 14
+name = "CA"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [1.456, 0.114, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "HA"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [1.841, -0.342, 0.931]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 17
+name = "CB"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [2.009, -0.664, -1.211]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.06
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "HB1"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [1.641, -1.705, -1.218]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "HB2"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [1.676, -0.214, -2.168]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 18
+name = "SG"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [3.814, -0.713, -1.169]
+occupancy = 1.0
+bfactor = 0.0
+element = "S"
+mass = 32.06
+charge = 0.827
+atomtype = "SH"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "HG3"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [4.021, 0.179, -2.134]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.135
+atomtype = "HS"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 15
+name = "C"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [1.885, 1.562, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 16
+name = "O"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [1.063, 2.491, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 24
+name = "N"
+residue = "CYS"
+chain_id = "A"
+sequence = 6
+position = [3.343, 1.806, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 13
+name = "LG2"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [4.216, -1.714, -1.384]
+occupancy = 1.0
+bfactor = 0.0
+element = "L"
+mass = 0.0
+charge = -0.481
+atomtype = "LP"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 14
+name = "LG1"
+residue = "CYS"
+chain_id = "A"
+sequence = 5
+position = [4.223, -0.424, -0.19]
+occupancy = 1.0
+bfactor = 0.0
+element = "L"
+mass = 0.0
+charge = -0.481
+atomtype = "LP"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "GLN"
+scode = "Q"
+natom = 18
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "N"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "H"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [-0.575, 0.769, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "CA"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [1.455, 0.123, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "HA"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [1.85, -0.341, 0.923]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "CB"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [2.014, -0.616, -1.237]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.098
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "HB1"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [1.649, -1.662, -1.224]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "HB2"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [1.571, -0.164, -2.149]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "CG"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [3.571, -0.635, -1.385]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.102
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "HG1"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [3.967, 0.398, -1.396]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.057
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "HG2"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [4.033, -1.095, -0.492]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.057
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "CD"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [4.197, -1.297, -2.619]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.675
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "OE1"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [5.405, -1.297, -2.791]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.47
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "NE2"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [3.43, -1.852, -3.523]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.867
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 34
+name = "HE22"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [2.427, -1.757, -3.355]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.344
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 35
+name = "HE21"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [3.921, -2.212, -4.343]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.344
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "C"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [1.876, 1.573, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "O"
+residue = "GLN"
+chain_id = "A"
+sequence = 5
+position = [1.057, 2.489, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 36
+name = "N"
+residue = "GLN"
+chain_id = "A"
+sequence = 6
+position = [3.334, 1.824, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "GLU"
+scode = "E"
+natom = 17
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 18
+name = "N"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.445
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "H"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [-0.691, 0.831, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.274
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "CA"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [1.446, 0.197, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.01
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "HA"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [1.865, -0.248, 0.922]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "CB"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [2.041, -0.522, -1.243]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.132
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "HB1"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [3.146, -0.519, -1.16]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "HB2"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [1.771, -1.596, -1.194]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "CG"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [1.65, 0.036, -2.651]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.227
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "HG1"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [0.549, 0.102, -2.732]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "HG2"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [1.993, 1.083, -2.754]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "CD"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [2.14, -0.714, -3.892]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.668
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "OE1"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [1.858, -0.371, -5.032]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.492
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "OE2"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [2.917, -1.796, -3.607]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.384
+atomtype = "OH"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "HE2"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [3.157, -2.209, -4.437]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.303
+atomtype = "HO"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "C"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [1.793, 1.667, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.587
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "O"
+residue = "GLU"
+chain_id = "A"
+sequence = 5
+position = [0.93, 2.537, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.492
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 34
+name = "N"
+residue = "GLU"
+chain_id = "A"
+sequence = 6
+position = [3.235, 1.993, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.445
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "GLY"
+scode = "G"
+natom = 8
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 9
+name = "N"
+residue = "GLY"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 13
+name = "H"
+residue = "GLY"
+chain_id = "A"
+sequence = 5
+position = [-0.676, 0.843, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 10
+name = "CA"
+residue = "GLY"
+chain_id = "A"
+sequence = 5
+position = [1.45, 0.171, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 14
+name = "HA1"
+residue = "GLY"
+chain_id = "A"
+sequence = 5
+position = [1.892, -0.316, 0.888]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.032
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 15
+name = "HA2"
+residue = "GLY"
+chain_id = "A"
+sequence = 5
+position = [1.892, -0.317, -0.888]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.032
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 11
+name = "C"
+residue = "GLY"
+chain_id = "A"
+sequence = 5
+position = [1.822, 1.634, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 12
+name = "O"
+residue = "GLY"
+chain_id = "A"
+sequence = 5
+position = [0.974, 2.521, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 16
+name = "N"
+residue = "GLY"
+chain_id = "A"
+sequence = 6
+position = [3.27, 1.935, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "HIS"
+scode = "H"
+natom = 18
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "N"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "H"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [-0.646, 0.842, 0.202]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "CA"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [1.455, 0.123, 0.004]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "HA"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [1.842, -0.512, 0.818]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "CB"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [1.927, -0.275, -1.404]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.098
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "HB1"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [1.078, -0.516, -2.078]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "HB2"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [2.465, 0.559, -1.897]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "CG"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [2.842, -1.465, -1.384]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.251
+atomtype = "CC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "ND1"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [4.228, -1.425, -1.257]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.502
+atomtype = "NB"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "CD2"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [2.379, -2.769, -1.495]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.184
+atomtype = "CW"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "HD2"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [1.334, -3.044, -1.605]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.114
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "CE1"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [4.5, -2.743, -1.297]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.241
+atomtype = "CR"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 34
+name = "HE1"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [5.537, -3.044, -1.216]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.036
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "NE2"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [3.46, -3.609, -1.44]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.146
+atomtype = "NA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 35
+name = "HE2"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [3.474, -4.638, -1.491]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.228
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "C"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [1.878, 1.537, 0.321]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "O"
+residue = "HIS"
+chain_id = "A"
+sequence = 5
+position = [1.053, 2.436, 0.539]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 36
+name = "N"
+residue = "HIS"
+chain_id = "A"
+sequence = 6
+position = [3.335, 1.786, 0.354]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "ILE"
+scode = "I"
+natom = 20
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "N"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "H"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [-0.681, 0.839, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "CA"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [1.449, 0.181, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "HA"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [1.838, -0.239, 0.946]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "CB"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [2.126, -0.594, -1.203]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.012
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "HB"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [1.771, -0.105, -2.135]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.022
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "CG1"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [1.733, -2.102, -1.31]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.049
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "HG11"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [2.143, -2.667, -0.45]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.027
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "HG12"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [0.636, -2.207, -1.212]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.027
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "CD1"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [2.107, -2.803, -2.633]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.085
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 37
+name = "HD13"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [1.73, -3.842, -2.655]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.028
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 38
+name = "HD11"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [1.675, -2.283, -3.509]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.028
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 39
+name = "HD12"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [3.199, -2.861, -2.788]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.028
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "CG2"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [3.683, -0.498, -1.185]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.085
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 34
+name = "HG23"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [4.145, -0.992, -2.058]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.029
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 35
+name = "HG21"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [4.056, 0.54, -1.229]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.029
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 36
+name = "HG22"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [4.118, -0.965, -0.281]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.029
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "C"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [1.812, 1.646, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "O"
+residue = "ILE"
+chain_id = "A"
+sequence = 5
+position = [0.949, 2.537, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 40
+name = "N"
+residue = "ILE"
+chain_id = "A"
+sequence = 6
+position = [3.258, 1.956, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "LEU"
+scode = "L"
+natom = 20
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "N"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "H"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [-0.603, 0.829, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "CA"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [1.457, 0.104, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "HA"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [1.839, -0.336, 0.939]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "CB"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [2.058, -0.66, -1.214]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.061
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "HB1"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [1.74, -0.151, -2.147]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.033
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "HB2"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [3.159, -0.539, -1.194]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.033
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "CG"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [1.737, -2.172, -1.357]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.01
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "HG"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [0.653, -2.276, -1.57]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.031
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "CD1"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [2.508, -2.765, -2.546]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.107
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 34
+name = "HD13"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [2.256, -3.831, -2.704]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.034
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 35
+name = "HD11"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [2.27, -2.242, -3.492]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.034
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 36
+name = "HD12"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [3.604, -2.706, -2.407]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.034
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "CD2"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [2.057, -2.971, -0.083]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.107
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 37
+name = "HD23"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [1.866, -4.052, -0.214]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.034
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 38
+name = "HD21"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [3.109, -2.851, 0.234]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.034
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 39
+name = "HD22"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [1.421, -2.648, 0.762]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.034
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "C"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [1.896, 1.549, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "O"
+residue = "LEU"
+chain_id = "A"
+sequence = 5
+position = [1.081, 2.484, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 40
+name = "N"
+residue = "LEU"
+chain_id = "A"
+sequence = 6
+position = [3.357, 1.782, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "LYS"
+scode = "K"
+natom = 22
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "N"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.445
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "H"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [-0.642, 0.868, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.274
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "CA"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [1.456, 0.114, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.01
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "HA"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [1.843, -0.347, 0.927]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "CB"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [2.033, -0.637, -1.232]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.132
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 34
+name = "HB1"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [1.67, -1.684, -1.235]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 35
+name = "HB2"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [1.626, -0.192, -2.164]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "CG"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [3.581, -0.638, -1.283]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.132
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 36
+name = "HG1"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [3.965, 0.399, -1.277]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 37
+name = "HG2"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [3.982, -1.107, -0.362]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "CD"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [4.185, -1.313, -2.518]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.132
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 38
+name = "HD1"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [3.873, -2.376, -2.554]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 39
+name = "HD2"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [3.785, -0.839, -3.438]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "CE"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [5.712, -1.178, -2.473]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.057
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 40
+name = "HE1"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [6.011, -0.112, -2.562]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 41
+name = "HE2"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [6.117, -1.524, -1.499]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "NZ"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [6.307, -1.971, -3.563]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.189
+atomtype = "NT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 42
+name = "HZ2"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [7.225, -1.604, -3.833]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.0
+atomtype = "H3"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 43
+name = "HZ1"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [5.722, -1.924, -4.406]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.0
+atomtype = "H3"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "C"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [1.885, 1.562, -0.002]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.587
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "O"
+residue = "LYS"
+chain_id = "A"
+sequence = 5
+position = [1.063, 2.491, -0.002]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.492
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 44
+name = "N"
+residue = "LYS"
+chain_id = "A"
+sequence = 6
+position = [3.343, 1.806, -0.002]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.445
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "MET"
+scode = "M"
+natom = 20
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "N"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "H"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [-0.687, 0.833, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "CA"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [1.447, 0.19, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "HA"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [1.86, -0.242, 0.929]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "CB"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [2.074, -0.53, -1.226]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.151
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "HB1"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [1.667, -0.102, -2.164]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.027
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "HB2"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [3.159, -0.313, -1.264]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.027
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "CG"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [1.901, -2.064, -1.266]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.054
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "HG1"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [2.177, -2.531, -0.302]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.0652
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "HG2"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [0.841, -2.322, -1.453]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.0652
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "SD"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [2.923, -2.759, -2.575]
+occupancy = 1.0
+bfactor = 0.0
+element = "S"
+mass = 32.06
+charge = 0.737
+atomtype = "S"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "CE"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [2.216, -4.411, -2.617]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.134
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "HE1"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [2.266, -4.888, -1.622]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.0652
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 34
+name = "HE3"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [2.761, -5.048, -3.335]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.0652
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 35
+name = "HE2"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [1.157, -4.368, -2.929]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.0652
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "C"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [1.8, 1.659, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "O"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [0.931, 2.543, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 36
+name = "N"
+residue = "MET"
+chain_id = "A"
+sequence = 6
+position = [3.244, 1.979, -0.002]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 16
+name = "LD2"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [3.993, -2.743, -2.321]
+occupancy = 1.0
+bfactor = 0.0
+element = "L"
+mass = 0.0
+charge = -0.381
+atomtype = "LP"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 17
+name = "LD1"
+residue = "MET"
+chain_id = "A"
+sequence = 5
+position = [2.817, -2.209, -3.522]
+occupancy = 1.0
+bfactor = 0.0
+element = "L"
+mass = 0.0
+charge = -0.381
+atomtype = "LP"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "PHE"
+scode = "F"
+natom = 21
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "N"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "H"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [-0.671, 0.847, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "CA"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [1.451, 0.162, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 34
+name = "HA"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [1.863, -0.3, 0.917]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "CB"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [2.065, -0.519, -1.261]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.1
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 35
+name = "HB1"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [1.73, 0.018, -2.173]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.108
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 36
+name = "HB2"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [3.162, -0.369, -1.261]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.108
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "CG"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [1.78, -2.018, -1.436]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.1
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "CD1"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [0.628, -2.429, -2.117]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.15
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 37
+name = "HD1"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [-0.049, -1.694, -2.533]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.15
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "CD2"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [2.623, -2.977, -0.87]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.15
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 38
+name = "HD2"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [3.509, -2.673, -0.331]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.15
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "CE1"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [0.314, -3.78, -2.214]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.15
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 39
+name = "HE1"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [-0.593, -4.085, -2.715]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.15
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "CE2"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [2.314, -4.331, -0.977]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.15
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 40
+name = "HE2"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [2.965, -5.069, -0.531]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.15
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "CZ"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [1.158, -4.732, -1.646]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.15
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 41
+name = "HZ"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [0.91, -5.78, -1.718]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.15
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "C"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [1.832, 1.623, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "O"
+residue = "PHE"
+chain_id = "A"
+sequence = 5
+position = [0.965, 2.541, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 42
+name = "N"
+residue = "PHE"
+chain_id = "A"
+sequence = 6
+position = [3.282, 1.914, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "PRO"
+scode = "P"
+natom = 15
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 16
+name = "N"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.229
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 17
+name = "CA"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [1.455, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "CB"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [1.771, 1.471, -0.313]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.115
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "HB1"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [2.729, 1.797, 0.099]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.061
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "HB2"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [1.783, 1.608, -1.397]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.061
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "CG"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [0.576, 2.232, 0.279]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.121
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "HG1"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [0.701, 2.327, 1.36]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.063
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "HG2"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [0.449, 3.223, -0.163]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.063
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "CD"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [-0.611, 1.311, -0.016]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.012
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "HD1"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [-1.393, 1.39, 0.741]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.06
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "HD2"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [-1.023, 1.51, -1.009]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.06
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "HA"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [1.838, -0.529, 0.875]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 18
+name = "C"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [2.022, 1.43, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.526
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "O"
+residue = "PRO"
+chain_id = "A"
+sequence = 2
+position = [1.265, 2.4, 0.008]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.5
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 30
+name = "N"
+residue = "PRO"
+chain_id = "A"
+sequence = 3
+position = [3.485, 1.647, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.229
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "SER"
+scode = "S"
+natom = 12
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 13
+name = "N"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "H"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [-0.595, 0.902, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 14
+name = "CA"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [1.459, 0.036, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "HA"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [1.812, -0.43, 0.938]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 17
+name = "CB"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [2.03, -0.773, -1.192]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.018
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "HB1"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [3.125, -0.891, -1.072]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.119
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "HB2"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [1.632, -1.805, -1.203]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.119
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 18
+name = "OG"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [1.78, -0.15, -2.458]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.55
+atomtype = "OH"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "HG"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [0.828, -0.122, -2.581]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.31
+atomtype = "HO"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 15
+name = "C"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [1.966, 1.458, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 16
+name = "O"
+residue = "SER"
+chain_id = "A"
+sequence = 5
+position = [1.201, 2.423, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 24
+name = "N"
+residue = "SER"
+chain_id = "A"
+sequence = 6
+position = [3.436, 1.623, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "THR"
+scode = "T"
+natom = 15
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 16
+name = "N"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "H"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [-0.603, 0.896, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 17
+name = "CA"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [1.459, 0.05, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "HA"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [1.824, -0.425, 0.928]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "CB"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [2.036, -0.735, -1.227]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.17
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "HB"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [1.611, -0.295, -2.155]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.082
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "OG1"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [1.662, -2.105, -1.162]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.55
+atomtype = "OH"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "HG1"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [1.986, -2.509, -1.973]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.31
+atomtype = "HO"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "CG2"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [3.574, -0.759, -1.362]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.191
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "HG21"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [3.906, -1.35, -2.235]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.065
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "HG22"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [4.002, 0.251, -1.503]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.065
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "HG23"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [4.058, -1.196, -0.468]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.065
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 18
+name = "C"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [1.952, 1.477, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "O"
+residue = "THR"
+chain_id = "A"
+sequence = 5
+position = [1.188, 2.422, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 30
+name = "N"
+residue = "THR"
+chain_id = "A"
+sequence = 6
+position = [3.42, 1.656, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "TRP"
+scode = "W"
+natom = 25
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "N"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 40
+name = "H"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [-0.593, 0.805, -0.017]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "CA"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [1.455, 0.11, -0.002]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 41
+name = "HA"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [1.854, -0.338, 0.928]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "CB"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [2.019, -0.635, -1.244]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.098
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 42
+name = "HB1"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [1.585, -0.211, -2.172]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 43
+name = "HB2"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [3.106, -0.448, -1.341]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "CG"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [1.811, -2.152, -1.231]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.135
+atomtype = "C*"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "CD1"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [0.764, -2.844, -1.876]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.044
+atomtype = "CW"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 44
+name = "HD1"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [-0.004, -2.36, -2.466]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.093
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "CD2"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [2.522, -3.107, -0.536]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.146
+atomtype = "CB"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 34
+name = "NE1"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [0.809, -4.225, -1.602]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.352
+atomtype = "NA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 45
+name = "HE1"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [0.154, -4.953, -1.906]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.271
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 35
+name = "CE2"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [1.907, -4.362, -0.768]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.154
+atomtype = "CN"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 36
+name = "CE3"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [3.653, -3.003, 0.315]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.173
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 46
+name = "HE3"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [4.119, -2.047, 0.508]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.086
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 37
+name = "CZ2"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [2.426, -5.526, -0.159]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.168
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 47
+name = "HZ2"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [1.96, -6.485, -0.331]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.084
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 38
+name = "CZ3"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [4.152, -4.168, 0.9]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.066
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 48
+name = "HZ3"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [5.017, -4.108, 1.544]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.057
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 39
+name = "CH2"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [3.549, -5.412, 0.665]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.077
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 49
+name = "HH2"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [3.96, -6.296, 1.128]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.074
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "C"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [1.888, 1.556, -0.033]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "O"
+residue = "TRP"
+chain_id = "A"
+sequence = 5
+position = [1.076, 2.48, -0.053]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 50
+name = "N"
+residue = "TRP"
+chain_id = "A"
+sequence = 6
+position = [3.347, 1.797, -0.039]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "TYR"
+scode = "Y"
+natom = 22
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "N"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 35
+name = "H"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [-0.608, 0.893, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "CA"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [1.459, 0.058, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 36
+name = "HA"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [1.838, -0.429, 0.918]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "CB"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [2.042, -0.648, -1.259]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.098
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 37
+name = "HB1"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [1.709, -0.108, -2.17]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 38
+name = "HB2"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [3.143, -0.527, -1.277]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.038
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "CG"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [1.741, -2.143, -1.412]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.03
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "CD1"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [2.452, -3.093, -0.673]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.002
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 39
+name = "HD1"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [3.227, -2.783, 0.014]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.064
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "CD2"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [0.739, -2.563, -2.292]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.002
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 40
+name = "HD2"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [0.176, -1.837, -2.863]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.064
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "CE1"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [2.158, -4.448, -0.81]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.264
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 41
+name = "HE1"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [2.702, -5.182, -0.234]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.102
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "CE2"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [0.448, -3.917, -2.428]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.264
+atomtype = "CA"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 42
+name = "HE2"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [-0.333, -4.227, -3.106]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.102
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "CZ"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [1.158, -4.858, -1.686]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.462
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 34
+name = "OH"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [0.871, -6.188, -1.815]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.528
+atomtype = "OH"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 43
+name = "HH"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [0.161, -6.284, -2.453]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.334
+atomtype = "HO"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "C"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [1.944, 1.488, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "O"
+residue = "TYR"
+chain_id = "A"
+sequence = 5
+position = [1.164, 2.442, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 44
+name = "N"
+residue = "TYR"
+chain_id = "A"
+sequence = 6
+position = [3.411, 1.674, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "VAL"
+scode = "V"
+natom = 17
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 18
+name = "N"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "H"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [-0.666, 0.85, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "CA"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [1.452, 0.155, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.035
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "HA"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [1.858, -0.287, 0.927]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.048
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "CB"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [2.071, -0.592, -1.249]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.012
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "HB"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [1.542, -0.215, -2.151]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.024
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "CG1"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [3.588, -0.37, -1.503]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.091
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 28
+name = "HG11"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [4.212, -0.696, -0.649]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.031
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 29
+name = "HG12"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [3.948, -0.914, -2.398]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.031
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 30
+name = "HG13"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [3.833, 0.691, -1.699]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.031
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "CG2"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [1.882, -2.128, -1.218]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.091
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 31
+name = "HG23"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [2.434, -2.601, -0.385]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.031
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 32
+name = "HG21"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [0.819, -2.409, -1.107]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.031
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 33
+name = "HG22"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [2.228, -2.603, -2.156]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.031
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "C"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [1.841, 1.614, -0.002]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.616
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "O"
+residue = "VAL"
+chain_id = "A"
+sequence = 5
+position = [0.995, 2.518, -0.002]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.504
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 34
+name = "N"
+residue = "VAL"
+chain_id = "A"
+sequence = 6
+position = [3.292, 1.899, -0.002]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.463
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "AIB"
+scode = "B"
+natom = 14
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 15
+name = "N"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.445
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 21
+name = "H"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [-0.515, 0.892, -0.007]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.126
+atomtype = "H"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 16
+name = "CA"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [1.47, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.076
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 17
+name = "CB1"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [1.994, -0.718, 1.245]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.198
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 22
+name = "HB12"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [3.075, -0.719, 1.244]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 23
+name = "HB13"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [1.644, -0.218, 2.135]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 24
+name = "HB11"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [1.644, -1.74, 1.256]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 18
+name = "CB2"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [1.993, -0.719, -1.246]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = -0.198
+atomtype = "CT"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 25
+name = "HB22"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [3.073, -0.718, -1.246]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 26
+name = "HB23"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [1.643, -1.74, -1.257]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 27
+name = "HB21"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [1.642, -0.217, -2.136]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.066
+atomtype = "HC"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 19
+name = "C"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [1.993, 1.438, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "C"
+mass = 12.011
+charge = 0.726
+atomtype = "C"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 20
+name = "O"
+residue = "AIB"
+chain_id = "A"
+sequence = 5
+position = [1.212, 2.402, 0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.492
+atomtype = "O"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "DUMM"
+serial = 28
+name = "N"
+residue = "AIB"
+chain_id = "A"
+sequence = 6
+position = [3.452, 1.683, -0.001]
+occupancy = 1.0
+bfactor = 0.0
+element = "N"
+mass = 14.007
+charge = -0.445
+atomtype = "N"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq]]
+tcode = "COH"
+scode = ""
+natom = 2
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 2
+name = "O1"
+residue = "OH"
+chain_id = "A"
+sequence = 4
+position = [0.0, 0.0, 0.0]
+occupancy = 1.0
+bfactor = 0.0
+element = "O"
+mass = 15.999
+charge = -0.38
+atomtype = "OH"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]
+
+[[seq.atoms]]
+record = "ATOM"
+serial = 3
+name = "HO"
+residue = "OH"
+chain_id = "A"
+sequence = 4
+position = [0.25, 0.927, 0.013]
+occupancy = 1.0
+bfactor = 0.0
+element = "H"
+mass = 1.008
+charge = 0.38
+atomtype = "HO"
+sigma = 0.0
+epsilon = 0.0
+velocity = [0.0, 0.0, 0.0]
+force = [0.0, 0.0, 0.0]

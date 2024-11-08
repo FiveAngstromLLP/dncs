@@ -125,7 +125,7 @@ forcefield = ["amber14.xml", "amber14/tip3pfb.xml"] #Force Field specification
 device = "CUDA" #Device to run MD simulation
 solvent = 10000 # Solvation
 steps = 5000 # Equlibration timesteps (uses Langevin Integrator from OpenMM)
-gamma = 1.0 # Friction coefficient 
+gamma = 1.0 # Friction coefficient
 dt = 0.002 # Integrator timestep
 md_steps = 5000 # MD timestep
 grid = 4 # Adaptive Sampling
@@ -136,21 +136,22 @@ grid = 4 # Adaptive Sampling
 The Python interface generates the following directory structure:
 ```
 Result/moleculename/
-    ├── dncs.log                    # Log file
-    ├── Langevin/                   # Langevin dynamics results
-    │   ├── Equilibrated_*.pdb      # Equilibrated structures
-    │   └── equilibrated.out        # Angle measurements
-    ├── MDSimulation/               # Molecular dynamics results
-    │   └── simulated_*.pdb         # Simulation trajectory structures
-    ├── Minimized/                  # Energy minimization results
-    │   ├── Minimized_*.pdb        # Minimized structures
-    │   └── minimized.out          # Final angles
-    ├── Sampled/                    # Initial sampling results
-    │   ├── angles.out             # Initial angles
-    │   └── sample_*.pdb           # Initial structures
-    ├── multi_structure.pdb         # Combined structure file
-    ├── result.pdb                 # Final structure
-    └── structure.pdb              # Input structure
+    ├── dncs.log                # Log file
+    ├── Langevin/               # Langevin dynamics results
+    │   ├── Equilibrated_*.pdb  # Equilibrated structures
+    │   └── equilibrated.out    # Angle measurements
+    ├── MDSimulation/           # Molecular dynamics results
+    │   └── simulated_*.pdb     # Simulation trajectory structures
+    ├── Minimized/              # Energy minimization results
+    │   ├── Minimized_*.pdb     # Minimized structures
+    │   └── minimized.out       # Final angles
+    ├── Sampled/                # Initial sampling results
+    │   ├── angles.out          # Initial angles
+    │   └── sample_*.pdb        # Initial structures
+    ├── sampled.pdb             # Sampled structure
+    ├── minimized.pdb           # Minimized structure
+    ├── equilibrated.pdb        # Equilibrated structure
+    └── linear.pdb              # Linear structure
 ```
 
 ## Usage

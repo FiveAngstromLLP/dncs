@@ -21,18 +21,21 @@ use serde::Deserialize;
 use std::fmt::Debug;
 use std::sync::LazyLock;
 
-pub static ALLAMINOMOLS_1: LazyLock<Polymer<Atom>> =
-    LazyLock::new(|| serde_json::from_str(include_str!("../data/ALLAMINOMOLS_1.json")).unwrap());
-pub static ALLAMINOMOLS_2: LazyLock<Polymer<Atom>> =
-    LazyLock::new(|| serde_json::from_str(include_str!("../data/ALLAMINOMOLS_2.json")).unwrap());
+pub static ALLAMINOMOLS_1: LazyLock<Polymer<Atom>> = LazyLock::new(|| {
+    serde_json::from_str(include_str!("../library/jsons/ALLAMINOMOLS_1.json")).unwrap()
+});
+pub static ALLAMINOMOLS_2: LazyLock<Polymer<Atom>> = LazyLock::new(|| {
+    serde_json::from_str(include_str!("../library/jsons/ALLAMINOMOLS_2.json")).unwrap()
+});
 pub static ALLCONN: LazyLock<Polymer<Bond>> =
-    LazyLock::new(|| serde_json::from_str(include_str!("../data/ALLCONN.json")).unwrap());
+    LazyLock::new(|| serde_json::from_str(include_str!("../library/jsons/ALLCONN.json")).unwrap());
 pub static DIHEDS: LazyLock<Polymer<Diheds>> =
-    LazyLock::new(|| serde_json::from_str(include_str!("../data/DIHEDS.json")).unwrap());
-pub static ENERGYPARAM: LazyLock<EnergyParam> =
-    LazyLock::new(|| serde_json::from_str(include_str!("../data/ENERGYPARAM.json")).unwrap());
+    LazyLock::new(|| serde_json::from_str(include_str!("../library/jsons/DIHEDS.json")).unwrap());
+pub static ENERGYPARAM: LazyLock<EnergyParam> = LazyLock::new(|| {
+    serde_json::from_str(include_str!("../library/jsons/ENERGYPARAM.json")).unwrap()
+});
 pub static VAR: LazyLock<Polymer<Diheds>> =
-    LazyLock::new(|| serde_json::from_str(include_str!("../data/VAR.json")).unwrap());
+    LazyLock::new(|| serde_json::from_str(include_str!("../library/jsons/VAR.json")).unwrap());
 
 pub enum FF {
     AMBER03,
@@ -46,19 +49,21 @@ impl FF {
     pub fn init(&self) -> ForceField {
         match self {
             FF::AMBER03 => {
-                quick_xml::de::from_str(include_str!("../data/ForceFields/amber03.xml")).unwrap()
+                quick_xml::de::from_str(include_str!("../library/ForceFields/amber03.xml")).unwrap()
             }
             FF::AMBER10 => {
-                quick_xml::de::from_str(include_str!("../data/ForceFields/amber10.xml")).unwrap()
+                quick_xml::de::from_str(include_str!("../library/ForceFields/amber10.xml")).unwrap()
             }
             FF::AMBER96 => {
-                quick_xml::de::from_str(include_str!("../data/ForceFields/amber96.xml")).unwrap()
+                quick_xml::de::from_str(include_str!("../library/ForceFields/amber96.xml")).unwrap()
             }
             FF::AMBER99SB => {
-                quick_xml::de::from_str(include_str!("../data/ForceFields/amber99sb.xml")).unwrap()
+                quick_xml::de::from_str(include_str!("../library/ForceFields/amber99sb.xml"))
+                    .unwrap()
             }
             FF::AMBERFB15 => {
-                quick_xml::de::from_str(include_str!("../data/ForceFields/amberfb15.xml")).unwrap()
+                quick_xml::de::from_str(include_str!("../library/ForceFields/amberfb15.xml"))
+                    .unwrap()
             }
         }
     }

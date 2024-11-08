@@ -1,0 +1,644 @@
+[[seq]]
+tcode = "ALA"
+scode = "A"
+natom = 2
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq]]
+tcode = "ARG"
+scode = "R"
+natom = 6
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HH22"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "HG1"
+d = "HH22"
+
+[[seq.atoms]]
+a = "CG"
+b = "CD"
+c = "HD1"
+d = "HH22"
+
+[[seq.atoms]]
+a = "CD"
+b = "NE"
+c = "HE"
+d = "HH22"
+
+[[seq]]
+tcode = "ASN"
+scode = "N"
+natom = 4
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HD22"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "OD1"
+d = "HD22"
+
+[[seq]]
+tcode = "ASP"
+scode = "D"
+natom = 4
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HD2"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "OD1"
+d = "HD2"
+
+[[seq]]
+tcode = "CYS"
+scode = "C"
+natom = 3
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HG3"
+
+[[seq]]
+tcode = "GLN"
+scode = "Q"
+natom = 5
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HE21"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "HG1"
+d = "HE21"
+
+[[seq.atoms]]
+a = "CG"
+b = "CD"
+c = "OE1"
+d = "HE21"
+
+[[seq.atoms]]
+a = "CD"
+b = "NE2"
+c = "HE22"
+d = "HE21"
+
+[[seq]]
+tcode = "GLU"
+scode = "E"
+natom = 5
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HE2"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "HG1"
+d = "HE2"
+
+[[seq.atoms]]
+a = "CG"
+b = "CD"
+c = "OE1"
+d = "HE2"
+
+[[seq.atoms]]
+a = "CG"
+b = "CD"
+c = "OE2"
+d = "HE2"
+
+[[seq]]
+tcode = "GLY"
+scode = "G"
+natom = 2
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA1"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq]]
+tcode = "HIS"
+scode = "H"
+natom = 4
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HE2"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "ND1"
+d = "HE2"
+
+[[seq]]
+tcode = "ILE"
+scode = "I"
+natom = 4
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB"
+d = "HG22"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG1"
+c = "HG11"
+d = "HG22"
+
+[[seq]]
+tcode = "LEU"
+scode = "L"
+natom = 4
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HD22"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "HG"
+d = "HD22"
+
+[[seq]]
+tcode = "LYS"
+scode = "K"
+natom = 6
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HZ1"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "HG1"
+d = "HZ1"
+
+[[seq.atoms]]
+a = "CG"
+b = "CD"
+c = "HD1"
+d = "HZ1"
+
+[[seq.atoms]]
+a = "CD"
+b = "CE"
+c = "HE1"
+d = "HZ1"
+
+[[seq.atoms]]
+a = "CE"
+b = "NZ"
+c = "HZ2"
+d = "HZ1"
+
+[[seq]]
+tcode = "MET"
+scode = "M"
+natom = 5
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HE2"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "HG1"
+d = "HE2"
+
+[[seq.atoms]]
+a = "CG"
+b = "SD"
+c = "CE"
+d = "HE2"
+
+[[seq.atoms]]
+a = "SD"
+b = "CE"
+c = "HE1"
+d = "HE2"
+
+[[seq]]
+tcode = "PHE"
+scode = "F"
+natom = 4
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HZ"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "CD1"
+d = "HZ"
+
+[[seq]]
+tcode = "PRO"
+scode = "P"
+natom = 1
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq]]
+tcode = "SER"
+scode = "S"
+natom = 3
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HG"
+
+[[seq.atoms]]
+a = "CB"
+b = "OG"
+c = "HG"
+d = "HG"
+
+[[seq]]
+tcode = "THR"
+scode = "T"
+natom = 3
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB"
+d = "HG23"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG2"
+c = "HG21"
+d = "HG23"
+
+[[seq.atoms]]
+a = "CB"
+b = "OG1"
+c = "HG1"
+d = "HG1"
+
+[[seq]]
+tcode = "TRP"
+scode = "W"
+natom = 4
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HH2"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "CD1"
+d = "HH2"
+
+[[seq]]
+tcode = "TYR"
+scode = "Y"
+natom = 4
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB1"
+d = "HH"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG"
+c = "CD1"
+d = "HH"
+
+[[seq.atoms]]
+a = "CZ"
+b = "OH"
+c = "HH"
+d = "HH"
+
+[[seq]]
+tcode = "VAL"
+scode = "V"
+natom = 3
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "HA"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB"
+c = "HB"
+d = "HG22"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG1"
+c = "HG11"
+d = "HG13"
+
+[[seq.atoms]]
+a = "CB"
+b = "CG2"
+c = "HG23"
+d = "HG23"
+
+[[seq]]
+tcode = "AIB"
+scode = "B"
+natom = 2
+
+[[seq.atoms]]
+a = "N"
+b = "CA"
+c = "CB1"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "C"
+c = "O"
+d = "HO"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB1"
+c = "HB12"
+d = "HB11"
+
+[[seq.atoms]]
+a = "CA"
+b = "CB2"
+c = "HB22"
+d = "HB21"
