@@ -15,6 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
+import sys
 import toml
 import time
 import dncs
@@ -55,7 +56,7 @@ class GenerateSamples:
         if os.path.exists(f"{folder}/Result/{self.config.moleculename}"):
             shutil.rmtree(f"{folder}/Result/{self.config.moleculename}")
         os.makedirs(f"{folder}/Result/{self.config.moleculename}")
-        self.sample.toPDB(f"{folder}/Result/{self.config.moleculename}/multi_structure.pdb")
+        self.sample.toPDB(f"{folder}/Result/{self.config.moleculename}/sampled.pdb")
         self.sample.toPDBFiles(f"{folder}/Result/{self.config.moleculename}/Sampled")
         self.sample.write_angles(f"{folder}/Result/{self.config.moleculename}/Sampled/angles.out")
 
@@ -80,7 +81,7 @@ if __name__ == "__main__":
     start_time = time.time()
 
 
-    # Generate conformational samples
+    #Generate conformational samples
     conformation = GenerateSamples(config)
     conformation.generate_samples()
     conformation.save_to_pdb()

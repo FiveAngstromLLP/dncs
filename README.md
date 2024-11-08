@@ -2,26 +2,9 @@
 [![DOI](https://img.shields.io/badge/DOI-10.1039%2FD4CP01891E-blue)](https://doi.org/10.1039/D4CP01891E)
 
 # DNCS 1.0 (Digital Nets Conformational Sampling)
-## © 2024 FiveAngstrom LLP. All rights reserved.
 
 DNCS 1.0 is an Enhanced Conformational Sampling tool using digital nets. It provides both a command-line interface and Python bindings for generating and analyzing molecular conformations.
 
-If you use DNCS in your research, please cite:
-
-```bibtex
-@Article{D4CP01891E,
-author ="J., Abraham Rebairo and D., Sam Paul and Arumainathan, Stephen",
-title  ="Digital nets conformational sampling (DNCS) – an enhanced sampling technique to explore the conformational space of intrinsically disordered peptides",
-journal  ="Phys. Chem. Chem. Phys.",
-year  ="2024",
-volume  ="26",
-issue  ="34",
-pages  ="22640-22655",
-publisher  ="The Royal Society of Chemistry",
-doi  ="10.1039/D4CP01891E",
-url  ="http://dx.doi.org/10.1039/D4CP01891E",
-abstract  ="We propose digital nets conformational sampling (DNCS) – an enhanced sampling technique to explore the conformational ensembles of peptides{,} especially intrinsically disordered peptides (IDPs). The DNCS algorithm relies on generating history-dependent samples of dihedral variables using bitwise XOR operations and binary angle measurements (BAM). The algorithm was initially studied using met-enkephalin{,} a highly elusive neuropeptide. The DNCS method predicted near-native structures and the energy landscape of met-enkephalin was observed to be in direct correlation with earlier studies on the neuropeptide. Clustering analysis revealed that there are only 24 low-lying conformations of the molecule. The DNCS method has then been tested for predicting optimal conformations of 42 oligopeptides of length varying from 3 to 8 residues. The closest-to-native structures of 86% of cases are near-native and 24% of them have a root mean square deviation of less than 1.00 Å with respect to their crystal structures. The results obtained reveal that the DNCS method performs well{,} that too in less computational time."}
-```
 
 ## Prerequisites
 
@@ -75,7 +58,7 @@ Create a configuration file for CLI sampling:
 dncs -c
 ```
 
-This creates `dncs.json` with parameters for conformational sampling:
+This creates `dncs.json` with parameters for enhanced conformational sampling:
 ```json
 {
   "Generate": {
@@ -112,7 +95,7 @@ CLI Options:
 - `-n, --samples`: Number of samples to generate
 - `-f, --forcefield`: Force field selection (amber03.xml|amber10.xml|amber96.xml|amber99sb.xml|amberfb15.xml)
 - `-m, --minimize`: Enable energy minimization
-- `-g, --grid`: Grid size for sample division
+- `-g, --grid`: Grid size for adaptive sampling.
 - `-c, --config`: Generate default configuration file
 
 ### Output Structure [Rust Sampling]
@@ -133,19 +116,19 @@ For Python OpenMM simulation, create a `dncs.toml` file:
 
 ```toml
 [simulation]
-moleculename = "YGGFM"
-sequence = "AAAAA"
-interface = "openmm"
-n_samples = 10
-temp = 300.0
-forcefield = ["amber99sb.xml", "amber14/tip3pfb.xml"]
-device = "CPU"
-solvent = 100
-steps = 5000
-gamma = 1.0
-dt = 0.002
-md_steps = 5000
-grid = 5
+moleculename = "Met-Enkephalin" #MOLECULE NAME
+sequence = "YGGFM" #INPUT SEQUENCE
+interface = "openmm" #INTERFACE TO OPENMM (OpenMM Should be installed from https://openmm.org/
+n_samples = 100 # Number of Samples (This divides the timesteps into segments)
+temp = 300.0 # NVT equilibration temperature.
+forcefield = ["amber14.xml", "amber14/tip3pfb.xml"] #Force Field specification
+device = "CUDA" #Device to run MD simulation
+solvent = 10000 # Solvation
+steps = 5000 # Equlibration timesteps (uses Langevin Integrator from OpenMM)
+gamma = 1.0 # Friction coefficient 
+dt = 0.002 # Integrator timestep
+md_steps = 5000 # MD timestep
+grid = 4 # Adaptive Sampling
 ```
 
 ### Output Structure [Python Simulation]
@@ -158,7 +141,7 @@ Result/moleculename/
     │   ├── Equilibrated_*.pdb      # Equilibrated structures
     │   └── equilibrated.out        # Angle measurements
     ├── MDSimulation/               # Molecular dynamics results
-    │   └── simulates_*.pdb         # Simulation trajectory structures
+    │   └── simulated_*.pdb         # Simulation trajectory structures
     ├── Minimized/                  # Energy minimization results
     │   ├── Minimized_*.pdb        # Minimized structures
     │   └── minimized.out          # Final angles

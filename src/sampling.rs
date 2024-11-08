@@ -442,7 +442,8 @@ impl Sampler {
             file.write_all(pdb.as_bytes()).unwrap();
         }
 
-        let mut file = std::fs::File::create(format!("{}/../structure.pdb", foldername)).unwrap();
+        let mut file =
+            std::fs::File::create(format!("{}/../initial_structure.pdb", foldername)).unwrap();
         let eng = Amber::new(Arc::clone(&self.system)).energy();
         let pdb = RotateAtDihedral::new(Arc::clone(&self.system)).to_pdbstring(1, eng);
         file.write_all(pdb.as_bytes()).unwrap();

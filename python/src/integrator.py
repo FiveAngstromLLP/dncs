@@ -15,13 +15,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import os
+import sys
 import re
 import dncs
 import math
 import logging
 import datetime
 import concurrent.futures
-from openmm.app import ForceField, PDBFile,Simulation,Modeller
+from openmm.app import ForceField, PDBFile,Simulation,Modeller, PDBReporter, StateDataReporter
 from openmm.openmm import Platform, LangevinMiddleIntegrator
 from openmm.unit import kelvin, nano, pico
 
@@ -93,6 +94,11 @@ class DncsIntegrator:
         self.log.info(f"ENERGY FOR MODEL {i} = {state.getPotentialEnergy()}")
         print(f"Initial energy for model {i}: {state.getPotentialEnergy()}")
 
+        os.makedirs(f"{self.outfolder}/Minimized", exist_ok=True)
+        simulation.minimizeEnergy()
+        minimized_state = simulation.context.getState(getEnergy=True, getPositions=True)
+        self.log.info(f"MINIMIZED ENERGY FOR MODEL {i} = {minimized_state.getPotentialEnergy()}")
+        print(f"Minimized energy for model {i}: {minimized_state.getPotentialEnergy()}")
         simulation.step(self.config.steps)
         equilibrated_state = simulation.context.getState(getEnergy=True, getPositions=True)
         self.log.info(f"EQUILIBRATED ENERGY AFTER {self.config.steps} STEPS FOR MODEL {i} = {equilibrated_state.getPotentialEnergy()}")
@@ -104,19 +110,14 @@ class DncsIntegrator:
         energy = float(str(equilibrated_state.getPotentialEnergy()).split(" ")[0])
         weight = math.exp(-energy / (self.config.temp * 1.380649e-23 * 6.02214076e23))
 
-        os.makedirs(f"{self.outfolder}/Minimized", exist_ok=True)
 
 
         if weight > 1.0:
-            simulation.minimizeEnergy()
-            minimized_state = simulation.context.getState(getEnergy=True, getPositions=True)
-            self.log.info(f"MINIMIZED ENERGY FOR MODEL {i} = {minimized_state.getPotentialEnergy()}")
-            print(f"Minimized energy for model {i}: {minimized_state.getPotentialEnergy()}")
 
             self.save_pdb(
                 f"{self.outfolder}/Minimized/Minimized_{i:04}.pdb",
                 simulation.topology,
-                minimized_state.getPositions()
+                equilibrated_state.getPositions()
             )
 
     @staticmethod
@@ -181,7 +182,7 @@ class CleanUp:
             data = line.split(",")
             weng.append((data[0], data[1]))
 
-        with open(f"{self.inpfolder}/result.pdb", "a") as file:
+        with open(f"{self.inpfolder}/Minimized.pdb", "a") as file:
             for i,(m,e) in enumerate(sorted(weng, key=lambda x: x[1])):
                 f = f"{self.inpfolder}/Minimized/Minimized_{int(m):04}.pdb"
                 pdb = PDBFile(f)
@@ -202,6 +203,7 @@ class MDSimulation:
 
         steps_per_segment = int(self.config.md_steps / len(self.pdbs))
         for i, pdb in enumerate(self.pdbs):
+
             print(f"processing {i}th structure..")
             pdbdata = PDBFile(f"{self.inpfolder}/{pdb}")
             system = self.forcefield.createSystem(pdbdata.topology)
@@ -213,13 +215,17 @@ class MDSimulation:
 
             s = Simulation(pdbdata.topology, system, integrator, platform)
             s.context.setPositions(pdbdata.positions)
-
+            s.reporters.append(StateDataReporter(sys.stdout, 100, step=True,
+                                              potentialEnergy=True,
+                                              kineticEnergy=True,
+                                              temperature=True))
+            s.reporters.append(PDBReporter(f"{folder}/Result/{self.config.moleculename}/MDSimulation/trajectory{i}.pdb", 100))
             s.step(steps_per_segment)
 
             position = s.context.getState(getPositions=True).getPositions()
-            save_pdb(f"{self.outfolder}/simulates_{i}.pdb", s.topology, position)
+            save_pdb(f"{self.outfolder}/simulated_{i}.pdb", s.topology, position)
 
-            del s
+
 
 
 def save_pdb(filename: str, topology, positions):
