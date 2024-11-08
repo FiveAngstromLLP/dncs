@@ -81,7 +81,7 @@ if __name__ == "__main__":
     start_time = time.time()
 
 
-    # Generate conformational samples
+    #Generate conformational samples
     conformation = GenerateSamples(config)
     conformation.generate_samples()
     conformation.save_to_pdb()
