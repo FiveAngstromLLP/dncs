@@ -30,6 +30,7 @@ struct SamplingParams {
     forcefield: String,
     minimize: bool,
     grid: usize,
+    temp: f64,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -85,6 +86,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .long("grid")
                 .help("No of grid to divide sample")
                 .value_name("grid")
+        )
+        .arg(
+            Arg::new("temp")
+                .short('t')
+                .long("temp")
+                .help("Conformational Sort")
+                .value_name("temp")
         )
         .get_matches();
 
@@ -143,7 +151,7 @@ Must be one of below:
     system.init_parameters();
 
     let mut sample = Sampler::new(Arc::new(system), params.grid);
-    sample.sample(params.n_samples);
+    sample.sample(params.n_samples, params.temp);
 
     // Create result directory
     let result_dir = format!("Result/{}", params.molecule);
@@ -162,7 +170,7 @@ Must be one of below:
         // Initialize and run parallel minimizer
         let mut mini = Minimizer::new(sample);
         mini.minimize();
-        mini.conformational_sort();
+        mini.conformational_sort(params.temp);
 
         // Write minimized results
         mini.write_angles(&format!(
@@ -182,6 +190,7 @@ fn get_params_from_cli(matches: &clap::ArgMatches) -> Option<SamplingParams> {
     let sequence = matches.get_one::<String>("sequence")?;
     let n_samples = matches.get_one::<u64>("samples")?.to_owned() as usize;
     let grid = matches.get_one::<u64>("grid")?.to_owned() as usize;
+    let temp = matches.get_one::<f64>("temp")?.to_owned() as f64;
     let forcefield = matches.get_one::<String>("forcefield")?;
     let minimize = matches.get_one::<bool>("minimize");
 
@@ -190,6 +199,7 @@ fn get_params_from_cli(matches: &clap::ArgMatches) -> Option<SamplingParams> {
         sequence: sequence.to_string(),
         n_samples,
         grid,
+        temp,
         forcefield: forcefield.to_string(),
         minimize: minimize.unwrap_or(&false).to_owned(),
     })
@@ -229,6 +239,7 @@ fn get_params_from_config() -> Option<SamplingParams> {
         sequence: generate["sequence"].as_str().unwrap_or("").to_string(),
         n_samples: generate["n_samples"].as_u64().unwrap_or(10) as usize,
         grid: generate["grid"].as_u64().unwrap_or(10) as usize,
+        temp: generate["temp"].as_f64().unwrap_or(10.0) as f64,
         forcefield: generate["forcefield"].as_str().unwrap_or("").to_string(),
         minimize: generate["minimize"].as_bool().unwrap_or(false) as bool,
     })
@@ -242,7 +253,8 @@ fn generate_config_file() -> Result<(), std::io::Error> {
             "n_samples": 10,
             "forcefield": "amberfb15.xml",
             "minimize": true,
-            "grid": 4
+            "grid": 4,
+            "temp": 300.0,
         }
     });
 

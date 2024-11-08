@@ -297,7 +297,7 @@ impl Sampler {
         }
     }
 
-    pub fn sample(&mut self, maxsample: usize) {
+    pub fn sample(&mut self, maxsample: usize, temp: f64) {
         let n = self.system.dihedral.len();
         for phi in Sobol::new(n).skip(32).take(2048) {
             let angle: Vec<f64> = self.transform_angle(phi);
@@ -308,7 +308,7 @@ impl Sampler {
             self.sample.push(Arc::clone(&self.rotate.system));
             println!("Sampling {}/2048", self.angles.len());
         }
-        self.conformational_sort();
+        self.conformational_sort(temp);
         self.energy = self.energy.iter().take(maxsample).map(|e| *e).collect();
         self.angles = self
             .angles
@@ -371,17 +371,16 @@ impl Sampler {
         self.rotate.rotate(angle);
     }
 
-    fn conformational_sort(&mut self) {
-        // const KBT: f64 = 300.0 * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
-
-        // let weight: Vec<f64> = self.energy.iter().map(|e| (-e / KBT).exp()).collect();
-        // let z: f64 = weight.iter().sum();
-        // let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
+    fn conformational_sort(&mut self, temp: f64) {
+        let kbt: f64 = temp * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
+        let weight: Vec<f64> = self.energy.iter().map(|e| (-e / kbt).exp()).collect();
+        let z: f64 = weight.iter().sum();
+        let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
 
         // Create indices and sort them based on energy values
         let mut indices: Vec<usize> = (0..self.energy.len()).collect();
         indices.sort_by(|&a, &b| {
-            self.energy[a]
+            normalized[a]
                 .partial_cmp(&self.energy[b])
                 .unwrap_or(std::cmp::Ordering::Equal)
         });

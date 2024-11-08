@@ -47,7 +47,7 @@ class GenerateSamples:
 
     def generate_samples(self):
         self.polymer = dncs.Polymer(self.config.sequence, "amberfb15.xml")
-        self.sample = dncs.SobolSampler(self.polymer, self.config.n_samples, self.config.grid)
+        self.sample = dncs.SobolSampler(self.polymer, self.config.n_samples, self.config.grid, self.config.temp)
 
 
     def save_to_pdb(self):

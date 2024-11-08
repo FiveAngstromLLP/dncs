@@ -15,12 +15,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Sample
     let mut sample = Sampler::new(Arc::new(sys), 4);
     println!("Generating Samples..");
-    sample.sample(NO_OF_SAMPLE);
+    sample.sample(NO_OF_SAMPLE, 300.0);
     // Minimizer
     let mut minimizer = Minimizer::new(sample);
     println!("Executing Minimizer..");
     minimizer.minimize();
-    minimizer.conformational_sort();
+    minimizer.conformational_sort(300.0);
     minimizer.write_angles(&format!("{}.out", NAME))?;
     minimizer.to_pdb("minimized.pdb")?;
     println!("Completed!");

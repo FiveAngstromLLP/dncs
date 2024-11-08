@@ -5,6 +5,7 @@
     "minimize": true,
     "molecule": "Sample",
     "n_samples": 10,
-    "sequence": "YGGFM"
+    "sequence": "YGGFM",
+    "temp": 300.0
   }
 }

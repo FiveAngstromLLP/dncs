@@ -12,7 +12,7 @@ fn main() {
     let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());
     sys.init_parameters();
     let mut sample = Sampler::new(Arc::new(sys), 4);
-    sample.sample(NO_OF_SAMPLE);
+    sample.sample(NO_OF_SAMPLE, 300.0);
     sample.write_angles(&format!("{}.out", NAME));
     sample.to_pdb(&format!("{}.pdb", NAME));
 }
