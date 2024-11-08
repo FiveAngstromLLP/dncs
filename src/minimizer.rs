@@ -107,15 +107,16 @@ impl Minimizer {
     }
 
     pub fn conformational_sort(&mut self, temp: f64) {
-        let kbt: f64 = temp * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
-        let weight: Vec<f64> = self.energy.iter().map(|e| (-e / kbt).exp()).collect();
-        let z: f64 = weight.iter().sum();
-        let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
+        let _ = temp;
+        // let kbt: f64 = temp * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
+        // let weight: Vec<f64> = self.energy.iter().map(|e| (-e / kbt).exp()).collect();
+        // let z: f64 = weight.iter().sum();
+        // let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
 
         // Create indices and sort them based on energy values
         let mut indices: Vec<usize> = (0..self.energy.len()).collect();
         indices.sort_by(|&a, &b| {
-            normalized[a]
+            self.energy[a]
                 .partial_cmp(&self.energy[b])
                 .unwrap_or(std::cmp::Ordering::Equal)
         });

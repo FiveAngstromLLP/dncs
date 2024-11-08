@@ -28,13 +28,14 @@ dncs [OPTIONS]
   - amberfb15.xml
 - `-m, --minimize`: Enable energy minimization
 - `-g, --grid <NUM>`: Number of grids to divide the sample
+- `-t, --temp <NUM>`: Temperature
 
 ## Example
 
 Run sampling for a molecule:
 
 ```bash
-dncs -N test -s YGGFM -n 10 -f amber03.xml -m -g 4
+dncs -N test -s YGGFM -n 10 -f amber03.xml -m -g 4 -t 300.0
 ```
 
 Or use a configuration file:
@@ -59,7 +60,8 @@ The `dncs.json` configuration file has the following format:
     "n_samples": 10,
     "forcefield": "amberfb15.xml",
     "minimize": true,
-    "grid": 4
+    "grid": 4,
+    "temp": 300.0
   }
 }
 ```
