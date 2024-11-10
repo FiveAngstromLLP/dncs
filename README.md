@@ -3,7 +3,7 @@
 [![DOI](https://zenodo.org/badge/863510320.svg)](https://doi.org/10.5281/zenodo.14054733)
 # DNCS 1.0 (Digital Nets Conformational Sampling)
 
-DNCS 1.0 is an Enhanced Conformational Sampling tool using digital nets. It provides both a command-line interface and Python bindings for generating and analyzing molecular conformations.
+DNCS 1.0 is an Enhanced Conformational Sampling tool using digital nets. It provides  Python bindings for enhanced sampling of molecular conformations.
 
 
 ## Prerequisites
