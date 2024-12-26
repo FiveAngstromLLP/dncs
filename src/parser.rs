@@ -562,13 +562,13 @@ pub struct TorsionEntry {
     pub phase4: Option<f64>,
     #[serde(rename = "@k4")]
     pub k4: Option<f64>,
-    #[serde(rename = "@periodicity4")]
+    #[serde(rename = "@periodicity5")]
     pub periodicity5: Option<f64>,
     #[serde(rename = "@phase5")]
     pub phase5: Option<f64>,
     #[serde(rename = "@k5")]
     pub k5: Option<f64>,
-    #[serde(rename = "@periodicity4")]
+    #[serde(rename = "@periodicity6")]
     pub periodicity6: Option<f64>,
     #[serde(rename = "@phase6")]
     pub phase6: Option<f64>,

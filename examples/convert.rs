@@ -7,18 +7,18 @@ fn main() {
 }
 
 fn convert() {
-    // let data1: Polymer<Atom> = Polymer::from_lib("examples/files/ALLAMINOMOLS_1.lib");
-    // data1.to_lib("examples/files/ALLAMINOMOLS_1.lib");
-    // let data2: Polymer<Atom> = Polymer::from_lib("examples/files/ALLAMINOMOLS_2.lib");
-    // data2.to_lib("examples/files/ALLAMINOMOLS_2.lib");
-    // let data3: Polymer<Bond> = Polymer::from_lib("examples/files/ALLCONN.lib");
-    // data3.to_lib("examples/files/ALLCONN.lib");
-    // let data4: Polymer<Diheds> = Polymer::from_lib("examples/files/DIHEDS.lib");
-    // data4.to_lib("examples/files/DIHEDS.lib");
-    // let data5 = EnergyParam::from_lib("examples/files/ENERGYPARAM.lib");
-    // data5.to_lib("examples/files/ENERGYPARAM.lib");
-    // let data6: Polymer<Diheds> = Polymer::from_lib("examples/files/VAR.lib");
-    // data6.to_lib("examples/files/VAR.lib");
+    let data1: Polymer<Atom> = Polymer::from_lib("examples/files/ALLAMINOMOLS_1.lib");
+    data1.to_lib("examples/files/ALLAMINOMOLS_1.lib");
+    let data2: Polymer<Atom> = Polymer::from_lib("examples/files/ALLAMINOMOLS_2.lib");
+    data2.to_lib("examples/files/ALLAMINOMOLS_2.lib");
+    let data3: Polymer<Bond> = Polymer::from_lib("examples/files/ALLCONN.lib");
+    data3.to_lib("examples/files/ALLCONN.lib");
+    let data4: Polymer<Diheds> = Polymer::from_lib("examples/files/DIHEDS.lib");
+    data4.to_lib("examples/files/DIHEDS.lib");
+    let data5 = EnergyParam::from_lib("examples/files/ENERGYPARAM.lib");
+    data5.to_lib("examples/files/ENERGYPARAM.lib");
+    let data6: Polymer<Diheds> = Polymer::from_lib("examples/files/VAR.lib");
+    data6.to_lib("examples/files/VAR.lib");
     let data1: Polymer<Atom> = Polymer::from_lib("examples/files/ALLAMINOMOLS_1.lib");
     data1.to_json("data/ALLAMINOMOLS_1.json");
     let data2: Polymer<Atom> = Polymer::from_lib("examples/files/ALLAMINOMOLS_2.lib");
