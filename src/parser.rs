@@ -67,6 +67,17 @@ impl FF {
             }
         }
     }
+
+    pub fn from_str(s: &str) -> Option<Self> {
+        match s {
+            "amber03" => Some(FF::AMBER03),
+            "amber10" => Some(FF::AMBER10),
+            "amber96" => Some(FF::AMBER96),
+            "amber99sb" => Some(FF::AMBER99SB),
+            "amberfb15" => Some(FF::AMBERFB15),
+            _ => None,
+        }
+    }
 }
 
 #[derive(Deserialize, Clone, PartialEq)]
