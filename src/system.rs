@@ -325,6 +325,11 @@ impl System {
         }
     }
 
+    /// Export PDB String
+    pub fn export_pdb(&self) -> String {
+        parser::atoms_to_pdbstring(self.particles.clone())
+    }
+
     /// Writes the system to a PDB file
     pub fn to_pdb(&self, filename: &str) {
         let val = parser::atoms_to_pdbstring(self.particles.clone());
