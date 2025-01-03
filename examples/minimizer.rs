@@ -3,26 +3,23 @@ use std::sync::Arc;
 use libdncs::*;
 
 // Configuration
-const NAME: &str = "DNCS";
+const FOLDER: &str = "Result/DNCS";
 const SEQUENCE: &str = "YGGFM";
 const FORCE_FIELD: FF = FF::AMBERFB15;
-const NO_OF_SAMPLE: usize = 10;
+const NO_OF_SAMPLE: usize = 100;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // System
     let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());
     sys.init_parameters();
     // Sample
-    let mut sample = Sampler::new(Arc::new(sys), 4);
+    let mut sample = Sampler::new(Arc::new(sys), 4, FOLDER.to_string());
     println!("Generating Samples..");
-    sample.sample(NO_OF_SAMPLE, 300.0);
+    sample.sample(NO_OF_SAMPLE);
     // Minimizer
-    let mut minimizer = Minimizer::new(sample);
+    let mut minimizer = Minimizer::new(FOLDER.to_string(), FORCE_FIELD.init(), 10);
     println!("Executing Minimizer..");
-    minimizer.minimize();
-    minimizer.conformational_sort(300.0);
-    minimizer.write_angles(&format!("{}.out", NAME))?;
-    minimizer.to_pdb("minimized.pdb")?;
+    minimizer.minimize_all();
     println!("Completed!");
     Ok(())
 }

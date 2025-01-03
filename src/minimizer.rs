@@ -17,28 +17,36 @@
  */
 
 #![allow(dead_code, unused_imports)]
-use crate::{Amber, RotateAtDihedral, Sampler, System};
+use crate::parser::{atoms_to_pdbstring, pdb_to_atoms, Atom, ForceField};
+use crate::{forcefield, Amber, RotateAtDihedral, Sampler, System, FF};
 use liblbfgs::lbfgs;
+use std::fmt::format;
 use std::fs::File;
 use std::io::Write;
 use std::sync::Arc;
 
 pub struct Minimizer {
-    pub sample: Sampler,
-    pub minimized: Vec<Arc<System>>,
-    pub energy: Vec<f64>,
+    pub samplefolder: String,
+    pub folder: String,
+    pub top_n_sample: usize,
+    pub forcefield: ForceField,
+    pub sample: Option<RotateAtDihedral>,
+    pub energy: Vec<(usize, f64)>,
     pub angles: Vec<Vec<f64>>,
 }
 
 impl Minimizer {
     /// New Minimizer
-    pub fn new(sample: Sampler) -> Self {
-        let len = sample.angles.len();
+    pub fn new(folder: String, forcefield: ForceField, top_n_sample: usize) -> Self {
+        std::fs::create_dir_all(format!("{}/minimize", folder)).unwrap();
         Self {
-            sample: sample.clone(),
-            minimized: vec![Arc::clone(&sample.system); len],
-            energy: vec![0.0; len],
-            angles: vec![vec![0.0]; len],
+            samplefolder: format!("{}/sample", folder),
+            folder: format!("{}/minimize", folder),
+            top_n_sample,
+            forcefield,
+            sample: None,
+            energy: vec![(0, 0.0); top_n_sample],
+            angles: vec![Vec::new(); top_n_sample],
         }
     }
 
@@ -62,46 +70,79 @@ impl Minimizer {
         (fx, dfx)
     }
 
+    pub fn minimize_all(&mut self) {
+        let files = std::fs::read_dir(&self.samplefolder).unwrap();
+        let mut pdb_files: Vec<_> = files
+            .filter_map(|entry| {
+                let entry = entry.unwrap();
+                let path = entry.path();
+                if path.extension().map_or(false, |ext| ext == "pdb") {
+                    let file_name = path.file_stem().unwrap().to_str().unwrap();
+                    if file_name.starts_with("sample_") {
+                        return Some(path);
+                    }
+                }
+                None
+            })
+            .collect();
+
+        pdb_files.sort_by_key(|path| {
+            let file_name = path.file_stem().unwrap().to_str().unwrap();
+            let index_str = file_name.trim_start_matches("sample_");
+            index_str.parse::<usize>().unwrap()
+        });
+
+        let top_pdb_files: Vec<String> = pdb_files
+            .into_iter()
+            .take(self.top_n_sample)
+            .map(|path| path.to_string_lossy().into_owned())
+            .collect();
+
+        for (i, pdb_file) in top_pdb_files.iter().enumerate() {
+            let mut sys = System::from_pdb(pdb_file, self.forcefield.clone());
+            sys.init_parameters();
+            self.minimize(Arc::new(sys), i);
+        }
+
+        // self.conformational_sort(300.0);
+        // self.rename();
+        self.write_angles();
+    }
+
     /// Energy minimizer
-    pub fn minimize(&mut self) {
-        let s = self.sample.sample.clone();
-        let a = self.sample.angles.clone();
+    pub fn minimize(&mut self, system: Arc<System>, model: usize) {
+        let system_clone = Arc::clone(&system);
+        let evaluate = |x: &[f64], gx: &mut [f64]| {
+            let sys = Arc::clone(&system_clone);
+            let val = Self::diff(
+                Arc::new(move |x: Vec<f64>| {
+                    RotateAtDihedral::new(Arc::clone(&sys)).rotated_energy(x)
+                }),
+                x.to_vec(),
+            );
+            gx.copy_from_slice(&val.1);
+            Ok(val.0)
+        };
 
-        for (i, (sys, angle)) in s.iter().zip(a).enumerate() {
-            let sys = sys.clone();
-            let angle = angle.clone();
-            let system_clone = self.sample.system.clone();
+        let mut theta: Vec<f64> = RotateAtDihedral::new(Arc::clone(&system)).current_dihedral();
+        let prbs = lbfgs()
+            .with_max_iterations(5)
+            .minimize(&mut theta, evaluate, |_| false);
 
-            let sys = Arc::new(sys.clone());
-            let evaluate = |x: &[f64], gx: &mut [f64]| {
-                let sys = Arc::clone(&sys);
-                let val = Self::diff(
-                    Arc::new(move |x: Vec<f64>| {
-                        RotateAtDihedral::new((*sys).clone()).rotated_energy(x)
-                    }),
-                    x.to_vec(),
-                );
-                gx.copy_from_slice(&val.1);
-                Ok(val.0)
-            };
-
-            let mut theta: Vec<f64> = angle.clone();
-            let prbs = lbfgs()
-                .with_max_iterations(5)
-                .minimize(&mut theta, evaluate, |_| false);
-
-            match prbs {
-                Ok(p) => {
-                    println!("Minimizing Model {}", i + 1);
-                    let mut r = RotateAtDihedral::new(system_clone);
-                    r.rotate(theta.clone());
-                    self.minimized[i] = r.system;
-                    self.angles[i] = theta;
-                    self.energy[i] = p.fx;
-                }
-                Err(e) => {
-                    println!("{:?}", e);
-                }
+        match prbs {
+            Ok(p) => {
+                println!("Minimizing Model {}", model + 1);
+                let mut r = RotateAtDihedral::new(system_clone);
+                r.rotate(theta.clone());
+                let output_path = format!("{}/minimized_{:04}.pdb", self.folder, model);
+                let mut output_file = File::create(output_path).unwrap();
+                let pdb_string = atoms_to_pdbstring(r.rotated);
+                output_file.write_all(pdb_string.as_bytes()).unwrap();
+                self.angles[model] = theta;
+                self.energy[model] = (model, p.fx);
+            }
+            Err(e) => {
+                println!("{:?}", e);
             }
         }
     }
@@ -114,57 +155,62 @@ impl Minimizer {
         // let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
 
         // Create indices and sort them based on energy values
-        let mut indices: Vec<usize> = (0..self.energy.len()).collect();
-        indices.sort_by(|&a, &b| {
-            self.energy[a]
-                .partial_cmp(&self.energy[b])
-                .unwrap_or(std::cmp::Ordering::Equal)
-        });
 
-        // Create new sorted vectors using the indices
-        let sorted_energy: Vec<f64> = indices.iter().map(|&i| self.energy[i]).collect();
-        let sorted_angles: Vec<Vec<f64>> =
-            indices.iter().map(|&i| self.angles[i].clone()).collect();
-        let sorted_minimized: Vec<Arc<System>> = indices
-            .iter()
-            .map(|&i| Arc::clone(&self.minimized[i]))
+        self.energy.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+
+        let indices: Vec<usize> = self.energy.iter().map(|(i, _)| *i).collect();
+        let angles: Vec<Vec<f64>> = (0..self.energy.len())
+            .map(|i| self.angles[indices[i]].clone())
             .collect();
-
-        // Replace original vectors with sorted ones
-        let minenergy = sorted_energy.iter().copied().fold(f64::INFINITY, f64::min);
-        self.energy = sorted_energy.iter().map(|eng| eng - minenergy).collect();
-        self.angles = sorted_angles;
-        self.minimized = sorted_minimized;
+        self.angles = angles;
     }
 
-    pub fn write_angles(&self, filename: &str) -> std::io::Result<()> {
-        let mut file = File::create(filename)?;
+    pub fn rename(&self) {
+        // 1. Create a map of original indices to file paths:
+        let file_map: std::collections::HashMap<usize, std::path::PathBuf> =
+            std::fs::read_dir(&self.folder)
+                .unwrap()
+                .filter_map(|entry| {
+                    let entry = entry.unwrap();
+                    let path = entry.path();
+                    if path.extension().map_or(false, |ext| ext == "pdb") {
+                        let file_name = path.file_stem().unwrap().to_str().unwrap();
+
+                        if let Some(index_str) = file_name.split('_').last() {
+                            if let Ok(index) = index_str.parse::<usize>() {
+                                return Some((index, path));
+                            }
+                        }
+                    }
+                    None
+                })
+                .collect();
+
+        // 2. Iterate over the sorted energy indices and rename files
+        for (new_index, (original_index, _energy)) in self.energy.iter().enumerate() {
+            if let Some(old_path) = file_map.get(original_index) {
+                let new_path = format!("{}/minimze_{:04}.pdb", self.folder, new_index);
+                if let Err(e) = std::fs::rename(old_path, &new_path) {
+                    eprintln!("Failed to rename {:?} to {}: {}", old_path, new_path, e);
+                }
+            }
+        }
+    }
+
+    pub fn write_angles(&self) {
+        let mut file = std::fs::File::create(format!("{}/minimized.out", self.folder)).unwrap();
         for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(
                 "{}, {:.3}, {}\n",
                 i + 1,
-                energy,
+                energy.1,
                 angles
                     .iter()
                     .map(|&a| format!("{:.2}", a))
                     .collect::<Vec<String>>()
                     .join(", ")
             );
-            file.write_all(line.as_bytes())?;
+            file.write_all(line.as_bytes()).unwrap();
         }
-        Ok(())
-    }
-
-    pub fn to_pdb(&self, filename: &str) -> std::io::Result<()> {
-        let mut file = File::create(filename)?;
-        let eng = Amber::new(Arc::clone(&self.sample.system)).energy();
-        let pdb = RotateAtDihedral::new(self.sample.system.clone()).to_pdbstring(1, eng);
-        file.write_all(pdb.as_bytes())?;
-
-        for (i, s) in self.minimized.iter().enumerate() {
-            let pdb = RotateAtDihedral::new(Arc::clone(&s)).to_pdbstring(i + 1, self.energy[i]);
-            file.write_all(pdb.as_bytes())?;
-        }
-        Ok(())
     }
 }

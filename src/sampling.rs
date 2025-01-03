@@ -18,7 +18,7 @@
 #![allow(dead_code)]
 
 use crate::forcefield::Amber;
-use crate::parser::{self, Atom, FF};
+use crate::parser::{self, atoms_to_pdbstring, Atom, FF};
 use crate::system::{Particles, System};
 use nalgebra::{Matrix3, Vector3};
 use rand::Rng;
@@ -190,6 +190,21 @@ impl RotateAtDihedral {
         dihedral
     }
 
+    pub fn current_dihedral(&self) -> Vec<f64> {
+        let mut dihedral = Vec::new();
+        for dih in self.system.dihedral.iter() {
+            if let Some((a, b, c, d)) = self
+                .system
+                .dihedral_angle
+                .iter()
+                .find(|i| dih.0.serial == i.1.serial && dih.1.serial == i.2.serial)
+            {
+                dihedral.push(Self::dihedral_angle(a, b, c, d))
+            }
+        }
+        dihedral
+    }
+
     /// Rotate the atoms at Dihedral angle
     pub fn rotate(&mut self, angle: Vec<f64>) {
         for (i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {
@@ -277,51 +292,47 @@ impl RotateAtDihedral {
 
 #[derive(Clone)]
 pub struct Sampler {
+    pub grid: usize,
+    pub folder: String,
+    pub energy: Vec<(usize, f64)>,
+    pub dihedral: usize,
+    pub angles: Vec<Vec<f64>>,
     pub system: Arc<System>,
     pub rotate: RotateAtDihedral,
-    pub grid: usize,
-    pub angles: Vec<Vec<f64>>,
-    pub sample: Vec<Arc<System>>,
-    pub energy: Vec<f64>,
 }
 
 impl Sampler {
-    pub fn new(system: Arc<System>, grid: usize) -> Self {
+    pub fn new(system: Arc<System>, grid: usize, folder: String) -> Self {
+        if std::path::Path::new(&folder).exists() {
+            std::fs::remove_dir_all(&folder).unwrap();
+        }
+        std::fs::create_dir_all(format!("{}/sample", folder)).unwrap();
         Self {
+            grid,
+            folder: format!("{}/sample", folder),
+            energy: Vec::new(),
+            dihedral: system.dihedral.len(),
+            angles: Vec::new(),
             system: Arc::clone(&system),
             rotate: RotateAtDihedral::new(Arc::clone(&system)),
-            grid,
-            angles: Vec::new(),
-            sample: Vec::new(),
-            energy: Vec::new(),
         }
     }
 
-    pub fn sample(&mut self, maxsample: usize, temp: f64) {
-        let n = self.system.dihedral.len();
-        for phi in Sobol::new(n).skip(32).take(2048) {
+    pub fn sample(&mut self, max: usize) {
+        for (i, phi) in Sobol::new(self.dihedral).take(max).enumerate() {
             let angle: Vec<f64> = self.transform_angle(phi);
             self.rotatesample(angle.clone());
             let energy = self.rotate.energy();
-            self.energy.push(energy);
-            self.angles.push(angle.clone());
-            self.sample.push(Arc::clone(&self.rotate.system));
-            println!("Sampling {}/2048", self.angles.len());
+            self.angles.push(angle);
+            self.energy.push((i, energy));
+            let filename = format!("{}/sobol_{:04}.pdb", self.folder, i);
+            let mut file = std::fs::File::create(filename).unwrap();
+            file.write_all(atoms_to_pdbstring(self.rotate.rotated.clone()).as_bytes())
+                .unwrap();
         }
-        self.conformational_sort(temp);
-        self.energy = self.energy.iter().take(maxsample).map(|e| *e).collect();
-        self.angles = self
-            .angles
-            .iter()
-            .take(maxsample)
-            .map(|a| a.clone())
-            .collect();
-        self.sample = self
-            .sample
-            .iter()
-            .take(maxsample)
-            .map(|s| Arc::clone(&s))
-            .collect();
+        self.conformational_sort(300.0);
+        self.rename();
+        self.write_angles();
     }
 
     pub fn transform_angle(&self, angle: Vec<f64>) -> Vec<f64> {
@@ -367,7 +378,7 @@ impl Sampler {
     }
 
     fn rotatesample(&mut self, angle: Vec<f64>) {
-        self.reinit();
+        self.rotate = RotateAtDihedral::new(Arc::clone(&self.system));
         self.rotate.rotate(angle);
     }
 
@@ -379,41 +390,55 @@ impl Sampler {
         // let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
 
         // Create indices and sort them based on energy values
-        let mut indices: Vec<usize> = (0..self.energy.len()).collect();
-        indices.sort_by(|&a, &b| {
-            self.energy[a]
-                .partial_cmp(&self.energy[b])
-                .unwrap_or(std::cmp::Ordering::Equal)
-        });
 
-        // Create new sorted vectors using the indices
-        let sorted_energy: Vec<f64> = indices.iter().map(|&i| self.energy[i]).collect();
-        let sorted_angles: Vec<Vec<f64>> =
-            indices.iter().map(|&i| self.angles[i].clone()).collect();
-        let sorted_sample: Vec<Arc<System>> = indices
-            .iter()
-            .map(|&i| Arc::clone(&self.sample[i]))
+        self.energy.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+
+        let indices: Vec<usize> = self.energy.iter().map(|(i, _)| *i).collect();
+        let angles: Vec<Vec<f64>> = (0..self.energy.len())
+            .map(|i| self.angles[indices[i]].clone())
             .collect();
-
-        // Replace original vectors with sorted ones
-        let minenergy = sorted_energy.iter().copied().fold(f64::INFINITY, f64::min);
-        self.energy = sorted_energy.iter().map(|eng| eng - minenergy).collect();
-        self.angles = sorted_angles;
-        self.sample = sorted_sample;
+        self.angles = angles;
     }
 
-    #[inline]
-    fn reinit(&mut self) {
-        self.rotate = RotateAtDihedral::new(Arc::clone(&self.system));
+    fn rename(&self) {
+        // 1. Create a map of original indices to file paths:
+        let file_map: std::collections::HashMap<usize, std::path::PathBuf> =
+            std::fs::read_dir(&self.folder)
+                .unwrap()
+                .filter_map(|entry| {
+                    let entry = entry.unwrap();
+                    let path = entry.path();
+                    if path.extension().map_or(false, |ext| ext == "pdb") {
+                        let file_name = path.file_stem().unwrap().to_str().unwrap();
+
+                        if let Some(index_str) = file_name.split('_').last() {
+                            if let Ok(index) = index_str.parse::<usize>() {
+                                return Some((index, path));
+                            }
+                        }
+                    }
+                    None
+                })
+                .collect();
+
+        // 2. Iterate over the sorted energy indices and rename files
+        for (new_index, (original_index, _energy)) in self.energy.iter().enumerate() {
+            if let Some(old_path) = file_map.get(original_index) {
+                let new_path = format!("{}/sample_{:04}.pdb", self.folder, new_index);
+                if let Err(e) = std::fs::rename(old_path, &new_path) {
+                    eprintln!("Failed to rename {:?} to {}: {}", old_path, new_path, e);
+                }
+            }
+        }
     }
 
-    pub fn write_angles(&self, filename: &str) {
-        let mut file = std::fs::File::create(filename).unwrap();
+    pub fn write_angles(&self) {
+        let mut file = std::fs::File::create(format!("{}/sampled.out", self.folder)).unwrap();
         for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
             let line = format!(
                 "{}, {:.3}, {}\n",
                 i + 1,
-                energy,
+                energy.1,
                 angles
                     .iter()
                     .map(|&a| format!("{:.2}", a))
@@ -422,30 +447,5 @@ impl Sampler {
             );
             file.write_all(line.as_bytes()).unwrap();
         }
-    }
-
-    pub fn to_pdb(&self, filename: &str) {
-        let mut file = std::fs::File::create(filename).unwrap();
-
-        for (i, s) in self.sample.iter().enumerate() {
-            let pdb = RotateAtDihedral::new(Arc::clone(s)).to_pdbstring(i + 1, self.energy[i]);
-            file.write_all(pdb.as_bytes()).unwrap();
-        }
-    }
-
-    pub fn to_pdbfiles(&self, foldername: &str) {
-        std::fs::create_dir_all(foldername).unwrap();
-
-        for (i, s) in self.sample.iter().enumerate() {
-            let pdb = RotateAtDihedral::new(s.clone()).to_pdbstring(1, self.energy[i]);
-            let filename = format!("{}/sample_{:04}.pdb", foldername, i);
-            let mut file = std::fs::File::create(filename).unwrap();
-            file.write_all(pdb.as_bytes()).unwrap();
-        }
-
-        let mut file = std::fs::File::create(format!("{}/../linear.pdb", foldername)).unwrap();
-        let eng = Amber::new(Arc::clone(&self.system)).energy();
-        let pdb = RotateAtDihedral::new(Arc::clone(&self.system)).to_pdbstring(1, eng);
-        file.write_all(pdb.as_bytes()).unwrap();
     }
 }
