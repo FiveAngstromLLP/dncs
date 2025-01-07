@@ -22,6 +22,7 @@ use crate::parser::{self, atoms_to_pdbstring, Atom, FF};
 use crate::system::{Particles, System};
 use nalgebra::{Matrix3, Vector3};
 use rand::Rng;
+use rayon::iter::{ParallelBridge, ParallelIterator};
 // use rayon::prelude::*;
 use std::io::Write;
 use std::sync::{Arc, LazyLock};
@@ -319,17 +320,27 @@ impl Sampler {
     }
 
     pub fn sample(&mut self, max: usize) {
-        for (i, phi) in Sobol::new(self.dihedral).take(max).enumerate() {
-            let angle: Vec<f64> = self.transform_angle(phi);
-            self.rotatesample(angle.clone());
-            let energy = self.rotate.energy();
-            self.angles.push(angle);
-            self.energy.push((i, energy));
-            let filename = format!("{}/sobol_{:04}.pdb", self.folder, i);
-            let mut file = std::fs::File::create(filename).unwrap();
-            file.write_all(atoms_to_pdbstring(self.rotate.rotated.clone()).as_bytes())
-                .unwrap();
-        }
+        let results: Vec<_> = Sobol::new(self.dihedral)
+            .take(max)
+            .enumerate()
+            .into_iter()
+            .par_bridge()
+            .map(|(i, phi)| {
+                let angle: Vec<f64> = self.transform_angle(phi);
+                let mut rotate = RotateAtDihedral::new(Arc::clone(&self.system));
+                rotate.rotate(angle.clone());
+                let energy_val = rotate.energy();
+                let filename = format!("{}/sobol_{:04}.pdb", self.folder, i);
+                let mut file = std::fs::File::create(filename).unwrap();
+                file.write_all(atoms_to_pdbstring(rotate.rotated.clone()).as_bytes())
+                    .unwrap();
+                (angle, (i, energy_val))
+            })
+            .collect();
+
+        let (angles, energy): (Vec<_>, Vec<_>) = results.into_iter().unzip();
+        self.angles = angles;
+        self.energy = energy;
         self.conformational_sort(300.0);
         self.rename();
         self.write_angles();
