@@ -51,6 +51,22 @@ class Polymer:
                        - amber99sb.xml
                        - amberfb15.xml
         """
+        if forcefield not in [
+            "amber03.xml",
+            "amber10.xml",
+            "amber96.xml",
+            "amber99sb.xml",
+            "amberfb15.xml"
+        ]:
+            raise ValueError(
+                f"Unsupported forcefield: {forcefield}\n"
+                "Must be one of the below:\n"
+                "  - amber03.xml\n"
+                "  - amber10.xml\n"
+                "  - amber96.xml\n"
+                "  - amber99sb.xml\n"
+                "  - amberfb15.xml"
+            )
         ...
 
     def getEnergy(self) -> float:
@@ -80,35 +96,13 @@ class Polymer:
 class SobolSampler:
     """Sobol sequence sampler for polymer conformations."""
 
-    def __init__(self, system: Polymer, no_of_samples: int, grid: int, temp: float) -> None:
+    def __init__(self, system: Polymer, no_of_samples: int, grid: int, folder: str) -> None:
         """Initialize Sobol sampler.
 
         Args:
             system: Polymer system to sample
             no_of_samples: Number of conformations to generate
-        """
-        ...
-
-    def write_angles(self, filename: str) -> None:
-        """Write sampled angles to file.
-
-        Args:
-            filename: Output filename for angles
-        """
-        ...
-
-    def toPDB(self, filename: str) -> None:
-        """Save sampled conformations to PDB file.
-
-        Args:
-            filename: Output PDB filename
-        """
-        ...
-
-    def toPDBFiles(self, prefix: str) -> None:
-        """Save each sampled conformation to separate PDB files.
-
-        Args:
-            prefix: Prefix for output PDB filenames
+            grid: Grid size for sampling
+            folder: Output folder path
         """
         ...

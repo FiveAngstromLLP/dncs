@@ -1,14 +1,9 @@
 import dncs
 
 # Create a polymer object
-polymer = dncs.Polymer("YGGFM")
+polymer = dncs.Polymer("YGGFM", "amberfb15.xml")
 # Energy of the polymer
-print("Energy = ", polymer.getEnergy())
+# print("Energy = ", polymer.getEnergy())
 
 # Create a sampler object
-sample = dncs.SobolSampler(polymer, no_of_samples=100, sidechain=True)
-sample.conformational_sort()
-
-# Sample the polymer
-sample.toPDB("sample.pdb")
-# sample.toPDBFiles("sample")
+sample = dncs.SobolSampler(polymer, 100, 4, "Result/Sample")

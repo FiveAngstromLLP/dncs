@@ -24,3 +24,6 @@ regex = "1.10.5"
 [[bin]]
 name = "dncs"
 path = "src/main.rs"
+
+[workspace]
+members = ["python"]

@@ -74,19 +74,6 @@ Must be one of the below:
         system.init_parameters();
         Ok(Polymer { polymer: system })
     }
-
-    fn getEnergy(&mut self) -> PyResult<f64> {
-        let ff = Amber::new(Arc::new(self.polymer.clone()));
-        Ok(ff.energy())
-    }
-
-    fn toPDB(&self, filename: String) {
-        self.polymer.to_pdb(&filename);
-    }
-
-    fn dihedral(&mut self, foldername: String) {
-        self.polymer.dihedral_log(&foldername)
-    }
 }
 
 #[pyclass]
@@ -97,27 +84,15 @@ pub struct SobolSampler {
 #[pymethods]
 impl SobolSampler {
     #[new]
-    fn new(
+    fn sample(
         system: &Polymer,
         no_of_samples: usize,
         grid: usize,
-        temp: f64,
+        folder: String,
     ) -> PyResult<SobolSampler> {
-        let mut sample = Sampler::new(Arc::new(system.polymer.clone()), grid);
-        sample.sample(no_of_samples, temp);
+        let mut sample = Sampler::new(Arc::new(system.polymer.clone()), grid, folder);
+        sample.sample(no_of_samples);
         Ok(SobolSampler { sampler: sample })
-    }
-
-    fn write_angles(&self, filename: String) {
-        self.sampler.write_angles(&filename)
-    }
-
-    fn toPDB(&self, filename: String) {
-        self.sampler.to_pdb(&filename);
-    }
-
-    fn toPDBFiles(&self, prefix: String) {
-        self.sampler.to_pdbfiles(&prefix);
     }
 }
 

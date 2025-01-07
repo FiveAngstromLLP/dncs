@@ -14,12 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
-import sys
+
 import toml
 import time
 import dncs
-import shutil
 from typing import List
 from dataclasses import dataclass
 from integrator import DncsIntegrator, CleanUp, MDSimulation
@@ -43,22 +41,18 @@ class SimulationConfig:
 class GenerateSamples:
     def __init__(self, config: SimulationConfig):
         self.config = config
-        self.polymer = None
-        self.sample = None
+        self.generate_samples()
 
     def generate_samples(self):
-        self.polymer = dncs.Polymer(self.config.sequence, "amberfb15.xml")
-        self.sample = dncs.SobolSampler(self.polymer, self.config.n_samples, self.config.grid, self.config.temp)
+        sample = dncs.Polymer(self.config.sequence, "amberfb15.xml" )
+        dncs.SobolSampler(
+            sample,
+            self.config.n_samples,
+            self.config.grid,
+            f"Result/{self.config.moleculename}"
+        )
 
 
-    def save_to_pdb(self):
-        folder = os.environ.get('DNCS_FOLDER')
-        if os.path.exists(f"{folder}/Result/{self.config.moleculename}"):
-            shutil.rmtree(f"{folder}/Result/{self.config.moleculename}")
-        os.makedirs(f"{folder}/Result/{self.config.moleculename}")
-        self.sample.toPDB(f"{folder}/Result/{self.config.moleculename}/sampled.pdb")
-        self.sample.toPDBFiles(f"{folder}/Result/{self.config.moleculename}/Sampled")
-        self.sample.write_angles(f"{folder}/Result/{self.config.moleculename}/Sampled/angles.out")
 
 def runopenmm(config):
     # Run Integrator
@@ -82,9 +76,7 @@ if __name__ == "__main__":
 
 
     #Generate conformational samples
-    conformation = GenerateSamples(config)
-    conformation.generate_samples()
-    conformation.save_to_pdb()
+    GenerateSamples(config)
 
     if config.interface == "openmm":
         runopenmm(config)

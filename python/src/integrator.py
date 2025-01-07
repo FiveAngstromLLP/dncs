@@ -32,7 +32,7 @@ class DncsIntegrator:
     def __init__(self, config):
         self.config = config
         self.forcefield = ForceField(*config.forcefield)
-        self.inpfolder = f"{folder}/Result/{self.config.moleculename}/Sampled"
+        self.inpfolder = f"{folder}/Result/{self.config.moleculename}/sample"
         self.outfolder = f"{folder}/Result/{self.config.moleculename}"
         os.makedirs(self.outfolder, exist_ok=True)
         self.pdbs = sorted([f for f in os.listdir(self.inpfolder) if f.endswith('.pdb')])
