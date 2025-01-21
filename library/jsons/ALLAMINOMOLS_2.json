@@ -11039,11 +11039,11 @@
           "name": "C1",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            1.006,
-            1.819,
-            -1.312
+            0.0,
+            0.0,
+            0.0
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11070,11 +11070,11 @@
           "name": "C2",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            -0.096,
-            1.413,
-            -0.333
+            -1.102,
+            0.406,
+            -0.979
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11101,11 +11101,11 @@
           "name": "C3",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            -1.472,
-            1.736,
-            -0.914
+            -2.478,
+            0.083,
+            -0.398
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11132,11 +11132,11 @@
           "name": "C4",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            -1.548,
-            3.199,
-            -1.327
+            -2.554,
+            -1.38,
+            0.015
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11163,11 +11163,11 @@
           "name": "C5",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            -0.411,
-            3.525,
-            -2.29
+            -1.417,
+            -1.706,
+            0.978
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11194,11 +11194,11 @@
           "name": "C6",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            -0.361,
-            4.986,
-            -2.675
+            -1.367,
+            -3.167,
+            1.363
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11225,11 +11225,11 @@
           "name": "C7",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            0.548,
-            -0.445,
-            1.136
+            -0.458,
+            2.264,
+            -2.448
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11256,11 +11256,11 @@
           "name": "C8",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            0.563,
-            -1.932,
-            1.32
+            -0.443,
+            3.751,
+            -2.632
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11287,11 +11287,11 @@
           "name": "N2",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            0.0,
-            0.0,
-            0.0
+            -1.006,
+            1.819,
+            -1.312
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11318,11 +11318,11 @@
           "name": "O3",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            -2.467,
-            1.47,
-            0.066
+            -3.473,
+            0.349,
+            -1.378
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11349,11 +11349,11 @@
           "name": "O4",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            -2.796,
-            3.47,
-            -1.955
+            -3.802,
+            -1.651,
+            0.643
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11380,11 +11380,11 @@
           "name": "O5",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            0.848,
-            3.211,
-            -1.677
+            -0.158,
+            -1.392,
+            0.365
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11411,11 +11411,11 @@
           "name": "O6",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            0.495,
-            5.196,
-            -3.791
+            -0.511,
+            -3.377,
+            2.479
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
@@ -11442,11 +11442,42 @@
           "name": "O7",
           "residue": "NAG",
           "chain_id": "A",
-          "sequence": 1,
+          "sequence": 6,
           "position": [
-            1.012,
-            0.318,
-            1.977
+            0.006,
+            1.501,
+            -3.289
+          ],
+          "occupancy": 1.0,
+          "bfactor": 0.0,
+          "element": "O",
+          "mass": 15.999,
+          "charge": -0.504,
+          "atomtype": "O",
+          "sigma": 0.0,
+          "epsilon": 0.0,
+          "velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "force": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "record": "DUMM",
+          "serial": 15,
+          "name": "N",
+          "residue": "NAG",
+          "chain_id": "A",
+          "sequence": 6,
+          "position": [
+            -3.802,
+            1.651,
+            0.957
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
