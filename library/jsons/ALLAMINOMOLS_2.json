@@ -11029,59 +11029,28 @@
       ]
     },
     {
-      "tcode": "AIB",
+      "tcode": "NAG",
       "scode": "B",
       "natom": 14,
       "atoms": [
         {
           "record": "ATOM",
           "serial": 1,
-          "name": "N",
-          "residue": "AIB",
+          "name": "C1",
+          "residue": "NAG",
           "chain_id": "A",
-          "sequence": 2,
+          "sequence": 1,
           "position": [
-            0.0,
-            0.0,
-            0.0
+            1.006,
+            1.819,
+            -1.312
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
-          "element": "N",
-          "mass": 14.007,
-          "charge": -0.445,
-          "atomtype": "N",
-          "sigma": 0.0,
-          "epsilon": 0.0,
-          "velocity": [
-            0.0,
-            0.0,
-            0.0
-          ],
-          "force": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "record": "ATOM",
-          "serial": 7,
-          "name": "H",
-          "residue": "AIB",
-          "chain_id": "A",
-          "sequence": 2,
-          "position": [
-            0.564,
-            -0.863,
-            0.007
-          ],
-          "occupancy": 1.0,
-          "bfactor": 0.0,
-          "element": "H",
-          "mass": 1.008,
-          "charge": 0.126,
-          "atomtype": "H",
+          "element": "C",
+          "mass": 12.011,
+          "charge": 0.616,
+          "atomtype": "C",
           "sigma": 0.0,
           "epsilon": 0.0,
           "velocity": [
@@ -11098,21 +11067,21 @@
         {
           "record": "ATOM",
           "serial": 2,
-          "name": "CA",
-          "residue": "AIB",
+          "name": "C2",
+          "residue": "NAG",
           "chain_id": "A",
-          "sequence": 2,
+          "sequence": 1,
           "position": [
-            0.663,
-            1.312,
-            0.0
+            -0.096,
+            1.413,
+            -0.333
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
           "element": "C",
           "mass": 12.011,
-          "charge": 0.076,
-          "atomtype": "CT",
+          "charge": 0.616,
+          "atomtype": "C",
           "sigma": 0.0,
           "epsilon": 0.0,
           "velocity": [
@@ -11129,114 +11098,21 @@
         {
           "record": "ATOM",
           "serial": 3,
-          "name": "CB1",
-          "residue": "AIB",
+          "name": "C3",
+          "residue": "NAG",
           "chain_id": "A",
-          "sequence": 2,
+          "sequence": 1,
           "position": [
-            0.257,
-            2.104,
-            -1.244
+            -1.472,
+            1.736,
+            -0.914
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
           "element": "C",
           "mass": 12.011,
-          "charge": -0.198,
-          "atomtype": "CT",
-          "sigma": 0.0,
-          "epsilon": 0.0,
-          "velocity": [
-            0.0,
-            0.0,
-            0.0
-          ],
-          "force": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "record": "ATOM",
-          "serial": 8,
-          "name": "HB12",
-          "residue": "AIB",
-          "chain_id": "A",
-          "sequence": 2,
-          "position": [
-            0.744,
-            3.067,
-            -1.244
-          ],
-          "occupancy": 1.0,
-          "bfactor": 0.0,
-          "element": "H",
-          "mass": 1.008,
-          "charge": 0.066,
-          "atomtype": "HC",
-          "sigma": 0.0,
-          "epsilon": 0.0,
-          "velocity": [
-            0.0,
-            0.0,
-            0.0
-          ],
-          "force": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "record": "ATOM",
-          "serial": 9,
-          "name": "HB13",
-          "residue": "AIB",
-          "chain_id": "A",
-          "sequence": 2,
-          "position": [
-            0.546,
-            1.565,
-            -2.135
-          ],
-          "occupancy": 1.0,
-          "bfactor": 0.0,
-          "element": "H",
-          "mass": 1.008,
-          "charge": 0.066,
-          "atomtype": "HC",
-          "sigma": 0.0,
-          "epsilon": 0.0,
-          "velocity": [
-            0.0,
-            0.0,
-            0.0
-          ],
-          "force": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "record": "ATOM",
-          "serial": 10,
-          "name": "HB11",
-          "residue": "AIB",
-          "chain_id": "A",
-          "sequence": 2,
-          "position": [
-            -0.813,
-            2.251,
-            -1.256
-          ],
-          "occupancy": 1.0,
-          "bfactor": 0.0,
-          "element": "H",
-          "mass": 1.008,
-          "charge": 0.066,
-          "atomtype": "HC",
+          "charge": 0.616,
+          "atomtype": "C",
           "sigma": 0.0,
           "epsilon": 0.0,
           "velocity": [
@@ -11253,114 +11129,21 @@
         {
           "record": "ATOM",
           "serial": 4,
-          "name": "CB2",
-          "residue": "AIB",
+          "name": "C4",
+          "residue": "NAG",
           "chain_id": "A",
-          "sequence": 2,
+          "sequence": 1,
           "position": [
-            0.256,
-            2.102,
-            1.246
+            -1.548,
+            3.199,
+            -1.327
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
           "element": "C",
           "mass": 12.011,
-          "charge": -0.198,
-          "atomtype": "CT",
-          "sigma": 0.0,
-          "epsilon": 0.0,
-          "velocity": [
-            0.0,
-            0.0,
-            0.0
-          ],
-          "force": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "record": "ATOM",
-          "serial": 11,
-          "name": "HB22",
-          "residue": "AIB",
-          "chain_id": "A",
-          "sequence": 2,
-          "position": [
-            0.743,
-            3.066,
-            1.246
-          ],
-          "occupancy": 1.0,
-          "bfactor": 0.0,
-          "element": "H",
-          "mass": 1.008,
-          "charge": 0.066,
-          "atomtype": "HC",
-          "sigma": 0.0,
-          "epsilon": 0.0,
-          "velocity": [
-            0.0,
-            0.0,
-            0.0
-          ],
-          "force": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "record": "ATOM",
-          "serial": 12,
-          "name": "HB23",
-          "residue": "AIB",
-          "chain_id": "A",
-          "sequence": 2,
-          "position": [
-            -0.813,
-            2.25,
-            1.257
-          ],
-          "occupancy": 1.0,
-          "bfactor": 0.0,
-          "element": "H",
-          "mass": 1.008,
-          "charge": 0.066,
-          "atomtype": "HC",
-          "sigma": 0.0,
-          "epsilon": 0.0,
-          "velocity": [
-            0.0,
-            0.0,
-            0.0
-          ],
-          "force": [
-            0.0,
-            0.0,
-            0.0
-          ]
-        },
-        {
-          "record": "ATOM",
-          "serial": 13,
-          "name": "HB21",
-          "residue": "AIB",
-          "chain_id": "A",
-          "sequence": 2,
-          "position": [
-            0.546,
-            1.564,
-            2.136
-          ],
-          "occupancy": 1.0,
-          "bfactor": 0.0,
-          "element": "H",
-          "mass": 1.008,
-          "charge": 0.066,
-          "atomtype": "HC",
+          "charge": 0.616,
+          "atomtype": "C",
           "sigma": 0.0,
           "epsilon": 0.0,
           "velocity": [
@@ -11377,20 +11160,20 @@
         {
           "record": "ATOM",
           "serial": 5,
-          "name": "C",
-          "residue": "AIB",
+          "name": "C5",
+          "residue": "NAG",
           "chain_id": "A",
-          "sequence": 2,
+          "sequence": 1,
           "position": [
-            2.182,
-            1.131,
-            0.0
+            -0.411,
+            3.525,
+            -2.29
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
           "element": "C",
           "mass": 12.011,
-          "charge": 0.726,
+          "charge": 0.616,
           "atomtype": "C",
           "sigma": 0.0,
           "epsilon": 0.0,
@@ -11408,20 +11191,144 @@
         {
           "record": "ATOM",
           "serial": 6,
-          "name": "O",
-          "residue": "AIB",
+          "name": "C6",
+          "residue": "NAG",
           "chain_id": "A",
-          "sequence": 2,
+          "sequence": 1,
           "position": [
-            2.69,
+            -0.361,
+            4.986,
+            -2.675
+          ],
+          "occupancy": 1.0,
+          "bfactor": 0.0,
+          "element": "C",
+          "mass": 12.011,
+          "charge": 0.616,
+          "atomtype": "C",
+          "sigma": 0.0,
+          "epsilon": 0.0,
+          "velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "force": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "record": "ATOM",
+          "serial": 7,
+          "name": "C7",
+          "residue": "NAG",
+          "chain_id": "A",
+          "sequence": 1,
+          "position": [
+            0.548,
+            -0.445,
+            1.136
+          ],
+          "occupancy": 1.0,
+          "bfactor": 0.0,
+          "element": "C",
+          "mass": 12.011,
+          "charge": 0.616,
+          "atomtype": "C",
+          "sigma": 0.0,
+          "epsilon": 0.0,
+          "velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "force": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "record": "ATOM",
+          "serial": 8,
+          "name": "C8",
+          "residue": "NAG",
+          "chain_id": "A",
+          "sequence": 1,
+          "position": [
+            0.563,
+            -1.932,
+            1.32
+          ],
+          "occupancy": 1.0,
+          "bfactor": 0.0,
+          "element": "C",
+          "mass": 12.011,
+          "charge": 0.616,
+          "atomtype": "C",
+          "sigma": 0.0,
+          "epsilon": 0.0,
+          "velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "force": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "record": "ATOM",
+          "serial": 9,
+          "name": "N2",
+          "residue": "NAG",
+          "chain_id": "A",
+          "sequence": 1,
+          "position": [
+            0.0,
             0.0,
             0.0
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
+          "element": "N",
+          "mass": 14.007,
+          "charge": -0.463,
+          "atomtype": "N",
+          "sigma": 0.0,
+          "epsilon": 0.0,
+          "velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "force": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "record": "ATOM",
+          "serial": 10,
+          "name": "O3",
+          "residue": "NAG",
+          "chain_id": "A",
+          "sequence": 1,
+          "position": [
+            -2.467,
+            1.47,
+            0.066
+          ],
+          "occupancy": 1.0,
+          "bfactor": 0.0,
           "element": "O",
           "mass": 15.999,
-          "charge": -0.492,
+          "charge": -0.504,
           "atomtype": "O",
           "sigma": 0.0,
           "epsilon": 0.0,
@@ -11437,23 +11344,116 @@
           ]
         },
         {
-          "record": "DUMM",
-          "serial": 14,
-          "name": "N",
-          "residue": "AIB",
+          "record": "ATOM",
+          "serial": 11,
+          "name": "O4",
+          "residue": "NAG",
           "chain_id": "A",
-          "sequence": 3,
+          "sequence": 1,
           "position": [
-            3.057,
-            2.323,
-            0.0
+            -2.796,
+            3.47,
+            -1.955
           ],
           "occupancy": 1.0,
           "bfactor": 0.0,
-          "element": "N",
-          "mass": 14.007,
-          "charge": -0.445,
-          "atomtype": "N",
+          "element": "O",
+          "mass": 15.999,
+          "charge": -0.504,
+          "atomtype": "O",
+          "sigma": 0.0,
+          "epsilon": 0.0,
+          "velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "force": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "record": "ATOM",
+          "serial": 12,
+          "name": "O5",
+          "residue": "NAG",
+          "chain_id": "A",
+          "sequence": 1,
+          "position": [
+            0.848,
+            3.211,
+            -1.677
+          ],
+          "occupancy": 1.0,
+          "bfactor": 0.0,
+          "element": "O",
+          "mass": 15.999,
+          "charge": -0.504,
+          "atomtype": "O",
+          "sigma": 0.0,
+          "epsilon": 0.0,
+          "velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "force": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "record": "ATOM",
+          "serial": 13,
+          "name": "O6",
+          "residue": "NAG",
+          "chain_id": "A",
+          "sequence": 1,
+          "position": [
+            0.495,
+            5.196,
+            -3.791
+          ],
+          "occupancy": 1.0,
+          "bfactor": 0.0,
+          "element": "O",
+          "mass": 15.999,
+          "charge": -0.504,
+          "atomtype": "O",
+          "sigma": 0.0,
+          "epsilon": 0.0,
+          "velocity": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "force": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "record": "ATOM",
+          "serial": 14,
+          "name": "O7",
+          "residue": "NAG",
+          "chain_id": "A",
+          "sequence": 1,
+          "position": [
+            1.012,
+            0.318,
+            1.977
+          ],
+          "occupancy": 1.0,
+          "bfactor": 0.0,
+          "element": "O",
+          "mass": 15.999,
+          "charge": -0.504,
+          "atomtype": "O",
           "sigma": 0.0,
           "epsilon": 0.0,
           "velocity": [
