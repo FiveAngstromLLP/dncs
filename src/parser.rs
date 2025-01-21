@@ -43,6 +43,7 @@ pub enum FF {
     AMBER96,
     AMBER99SB,
     AMBERFB15,
+    GLYCAM06,
 }
 
 impl FF {
@@ -65,6 +66,10 @@ impl FF {
                 quick_xml::de::from_str(include_str!("../library/ForceFields/amberfb15.xml"))
                     .unwrap()
             }
+            FF::GLYCAM06 => {
+                quick_xml::de::from_str(include_str!("../library/ForceFields/GLYCAM_06j-1.xml"))
+                    .unwrap()
+            }
         }
     }
 
@@ -75,6 +80,7 @@ impl FF {
             "amber96" => Some(FF::AMBER96),
             "amber99sb" => Some(FF::AMBER99SB),
             "amberfb15" => Some(FF::AMBERFB15),
+            "glycam06" => Some(FF::GLYCAM06),
             _ => None,
         }
     }

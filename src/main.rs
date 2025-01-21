@@ -56,7 +56,7 @@ fn main() {
                     Arg::new("forcefield")
                         .short('f')
                         .long("forcefield")
-                        .help("Force field (amber03.xml, amber10.xml, amber96.xml, amber99sb.xml, amberfb15.xml)")
+                        .help("Force field (amber03.xml, amber10.xml, amber96.xml, amber99sb.xml, amberfb15.xml, glycam06.xml)")
                         .value_name("FF")
                         .required(true),
                 )
@@ -134,6 +134,7 @@ fn main() {
         - amber96.xml
         - amber99sb.xml
         - amberfb15.xml
+        - glycam06.xml
     ",
                         forcefield_str
                     );
@@ -171,6 +172,7 @@ fn main() {
         - amber96.xml
         - amber99sb.xml
         - amberfb15.xml
+        - glycam06.xml
     ",
                         forcefield_str
                     );
