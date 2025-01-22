@@ -17,6 +17,7 @@
  */
 
 #![allow(dead_code)]
+// use crate::glycam_parser::GlycamForceField;
 use serde::Deserialize;
 use std::fmt::Debug;
 use std::sync::LazyLock;
@@ -43,7 +44,6 @@ pub enum FF {
     AMBER96,
     AMBER99SB,
     AMBERFB15,
-    GLYCAM06,
 }
 
 impl FF {
@@ -64,10 +64,6 @@ impl FF {
             }
             FF::AMBERFB15 => {
                 quick_xml::de::from_str(include_str!("../library/ForceFields/amberfb15.xml"))
-                    .unwrap()
-            }
-            FF::GLYCAM06 => {
-                quick_xml::de::from_str(include_str!("../library/ForceFields/GLYCAM_06j-1.xml"))
                     .unwrap()
             }
         }

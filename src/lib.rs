@@ -17,6 +17,7 @@
  */
 
 mod forcefield;
+mod glycam_parser;
 mod minimizer;
 mod parser;
 mod sampling;
