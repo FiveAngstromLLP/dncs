@@ -115,7 +115,7 @@ pub struct Atom {
     /// Atom type (for force field calculations)
     pub atomtype: Option<String>,
     /// Atom TypeId
-    pub typeid: Option<usize>,
+    pub typeid: Option<String>,
     /// Lennard-Jones parameter sigma
     pub sigma: f64,
     /// Lennard-Jones parameter epsilon
@@ -435,12 +435,24 @@ pub fn atoms_to_seq(atoms: Vec<Atom>) -> String {
 #[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "PascalCase")]
 pub struct ForceField {
+    pub info: Option<Info>,
     pub atom_types: AtomTypes,
     pub residues: Residues,
     pub harmonic_bond_force: HarmonicBondForce,
     pub harmonic_angle_force: HarmonicAngleForce,
     pub periodic_torsion_force: PeriodicTorsionForce,
     pub nonbonded_force: NonbondedForce,
+    pub script: Option<Script>, // For custom scripting in some FFs
+    pub initialization_script: Option<InitializationScript>, // For initialization scripts
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(rename_all = "PascalCase")]
+pub struct Info {
+    pub source: Option<String>,
+    #[serde(rename = "DateGenerated")]
+    pub date_generated: Option<String>,
+    pub reference: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -452,7 +464,7 @@ pub struct AtomTypes {
 #[derive(Debug, Deserialize, Clone)]
 pub struct AtomType {
     #[serde(rename = "@name")]
-    pub name: usize,
+    pub name: String,
     #[serde(rename = "@class")]
     pub class: String,
     #[serde(rename = "@element")]
@@ -482,24 +494,27 @@ pub struct ResidueAtom {
     #[serde(rename = "@name")]
     pub name: String,
     #[serde(rename = "@type")]
-    pub atype: usize,
+    pub atype: String,
+    #[serde(rename = "@charge")]
+    pub charge: Option<f64>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct ResidueBond {
     #[serde(rename = "@from")]
-    pub from: usize,
+    pub from: Option<usize>,
     #[serde(rename = "@to")]
-    pub to: usize,
+    pub to: Option<usize>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct ExternalBond {
     #[serde(rename = "@from")]
-    pub from: usize,
+    pub from: Option<usize>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
+#[serde(rename_all = "PascalCase")]
 pub struct HarmonicBondForce {
     #[serde(rename = "Bond")]
     pub bonds: Vec<HarmonicBond>,
@@ -518,6 +533,7 @@ pub struct HarmonicBond {
 }
 
 #[derive(Deserialize, Debug, Clone)]
+#[serde(rename_all = "PascalCase")]
 pub struct HarmonicAngleForce {
     #[serde(rename = "Angle")]
     pub angles: Vec<HarmonicAngle>,
@@ -538,10 +554,10 @@ pub struct HarmonicAngle {
 }
 
 #[derive(Deserialize, Debug, Clone)]
+#[serde(rename_all = "PascalCase")]
 pub struct PeriodicTorsionForce {
-    #[serde(rename = "Proper")]
     pub proper: Vec<TorsionEntry>,
-    #[serde(rename = "Improper")]
+    #[serde(default)]
     pub improper: Vec<TorsionEntry>,
 }
 
@@ -594,6 +610,7 @@ pub struct TorsionEntry {
 }
 
 #[derive(Deserialize, Debug, Clone)]
+#[serde(rename_all = "PascalCase")]
 pub struct NonbondedForce {
     #[serde(rename = "@coulomb14scale")]
     pub coulomb14scale: f64,
@@ -606,11 +623,24 @@ pub struct NonbondedForce {
 #[derive(Deserialize, Debug, Clone)]
 pub struct NonbondedAtom {
     #[serde(rename = "@type")]
-    pub atom_type: usize,
+    pub atom_type: String,
     #[serde(rename = "@charge")]
     pub charge: f64,
     #[serde(rename = "@sigma")]
     pub sigma: f64,
     #[serde(rename = "@epsilon")]
     pub epsilon: f64,
+}
+
+// Placeholder for script content
+#[derive(Deserialize, Debug, Clone)]
+pub struct Script {
+    #[serde(rename = "$value")]
+    pub script: String,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct InitializationScript {
+    #[serde(rename = "$value")]
+    pub script: String,
 }

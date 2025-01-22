@@ -26,7 +26,7 @@ mod tests {
 
     #[test]
     fn test_name() {
-        let sys = System::new("BB", FORCE_FIELD.init());
+        let sys = System::new("BA", FORCE_FIELD.init());
         println!("{}", sys.particles);
     }
 }

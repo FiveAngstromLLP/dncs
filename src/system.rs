@@ -82,7 +82,7 @@ impl System {
                         if atom_type.name == atom.name {
                             for forcefield_type in &self.forcefield.atom_types.types {
                                 if forcefield_type.name == atom_type.atype {
-                                    atom.typeid = Some(forcefield_type.name);
+                                    atom.typeid = Some(forcefield_type.name.to_string());
                                     atom.atomtype = Some(forcefield_type.class.to_string());
                                     if let Some(nb) = self
                                         .forcefield
