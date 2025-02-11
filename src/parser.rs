@@ -76,7 +76,6 @@ impl FF {
             "amber96" => Some(FF::AMBER96),
             "amber99sb" => Some(FF::AMBER99SB),
             "amberfb15" => Some(FF::AMBERFB15),
-            "glycam06" => Some(FF::GLYCAM06),
             _ => None,
         }
     }
