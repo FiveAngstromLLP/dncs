@@ -26,8 +26,10 @@ from integrator import DncsIntegrator, CleanUp, MDSimulation
 class SimulationConfig:
     sequence: str
     moleculename: str
+    folder: str
     interface: str
     n_samples: int
+    md_simulation: int
     temp: float
     forcefield: List[str]
     device: str
@@ -44,16 +46,14 @@ class GenerateSamples:
         self.generate_samples()
 
     def generate_samples(self):
-        sample = dncs.Polymer(self.config.sequence, "amberfb15.xml" )
+        sample = dncs.Polymer(self.config.sequence, "amberfb15.xml")
         dncs.SobolSampler(
             sample,
             self.config.n_samples,
             self.config.grid,
             self.config.temp,
-            f"Result/{self.config.moleculename}"
+            f"{self.config.folder}/{self.config.moleculename}"
         )
-
-
 
 def runopenmm(config):
     # Run Integrator
@@ -78,6 +78,7 @@ if __name__ == "__main__":
 
     #Generate conformational samples
     GenerateSamples(config)
+    print("Completed Sampling")
 
     if config.interface == "openmm":
         runopenmm(config)
@@ -91,6 +92,6 @@ if __name__ == "__main__":
     else:
         print(f"Total simulation time: {simulation_time:.5f} seconds")
 
-    # Final cleanup
+    # # Final cleanup
     import gc
     gc.collect()

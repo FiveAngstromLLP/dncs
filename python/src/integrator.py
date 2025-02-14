@@ -26,16 +26,17 @@ from openmm.app import ForceField, PDBFile,Simulation,Modeller, PDBReporter, Sta
 from openmm.openmm import Platform, LangevinMiddleIntegrator
 from openmm.unit import kelvin, nano, pico
 
-folder = os.environ['DNCS_FOLDER']
+
 
 class DncsIntegrator:
     def __init__(self, config):
         self.config = config
         self.forcefield = ForceField(*config.forcefield)
-        self.inpfolder = f"{folder}/Result/{self.config.moleculename}/sample"
-        self.outfolder = f"{folder}/Result/{self.config.moleculename}"
+        self.inpfolder = f"{config.folder}/{config.moleculename}/sample"
+        self.outfolder = f"{config.folder}/{config.moleculename}"
         os.makedirs(self.outfolder, exist_ok=True)
-        self.pdbs = sorted([f for f in os.listdir(self.inpfolder) if f.endswith('.pdb')])
+        allpdb = sorted([f for f in os.listdir(self.inpfolder) if f.endswith('.pdb')])
+        self.pdbs = allpdb[0:self.config.md_simulation]
         self.log = self.setup_logger()
 
     def setup_logger(self):
@@ -129,7 +130,7 @@ class DncsIntegrator:
 class CleanUp:
     def __init__(self, config):
         self.config = config
-        self.inpfolder = f"{folder}/Result/{self.config.moleculename}"
+        self.inpfolder = f"{config.folder}/{self.config.moleculename}"
         self.process_files()
         self.write_equilibrated()
         self.write_minimized()
@@ -209,8 +210,8 @@ class MDSimulation:
     def __init__(self, config):
         self.config = config
         self.forcefield = ForceField(*config.forcefield)
-        self.inpfolder = f"{folder}/Result/{self.config.moleculename}/Langevin"
-        self.outfolder = f"{folder}/Result/{self.config.moleculename}/MDSimulation"
+        self.inpfolder = f"{config.folder}/{self.config.moleculename}/Langevin"
+        self.outfolder = f"{config.folder}/{self.config.moleculename}/MDSimulation"
         os.makedirs(self.outfolder, exist_ok=True)
         self.pdbs = sorted([f for f in os.listdir(self.inpfolder) if f.endswith('.pdb')])
 
@@ -235,7 +236,7 @@ class MDSimulation:
                                               potentialEnergy=True,
                                               kineticEnergy=True,
                                               temperature=True))
-            s.reporters.append(PDBReporter(f"{folder}/Result/{self.config.moleculename}/MDSimulation/trajectory{i}.pdb", 100))
+            s.reporters.append(PDBReporter(f"{self.config.folder}/{self.config.moleculename}/MDSimulation/trajectory{i}.pdb", 100))
             s.step(steps_per_segment)
 
             position = s.context.getState(getPositions=True).getPositions()
