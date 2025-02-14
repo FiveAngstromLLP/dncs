@@ -49,6 +49,7 @@ class GenerateSamples:
             sample,
             self.config.n_samples,
             self.config.grid,
+            self.config.temp,
             f"Result/{self.config.moleculename}"
         )
 

@@ -69,6 +69,15 @@ fn main() {
                         .value_parser(clap::value_parser!(usize))
                         .required(true),
                 )
+                .arg(
+                    Arg::new("temp")
+                        .short('t')
+                        .long("temperature")
+                        .help("Temperature")
+                        .value_name("TEMP")
+                        .value_parser(clap::value_parser!(f64))
+                        .required(true),
+                )
         )
         .subcommand(
             Command::new("minimize")
@@ -121,6 +130,9 @@ fn main() {
             let grid = *sample_matches
                 .get_one::<usize>("grid")
                 .expect("Grid is required");
+            let temperature = *sample_matches
+                .get_one::<f64>("temperature")
+                .expect("Temperature is required");
 
             let ff = match FF::from_str(forcefield_str.trim_end_matches(".xml")) {
                 Some(ff) => ff,
@@ -145,7 +157,7 @@ fn main() {
             let mut sys = System::new(&sequence, ff.init());
             sys.init_parameters();
             let mut sample = Sampler::new(Arc::new(sys), grid, folder);
-            sample.sample(n_samples);
+            sample.sample(n_samples, temperature);
         }
         Some(("minimize", minimize_matches)) => {
             let folder = minimize_matches

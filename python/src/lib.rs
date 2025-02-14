@@ -88,10 +88,11 @@ impl SobolSampler {
         system: &Polymer,
         no_of_samples: usize,
         grid: usize,
+        temp: f64,
         folder: String,
     ) -> PyResult<SobolSampler> {
         let mut sample = Sampler::new(Arc::new(system.polymer.clone()), grid, folder);
-        sample.sample(no_of_samples);
+        sample.sample(no_of_samples, temp);
         Ok(SobolSampler { sampler: sample })
     }
 }
