@@ -236,7 +236,7 @@ class MDSimulation:
                                               potentialEnergy=True,
                                               kineticEnergy=True,
                                               temperature=True))
-            s.reporters.append(PDBReporter(f"{self.config.folder}/{self.config.moleculename}/MDSimulation/trajectory{i}.pdb", 100))
+            # s.reporters.append(PDBReporter(f"{self.config.folder}/{self.config.moleculename}/MDSimulation/trajectory{i}.pdb", 100))
             s.step(steps_per_segment)
 
             position = s.context.getState(getPositions=True).getPositions()

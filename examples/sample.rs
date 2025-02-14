@@ -13,5 +13,5 @@ fn main() {
     sys.init_parameters();
     let folder = format!("Result/{}", NAME);
     let mut sample = Sampler::new(Arc::new(sys), 4, folder.to_string());
-    sample.sample(NO_OF_SAMPLE);
+    sample.sample(NO_OF_SAMPLE, 300.0);
 }
