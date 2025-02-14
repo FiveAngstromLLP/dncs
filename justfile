@@ -1,6 +1,5 @@
 
 @run:
-    echo "Working on directory {{DNCS_FOLDER}}"
     python python/src/main.py
 
 @install:
