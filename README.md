@@ -1,18 +1,10 @@
 
+## Compile dncs LIBRARY
 ```bash
-dncs sample -F Result -s YGGFM -n 1000 -f amberfb15.xml -g 4
+cargo build -p cabi --release
 ```
 
+## Compile CPP LIBRARY
 ```bash
-dncs minimize -F Result -f amberfb15.xml -m 10
+g++ main.cpp -o main -ldncs -L ./target/release -Wl,-rpath=$PWD/target/release
 ```
-
-### Test Cases
-
-```bash
-cargo run -- -F Result -s ABCD -f glycam06.xml -g 4 -n 100
-```
-
-
-cAlpha - C = dump coordinate
-C4 + c1 = dump
