@@ -50,16 +50,11 @@ class DncsIntegrator:
 
     def run_integrator(self):
         self.log_parameters()
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            futures = []
-            for i, pdb in enumerate(self.pdbs):
-                model = PDBFile(os.path.join(self.inpfolder, pdb))
-                modeller = Modeller(model.topology, model.positions)
-                futures.append(executor.submit(self.run_simulation, modeller, i+1))
-            concurrent.futures.wait(futures)
-        for future in futures:
-            if future.exception():
-                print(f"Error occurred: {future.exception()}")
+        for i, pdb in enumerate(self.pdbs):
+            model = PDBFile(os.path.join(self.inpfolder, pdb))
+            modeller = Modeller(model.topology, model.positions)
+            self.run_simulation(modeller, i+1)
+
 
     def log_parameters(self):
         date = datetime.datetime.now()
