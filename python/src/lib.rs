@@ -24,7 +24,7 @@ use std::sync::Arc;
 
 #[pyfunction]
 fn getPDB(seq: String, filename: String) {
-    let polymer = System::new(&seq, FF::AMBERFB15.init());
+    let polymer = System::new(&seq, FF::AmberFB15.init());
     polymer.to_pdb(&filename);
 }
 
@@ -50,11 +50,11 @@ impl Polymer {
     fn fromAminoSEQ(seq: String, forcefield: String) -> PyResult<Polymer> {
         // Validate forcefield
         let ff = match forcefield.as_str() {
-            "amber03.xml" => FF::AMBER03,
-            "amber10.xml" => FF::AMBER10,
-            "amber96.xml" => FF::AMBER96,
-            "amber99sb.xml" => FF::AMBER99SB,
-            "amberfb15.xml" => FF::AMBERFB15,
+            "amber03.xml" => FF::Amber03,
+            "amber10.xml" => FF::Amber10,
+            "amber96.xml" => FF::Amber96,
+            "amber99sb.xml" => FF::Amber99SB,
+            "amberfb15.xml" => FF::AmberFB15,
             _ => {
                 eprintln!(
                     "Unsupported forcefield: {}.
@@ -87,11 +87,29 @@ impl SobolSampler {
     fn sample(
         system: &Polymer,
         no_of_samples: usize,
-        grid: usize,
+        method: String,
         temp: f64,
         folder: String,
     ) -> PyResult<SobolSampler> {
-        let mut sample = Sampler::new(Arc::new(system.polymer.clone()), grid, folder);
+        let m = match method.as_str() {
+            "fold" => Method::Fold,
+            "search" => Method::Search,
+            "explore" => Method::Explore,
+            _ => {
+                eprintln!(
+                    "Unsupported sampling method: {}.
+Must be one of the below:
+  - fold
+  - search
+  - explore
+  ",
+                    method
+                );
+                std::process::exit(1);
+            }
+        };
+
+        let mut sample = Sampler::new(Arc::new(system.polymer.clone()), m, folder);
         sample.sample(no_of_samples, temp);
         Ok(SobolSampler { sampler: sample })
     }

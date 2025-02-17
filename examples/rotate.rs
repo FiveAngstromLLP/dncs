@@ -3,7 +3,7 @@ use std::sync::Arc;
 use libdncs::*;
 
 const SEQUENCE: &str = "YGGFM";
-const FORCE_FIELD: FF = FF::AMBERFB15;
+const FORCE_FIELD: FF = FF::AmberFB15;
 
 fn main() {
     let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());

@@ -16,4 +16,4 @@ steps = 50 # Equlibration timesteps (uses Langevin Integrator from OpenMM)
 gamma = 1.0 # Friction coefficient
 dt = 0.002 # Integrator timestep
 md_steps = 1 # MD timestep
-grid = 5 # Adaptive Sampling
+method = "fold" # Adaptive Sampling

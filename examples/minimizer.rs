@@ -5,7 +5,7 @@ use libdncs::*;
 // Configuration
 const FOLDER: &str = "Result/DNCS";
 const SEQUENCE: &str = "YGGFM";
-const FORCE_FIELD: FF = FF::AMBERFB15;
+const FORCE_FIELD: FF = FF::AmberFB15;
 const NO_OF_SAMPLE: usize = 100;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -13,7 +13,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());
     sys.init_parameters();
     // Sample
-    let mut sample = Sampler::new(Arc::new(sys), 4, FOLDER.to_string());
+    let mut sample = Sampler::new(Arc::new(sys), Method::Fold, FOLDER.to_string());
     println!("Generating Samples..");
     sample.sample(NO_OF_SAMPLE, 300.0);
     // Minimizer

@@ -17,9 +17,10 @@
  */
 
 #![allow(dead_code)]
-// use crate::glycam_parser::GlycamForceField;
+use clap::ValueEnum;
 use serde::Deserialize;
 use std::fmt::Debug;
+use std::str::FromStr;
 use std::sync::LazyLock;
 
 pub static ALLAMINOMOLS_1: LazyLock<Polymer<Atom>> = LazyLock::new(|| {
@@ -38,45 +39,50 @@ pub static ENERGYPARAM: LazyLock<EnergyParam> = LazyLock::new(|| {
 pub static VAR: LazyLock<Polymer<Diheds>> =
     LazyLock::new(|| serde_json::from_str(include_str!("../library/jsons/VAR.json")).unwrap());
 
+#[derive(Debug, Clone, ValueEnum)]
 pub enum FF {
-    AMBER03,
-    AMBER10,
-    AMBER96,
-    AMBER99SB,
-    AMBERFB15,
+    Amber03,
+    Amber10,
+    Amber96,
+    Amber99SB,
+    AmberFB15,
+}
+
+impl FromStr for FF {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.trim_end_matches(".xml").to_lowercase().as_str() {
+            "amber03" => Ok(FF::Amber03),
+            "amber10" => Ok(FF::Amber10),
+            "amber96" => Ok(FF::Amber96),
+            "amber99-sb" => Ok(FF::Amber99SB),
+            "amber-fb15" => Ok(FF::AmberFB15),
+            _ => Err(format!("'{}' is not a valid forcefield", s)),
+        }
+    }
 }
 
 impl FF {
     pub fn init(&self) -> ForceField {
         match self {
-            FF::AMBER03 => {
+            FF::Amber03 => {
                 quick_xml::de::from_str(include_str!("../library/ForceFields/amber03.xml")).unwrap()
             }
-            FF::AMBER10 => {
+            FF::Amber10 => {
                 quick_xml::de::from_str(include_str!("../library/ForceFields/amber10.xml")).unwrap()
             }
-            FF::AMBER96 => {
+            FF::Amber96 => {
                 quick_xml::de::from_str(include_str!("../library/ForceFields/amber96.xml")).unwrap()
             }
-            FF::AMBER99SB => {
+            FF::Amber99SB => {
                 quick_xml::de::from_str(include_str!("../library/ForceFields/amber99sb.xml"))
                     .unwrap()
             }
-            FF::AMBERFB15 => {
+            FF::AmberFB15 => {
                 quick_xml::de::from_str(include_str!("../library/ForceFields/amberfb15.xml"))
                     .unwrap()
             }
-        }
-    }
-
-    pub fn from_str(s: &str) -> Option<Self> {
-        match s {
-            "amber03" => Some(FF::AMBER03),
-            "amber10" => Some(FF::AMBER10),
-            "amber96" => Some(FF::AMBER96),
-            "amber99sb" => Some(FF::AMBER99SB),
-            "amberfb15" => Some(FF::AMBERFB15),
-            _ => None,
         }
     }
 }

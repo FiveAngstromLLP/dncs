@@ -38,7 +38,7 @@ class SimulationConfig:
     gamma: float
     dt: float
     md_steps: int
-    grid: int
+    method: str
 
 class GenerateSamples:
     def __init__(self, config: SimulationConfig):
@@ -50,7 +50,7 @@ class GenerateSamples:
         dncs.SobolSampler(
             sample,
             self.config.n_samples,
-            self.config.grid,
+            self.config.method,
             self.config.temp,
             f"{self.config.folder}/{self.config.moleculename}"
         )

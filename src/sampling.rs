@@ -16,15 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #![allow(dead_code)]
-
 use crate::forcefield::Amber;
 use crate::parser::{self, atoms_to_pdbstring, Atom, FF};
 use crate::system::{Particles, System};
+use clap::ValueEnum;
 use nalgebra::{Matrix3, Vector3};
 use rand::Rng;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 // use rayon::prelude::*;
 use std::io::Write;
+use std::str::FromStr;
 use std::sync::{Arc, LazyLock};
 
 static DIRECTION: LazyLock<Vec<String>> = LazyLock::new(|| {
@@ -172,7 +173,7 @@ impl RotateAtDihedral {
     }
 
     pub fn from_pdb(file: &str) -> Vec<f64> {
-        let mut s = System::from_pdb(file, FF::AMBER99SB.init());
+        let mut s = System::from_pdb(file, FF::Amber99SB.init());
         let mut scopy = s.clone();
         scopy.get_dihedral();
         s.get_dihedral();
@@ -291,9 +292,29 @@ impl RotateAtDihedral {
     }
 }
 
+#[derive(Debug, Clone, ValueEnum)]
+pub enum Method {
+    Fold,
+    Search,
+    Explore,
+}
+
+impl FromStr for Method {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "fold" => Ok(Method::Fold),
+            "search" => Ok(Method::Search),
+            "explore" => Ok(Method::Explore),
+            _ => Err(format!("Invalid method: {}", s)),
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct Sampler {
-    pub grid: usize,
+    pub method: Method,
     pub folder: String,
     pub energy: Vec<(usize, f64)>,
     pub dihedral: usize,
@@ -303,13 +324,13 @@ pub struct Sampler {
 }
 
 impl Sampler {
-    pub fn new(system: Arc<System>, grid: usize, folder: String) -> Self {
+    pub fn new(system: Arc<System>, method: Method, folder: String) -> Self {
         if std::path::Path::new(&folder).exists() {
             std::fs::remove_dir_all(&folder).unwrap();
         }
         std::fs::create_dir_all(format!("{}/sample", folder)).unwrap();
         Self {
-            grid,
+            method,
             folder: format!("{}/sample", folder),
             energy: Vec::new(),
             dihedral: system.dihedral.len(),
@@ -350,18 +371,10 @@ impl Sampler {
         let scale = 360.0;
         let mut rng = rand::thread_rng();
 
-        match self.grid {
-            1 => angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect(),
-            2 => {
-                let s = scale / self.grid as f64;
-                let transform_idx = rng.gen_range(0..2);
-                match transform_idx {
-                    0 => angle.iter().map(|x| x * s).collect(),
-                    _ => angle.iter().map(|x| (x * s) - s).collect(),
-                }
-            }
-            4 => {
-                let s = scale / self.grid as f64;
+        match self.method {
+            Method::Explore => angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect(),
+            Method::Fold => {
+                let s = scale / 4.0;
                 let transform_idx = rng.gen_range(0..4);
                 match transform_idx {
                     0 => angle.iter().map(|x| x * s).collect(),
@@ -370,7 +383,7 @@ impl Sampler {
                     _ => angle.iter().map(|x| (x * s) + s).collect(),
                 }
             }
-            5 => {
+            Method::Search => {
                 let s1 = scale / 2.0;
                 let s = scale / 4.0;
                 let transform_idx = rng.gen_range(0..7);
@@ -384,7 +397,6 @@ impl Sampler {
                     _ => angle.iter().map(|x| (x * s) + s).collect(),
                 }
             }
-            _ => angle,
         }
     }
 

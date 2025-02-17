@@ -4,7 +4,7 @@ use libdncs::*;
 
 // Configuration
 const SEQUENCE: &str = "YGGFM";
-const FORCE_FIELD: FF = FF::AMBERFB15;
+const FORCE_FIELD: FF = FF::AmberFB15;
 
 fn main() {
     let sys = System::new("BB", FORCE_FIELD.init());
