@@ -341,7 +341,7 @@ impl Sampler {
         }
     }
 
-    pub fn sample(&mut self, max: usize) {
+    pub fn sample(&mut self, max: usize, temp: f64) {
         let results: Vec<_> = Sobol::new(self.dihedral)
             .take(max)
             .enumerate()
@@ -363,9 +363,9 @@ impl Sampler {
         let (angles, energy): (Vec<_>, Vec<_>) = results.into_iter().unzip();
         self.angles = angles;
         self.energy = energy;
-        // self.conformational_sort(temp);
-        // self.rename();
-        // self.write_angles();
+        self.conformational_sort(temp);
+        self.rename();
+        self.write_angles();
     }
 
     pub fn transform_angle(&self, angle: Vec<f64>) -> Vec<f64> {

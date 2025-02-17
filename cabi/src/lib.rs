@@ -11,6 +11,7 @@ pub extern "C" fn sample(
     ff: *const c_char,
     sample: usize,
     method: *const c_char,
+    temp: f64,
 ) -> i32 {
     let seq_str = unsafe {
         if seq.is_null() {
@@ -55,7 +56,7 @@ pub extern "C" fn sample(
     let mut system = System::new(seq_str, FF::from_str(ff_str).unwrap().init());
     system.init_parameters();
     let mut sampler = Sampler::new(Arc::new(system), method, folder_str.to_string());
-    sampler.sample(sample);
+    sampler.sample(sample, temp);
 
     0 // Success
 }

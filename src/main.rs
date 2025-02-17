@@ -67,7 +67,7 @@ fn main() {
             let mut sys = System::new(&sample_args.sequence, sample_args.forcefield.init());
             sys.init_parameters();
             let mut sample = Sampler::new(Arc::new(sys), sample_args.method, sample_args.folder);
-            sample.sample(sample_args.samples);
+            sample.sample(sample_args.samples, sample_args.temperature);
         }
         SubCommands::Minimize(minimize_args) => {
             let mut minize = Minimizer::new(
