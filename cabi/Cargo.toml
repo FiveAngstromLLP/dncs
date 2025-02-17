@@ -1,0 +1,11 @@
+[package]
+name = "cabi"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libdncs = { path = "../" }
+
+[lib]
+name = "dncs"
+crate-type = ["cdylib", "staticlib"]
