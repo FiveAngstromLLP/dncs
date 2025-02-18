@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-int sample(const char* seq, const char* folder, const char* ff, size_t sample, const char* method);
+int sample(const char* seq, const char* folder, const char* ff, size_t sample, const char* method, double temp);
 char* pdb_to_angle(const char* filename);
 void free_string(char* str);
 
