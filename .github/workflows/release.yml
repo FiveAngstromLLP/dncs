@@ -1,70 +1,69 @@
-name: dncs-release
+name: Release
+
 on:
   workflow_dispatch:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
 
 jobs:
-  build-release:
-    name: release ${{ matrix.target }}
+  build:
+    name: Build ${{ matrix.os }}-${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
-    permissions:
-      contents: write
     strategy:
-      fail-fast: false
       matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        arch: [x86_64, aarch64]
         include:
-          - target: x86_64-unknown-linux-musl
-            os: ubuntu-latest
-          - target: aarch64-unknown-linux-musl
-            os: ubuntu-latest
-          - target: armv7-unknown-linux-musleabi
-            os: ubuntu-latest
-          - target: riscv64gc-unknown-linux-gnu
-            os: ubuntu-latest
-          - target: x86_64-apple-darwin
-            os: macos-latest
-          - target: aarch64-apple-darwin
-            os: macos-latest
-          - target: x86_64-pc-windows-msvc
-            os: windows-latest
-          - target: aarch64-pc-windows-msvc
-            os: windows-latest
+          - os: ubuntu-latest
+            arch: x86_64
+            artifact_name: linux
+            asset_name: dncs-linux-x86_64
+          - os: ubuntu-latest
+            arch: aarch64
+            artifact_name: linux
+            asset_name: dncs-linux-aarch64
+          - os: windows-latest
+            arch: x86_64
+            artifact_name: windows
+            asset_name: dncs-windows-x86_64.exe
+          - os: windows-latest
+            arch: aarch64
+            artifact_name: windows
+            asset_name: dncs-windows-aarch64.exe
+          - os: macos-latest
+            arch: x86_64
+            artifact_name: macos
+            asset_name: dncs-macos-x86_64
+          - os: macos-latest
+            arch: aarch64
+            artifact_name: macos
+            asset_name: dncs-macos-aarch64
 
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.83.0
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
         with:
-          target: ${{ matrix.target }}
+          targets: ${{ matrix.arch }}-unknown-${{ matrix.os == 'windows-latest' && 'windows-msvc' || matrix.os == 'macos-latest' && 'apple-darwin' || 'linux-gnu' }}
 
-      - name: Run Cargo Build
-        run: cargo build --release --target ${{ matrix.target }}
+      - name: Build
+        run: cargo build --release --target ${{ matrix.arch }}-unknown-${{ matrix.os == 'windows-latest' && 'windows-msvc' || matrix.os == 'macos-latest' && 'apple-darwin' || 'linux-gnu' }}
 
-      - name: create artifact directory
+      - name: Rename binary
         shell: bash
         run: |
-          directory=dncs-${{ matrix.target }}
-          mkdir $directory
-          cp README.md LICENSE NOTICE $directory
-          if [ -f target/${{ matrix.target }}/release/dncs.exe ]; then
-            cp target/${{ matrix.target }}/release/dncs.exe $directory
-            7z a -r $directory.zip $directory
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            cp target/${{ matrix.arch }}-unknown-windows-msvc/release/dncs.exe ${{ matrix.asset_name }}
           else
-            cp target/${{ matrix.target }}/release/dncs $directory
-            tar cJf $directory.tar.xz $directory
+            cp target/${{ matrix.arch }}-unknown-${{ matrix.os == 'macos-latest' && 'apple-darwin' || 'linux-gnu' }}/release/dncs ${{ matrix.asset_name }}
           fi
 
-      - uses: actions/upload-artifact@v4
-        if: github.event_name == 'workflow_dispatch'
+      - name: Upload binaries to release
+        uses: softprops/action-gh-release@v1
         with:
-          name: dncs-${{ matrix.target }}
-          path: "dncs-${{ matrix.target }}.*"
-          retention-days: 3
-
-      - uses: ncipollo/release-action@v1.14.0
-        if: github.event_name == 'release'
-        with:
-          artifacts: "dncs-${{ matrix.target }}.*"
-          allowUpdates: true
-          omitNameDuringUpdate: true
-          omitBodyDuringUpdate: true
+          files: ${{ matrix.asset_name }}
