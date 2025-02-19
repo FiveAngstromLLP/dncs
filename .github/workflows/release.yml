@@ -43,10 +43,18 @@ jobs:
         id: cargo_version
         run: echo "cargo_version=$(cargo --version | sed -E 's/cargo ([0-9\.]*).*/\1/')" >> $GITHUB_OUTPUT
 
-      - name: Install cross-compile dependencies (if needed - Linux example)
-        if: matrix.target == 'x86_64-pc-windows-gnu' || matrix.target == 'i686-pc-windows-gnu' || matrix.target == 'x86_64-apple-darwin' || matrix.target == 'aarch64-apple-darwin'
+      - name: Install cross-compile dependencies for aarch64-linux-gnu
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
         run: |
-          # Example for Windows targets - you might need different packages or adjustments for macOS
+          sudo apt-get update
+          sudo apt-get install -y \
+            gcc-aarch64-linux-gnu \
+            binutils-aarch64-linux-gnu \
+            libc6-dev-arm64-cross
+
+      - name: Install cross-compile dependencies for x86_64-pc-windows-gnu i686-pc-windows-gnu
+        if: matrix.target == 'x86_64-pc-windows-gnu' || matrix.target == 'i686-pc-windows-gnu'
+        run: |
           sudo apt-get update
           sudo apt-get install -y \
             mingw-w64 \
