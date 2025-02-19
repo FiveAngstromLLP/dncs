@@ -1,14 +1,11 @@
 name: Release
-
 on:
   workflow_dispatch:
   push:
     tags:
       - "v*"
-
 permissions:
   contents: write
-
 jobs:
   build:
     name: Build ${{ matrix.os }}-${{ matrix.arch }}
@@ -42,18 +39,27 @@ jobs:
             arch: aarch64
             artifact_name: macos
             asset_name: dncs-macos-aarch64
-
     steps:
       - uses: actions/checkout@v4
 
+      # Add macOS-specific setup for aarch64
+      - name: Set up macOS cross-compilation
+        if: matrix.os == 'macos-latest' && matrix.arch == 'aarch64'
+        run: |
+          brew install FiloSottile/musl-cross/musl-cross
+          rustup target add aarch64-apple-darwin
+
+      # Install Rust toolchain
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.arch }}-unknown-${{ matrix.os == 'windows-latest' && 'windows-msvc' || matrix.os == 'macos-latest' && 'apple-darwin' || 'linux-gnu' }}
 
+      # Build step
       - name: Build
         run: cargo build --release --target ${{ matrix.arch }}-unknown-${{ matrix.os == 'windows-latest' && 'windows-msvc' || matrix.os == 'macos-latest' && 'apple-darwin' || 'linux-gnu' }}
 
+      # Rename binary
       - name: Rename binary
         shell: bash
         run: |
@@ -63,6 +69,7 @@ jobs:
             cp target/${{ matrix.arch }}-unknown-${{ matrix.os == 'macos-latest' && 'apple-darwin' || 'linux-gnu' }}/release/dncs ${{ matrix.asset_name }}
           fi
 
+      # Upload release
       - name: Upload binaries to release
         uses: softprops/action-gh-release@v1
         with:
