@@ -12,64 +12,51 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        arch: [x86_64, aarch64]
         include:
           - os: ubuntu-latest
             arch: x86_64
-            artifact_name: linux
+            target: x86_64-unknown-linux-gnu
             asset_name: dncs-linux-x86_64
           - os: ubuntu-latest
             arch: aarch64
-            artifact_name: linux
+            target: aarch64-unknown-linux-gnu
             asset_name: dncs-linux-aarch64
           - os: windows-latest
             arch: x86_64
-            artifact_name: windows
+            target: x86_64-pc-windows-msvc
             asset_name: dncs-windows-x86_64.exe
           - os: windows-latest
             arch: aarch64
-            artifact_name: windows
+            target: aarch64-pc-windows-msvc
             asset_name: dncs-windows-aarch64.exe
           - os: macos-latest
             arch: x86_64
-            artifact_name: macos
+            target: x86_64-apple-darwin
             asset_name: dncs-macos-x86_64
           - os: macos-latest
             arch: aarch64
-            artifact_name: macos
+            target: aarch64-apple-darwin
             asset_name: dncs-macos-aarch64
     steps:
       - uses: actions/checkout@v4
 
-      # Add macOS-specific setup for aarch64
-      - name: Set up macOS cross-compilation
-        if: matrix.os == 'macos-latest' && matrix.arch == 'aarch64'
-        run: |
-          brew install FiloSottile/musl-cross/musl-cross
-          rustup target add aarch64-apple-darwin
-
-      # Install Rust toolchain
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.arch }}-unknown-${{ matrix.os == 'windows-latest' && 'windows-msvc' || matrix.os == 'macos-latest' && 'apple-darwin' || 'linux-gnu' }}
+          targets: ${{ matrix.target }}
 
-      # Build step
       - name: Build
-        run: cargo build --release --target ${{ matrix.arch }}-unknown-${{ matrix.os == 'windows-latest' && 'windows-msvc' || matrix.os == 'macos-latest' && 'apple-darwin' || 'linux-gnu' }}
+        run: cargo build --release --target ${{ matrix.target }}
 
-      # Rename binary
       - name: Rename binary
         shell: bash
         run: |
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            cp target/${{ matrix.arch }}-unknown-windows-msvc/release/dncs.exe ${{ matrix.asset_name }}
+            cp target/${{ matrix.target }}/release/dncs.exe ${{ matrix.asset_name }}
           else
-            cp target/${{ matrix.arch }}-unknown-${{ matrix.os == 'macos-latest' && 'apple-darwin' || 'linux-gnu' }}/release/dncs ${{ matrix.asset_name }}
+            cp target/${{ matrix.target }}/release/dncs ${{ matrix.asset_name }}
           fi
 
-      # Upload release
       - name: Upload binaries to release
         uses: softprops/action-gh-release@v1
         with:
