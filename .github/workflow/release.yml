@@ -1,0 +1,66 @@
+name: dncs-release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cross-compile-build:
+    name: Cross-Compile for ${{ matrix.target }} (Ubuntu)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            artifact_name_suffix: linux-x64
+          - target: aarch64-unknown-linux-gnu
+            artifact_name_suffix: linux-arm64
+          - target: x86_64-apple-darwin
+            artifact_name_suffix: macos-x64
+          - target: aarch64-apple-darwin
+            artifact_name_suffix: macos-arm64
+          - target: x86_64-pc-windows-gnu
+            artifact_name_suffix: windows-x64
+          - target: i686-pc-windows-gnu
+            artifact_name_suffix: windows-x86 # Example 32-bit Windows
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Version from Cargo.toml
+        id: get_version
+        run: |
+          VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+
+      - name: Get Cargo version
+        id: cargo_version
+        run: echo "cargo_version=$(cargo --version | sed -E 's/cargo ([0-9\.]*).*/\1/')" >> $GITHUB_OUTPUT
+
+      - name: Install cross-compile dependencies (if needed - Linux example)
+        if: matrix.target == 'x86_64-pc-windows-gnu' || matrix.target == 'i686-pc-windows-gnu' || matrix.target == 'x86_64-apple-darwin' || matrix.target == 'aarch64-apple-darwin'
+        run: |
+          # Example for Windows targets - you might need different packages or adjustments for macOS
+          sudo apt-get update
+          sudo apt-get install -y \
+            mingw-w64 \
+            binutils-mingw-w64 \
+            gcc-mingw-w64 \
+            cmake # CMake might be needed for some dependencies
+
+      - name: Build binary for ${{ matrix.target }}
+        run: |
+          rustup target add ${{ matrix.target }}
+          cargo build --release --target ${{ matrix.target }}
+
+      - name: Upload artifact for ${{ matrix.target }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-${{ steps.get_version.outputs.version }}-${{ matrix.artifact_name_suffix }}
+          path: target/${{ matrix.target }}/release/*
