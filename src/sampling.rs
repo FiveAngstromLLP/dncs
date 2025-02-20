@@ -174,6 +174,12 @@ impl RotateAtDihedral {
 
     pub fn from_pdb(file: &str) -> Vec<f64> {
         let mut s = System::from_pdb(file, FF::Amber99SB.init());
+        s.particles = s
+            .particles
+            .iter()
+            .filter(|x| x.record == "ATOM")
+            .cloned()
+            .collect::<Vec<_>>();
         let mut scopy = s.clone();
         scopy.get_dihedral();
         s.get_dihedral();

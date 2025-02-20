@@ -15,6 +15,11 @@ enum SubCommands {
     Sample(SampleArgs),
     #[command(about = "Minimize generated conformers")]
     Minimize(MinimizeArgs),
+    #[command(about = "Generate dihedral angles")]
+    Pdbtoangle {
+        /// PDB file path
+        file: String,
+    },
 }
 
 #[derive(Parser, Debug)]
@@ -76,6 +81,14 @@ fn main() {
                 minimize_args.minimize,
             );
             minize.minimize_all();
+        }
+        SubCommands::Pdbtoangle { file } => {
+            let dihedral_angle = RotateAtDihedral::from_pdb(&file)
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join(",");
+            println!("{}", dihedral_angle);
         }
     }
 }
