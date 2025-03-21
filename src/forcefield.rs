@@ -23,7 +23,7 @@ use crate::parser::Atom;
 use crate::sampling::RotateAtDihedral;
 use crate::system::System;
 use nalgebra::Vector3;
-use rayon::prelude::*;
+// use rayon::prelude::*;
 
 pub struct Amber {
     pub system: Arc<System>,
@@ -35,17 +35,23 @@ impl Amber {
     }
 
     pub fn energy(&self) -> f64 {
-        let energy = self
-            .system
-            .particles
-            .par_iter()
-            .map(|iatom| {
-                self.nonbonded_energy(iatom)
-                    + self.harmonic_bond_force(iatom)
-                    + self.harmonic_angle_force(iatom)
-            }) // Unit >> kJ/mol
-            .sum::<f64>();
-        energy + self.periodic_torsional_force()
+        let mut non_bonded = 0.0;
+        let mut harmonic_bond = 0.0;
+        let mut harmonic_angle = 0.0;
+        let torsional = self.periodic_torsional_force();
+
+        for iatom in self.system.particles.iter() {
+            non_bonded += self.nonbonded_energy(iatom);
+            harmonic_bond += self.harmonic_bond_force(iatom);
+            harmonic_angle += self.harmonic_angle_force(iatom);
+        }
+
+        println!("Non-bonded energy: {}", non_bonded);
+        println!("Harmonic bond energy: {}", harmonic_bond);
+        println!("Harmonic angle energy: {}", harmonic_angle);
+        println!("Periodic torsional energy: {}", torsional);
+
+        non_bonded + harmonic_bond + harmonic_angle + torsional
     }
 
     #[inline]
@@ -166,8 +172,13 @@ impl Amber {
     #[inline]
     fn lennard_jones_energy(i: &Atom, j: &Atom) -> f64 {
         let r = Self::distance(i, j); // Unit >> nm
-        let sigma = (i.sigma + j.sigma) / 2.0; // Unit >> nm
-        let epsilon = (i.epsilon * j.epsilon).sqrt(); // Unit >> kJ/mol
+        if r == 0.0 {
+            return 0.0; // Avoid division by zero
+        }
+
+        let sigma = (i.sigma + j.sigma) / 2.0 * 0.1; // Unit >> nm
+        let epsilon = (i.epsilon * j.epsilon).sqrt(); // Unit >> kcal/mol
+        let epsilon = epsilon * 4.184; // Unit >> kJ/mol
         4.0 * epsilon * ((sigma / r).powi(12) - (sigma / r).powi(6)) // Unit >> kJ/mol
     }
 
