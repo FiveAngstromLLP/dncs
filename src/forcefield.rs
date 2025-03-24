@@ -35,28 +35,30 @@ impl Amber {
     }
 
     pub fn energy(&self) -> f64 {
-        let mut non_bonded = 0.0;
+        let mut lennard_jones = 0.0;
+        let mut electrostatic = 0.0;
         let mut harmonic_bond = 0.0;
         let mut harmonic_angle = 0.0;
         let torsional = self.periodic_torsional_force();
 
         for iatom in self.system.particles.iter() {
-            non_bonded += self.nonbonded_energy(iatom);
+            lennard_jones += self.nb_lennard_jones(iatom);
+            electrostatic += self.nb_electrostatic(iatom);
             harmonic_bond += self.harmonic_bond_force(iatom);
             harmonic_angle += self.harmonic_angle_force(iatom);
         }
 
-        println!("Non-bonded energy: {}", non_bonded);
+        println!("Lennard-Jones energy: {}", lennard_jones);
+        println!("Electrostatic energy: {}", electrostatic);
         println!("Harmonic bond energy: {}", harmonic_bond);
         println!("Harmonic angle energy: {}", harmonic_angle);
         println!("Periodic torsional energy: {}", torsional);
 
-        non_bonded + harmonic_bond + harmonic_angle + torsional
+        lennard_jones + electrostatic + harmonic_bond + harmonic_angle + torsional
     }
 
     #[inline]
-    fn nonbonded_energy(&self, iatom: &Atom) -> f64 {
-        let mut lennard_jones = 0.0;
+    fn nb_electrostatic(&self, iatom: &Atom) -> f64 {
         let mut electrostatic = 0.0;
         for l in self.system.nonbonded[iatom.serial - 1].chunks(2) {
             for jatom in self
@@ -66,18 +68,47 @@ impl Amber {
                 .take(l[1].serial)
                 .skip(l[0].serial)
             {
-                lennard_jones += Self::lennard_jones_energy(iatom, jatom);
                 electrostatic += Self::electrostatic_energy(iatom, jatom);
             }
         }
         for j in self.system.bonded1_4[iatom.serial - 1].iter() {
             if let Some(jatom) = self.system.particles.iter().find(|a| a.serial == j.serial) {
                 let nb = self.system.forcefield.nonbonded_force.clone();
-                lennard_jones += nb.lj14scale * Self::lennard_jones_energy(iatom, jatom);
                 electrostatic += nb.coulomb14scale * Self::electrostatic_energy(iatom, jatom);
             }
         }
-        lennard_jones + electrostatic // Unit >> kJ/mol
+        println!(
+            "Electrostatic energy of {}: {}: {}",
+            iatom.residue, iatom.name, electrostatic
+        );
+        electrostatic // Unit >> kJ/mol
+    }
+
+    #[inline]
+    fn nb_lennard_jones(&self, iatom: &Atom) -> f64 {
+        let mut lennard_jones = 0.0;
+        for l in self.system.nonbonded[iatom.serial - 1].chunks(2) {
+            for jatom in self
+                .system
+                .particles
+                .iter()
+                .take(l[1].serial)
+                .skip(l[0].serial)
+            {
+                lennard_jones += Self::lennard_jones_energy(iatom, jatom);
+            }
+        }
+        for j in self.system.bonded1_4[iatom.serial - 1].iter() {
+            if let Some(jatom) = self.system.particles.iter().find(|a| a.serial == j.serial) {
+                let nb = self.system.forcefield.nonbonded_force.clone();
+                lennard_jones += nb.lj14scale * Self::lennard_jones_energy(iatom, jatom);
+            }
+        }
+        println!(
+            "Lennard-Jones energy of {}: {}: {}",
+            iatom.residue, iatom.name, lennard_jones
+        );
+        lennard_jones // Unit >> kJ/mol
     }
 
     #[inline]
@@ -109,6 +140,7 @@ impl Amber {
                         && Some(h.class2.to_string()) == katom.atomtype
                 }) {
                     let a = Self::angle(iatom, jatom, katom);
+
                     energy += 0.5 * haf.k * (a - haf.angle).powi(2);
                 }
             }
@@ -159,11 +191,11 @@ impl Amber {
             .iter()
             .map(|(iatom, jatom)| {
                 let mut hb_energy = 0.0;
-                let r = Self::distance(iatom, jatom);
+                let r = Self::distance(iatom, jatom) * 1e-9;
                 hb_energy += 7557.0 * (1.0 / r).powi(12) - 4184.0 * (1.0 / r).powi(10); // Unit >> Kcal/mol
                 let hb_ljenergy = Self::lennard_jones_energy(iatom, jatom); // Unit >> (kg.Å^2/s^2)
                 let hb_ljenergy = hb_ljenergy * 1e-10_f64.powi(2); // Unit >> (kg.m^2/s^2)
-                let hb_ljenergy = hb_ljenergy * 6.02214076e23 / 4184.0; // Unit >> Kcal/mol
+                let hb_ljenergy = hb_ljenergy * 6.02214076e23 / 1000.0; // Unit >> Kcal/mol
                 hb_energy - hb_ljenergy
             })
             .sum::<f64>()
@@ -175,19 +207,27 @@ impl Amber {
         if r == 0.0 {
             return 0.0; // Avoid division by zero
         }
-
-        let sigma = (i.sigma + j.sigma) / 2.0 * 0.1; // Unit >> nm
-        let epsilon = (i.epsilon * j.epsilon).sqrt(); // Unit >> kcal/mol
-        let epsilon = epsilon * 4.184; // Unit >> kJ/mol
+        let sigma = (i.sigma + j.sigma) / 2.0; // Unit >> nm
+        let epsilon = (i.epsilon * j.epsilon).sqrt(); // Unit >> kJ/mol
+        println!(
+            "iatom: {}\tjatom: {}\tSigma: {}\t{}\t, Epsilon: {}\t{}\t, energy: {} ",
+            i.name,
+            j.name,
+            i.sigma,
+            j.sigma,
+            i.epsilon,
+            j.epsilon,
+            4.0 * epsilon * ((sigma / r).powi(12) - (sigma / r).powi(6))
+        );
         4.0 * epsilon * ((sigma / r).powi(12) - (sigma / r).powi(6)) // Unit >> kJ/mol
     }
 
     #[inline]
     fn electrostatic_energy(i: &Atom, j: &Atom) -> f64 {
         let r = Self::distance(i, j); // Unit >> nm
-        let q1 = i.charge;
-        let q2 = j.charge;
-        let k = 138.935; // Coulomb's constant in vacuum (kJ/mol)
+        let q1 = i.charge * 1.602176634e-19;
+        let q2 = j.charge * 1.602176634e-19;
+        let k = (8.9875517682e9 * 6.02214076e23) / 1000.0; // Coulomb's constant in vacuum (kJ/mol)
         k * q1 * q2 / r // Unit >> kJ/mol
     }
 
@@ -216,14 +256,5 @@ impl Amber {
             j.position[2] - i.position[2],
         );
         rij.map(|r| r.powi(2)).sum().sqrt() * 0.1 // Unit >> nm
-    }
-
-    #[inline]
-    fn vector_distance(i: &Atom, j: &Atom) -> Vector3<f64> {
-        Vector3::new(
-            j.position[0] - i.position[0],
-            j.position[1] - i.position[1],
-            j.position[2] - i.position[2],
-        ) * 0.1 // Unit >> nm
     }
 }

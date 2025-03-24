@@ -285,7 +285,7 @@ impl RotateAtDihedral {
         );
         let sinth = (u2.norm() * u1).dot(&u2.cross(&u3));
         let costh = u1.cross(&u2).dot(&u2.cross(&u3));
-        sinth.atan2(costh).to_degrees()
+        sinth.atan2(costh)
     }
 
     pub fn energy(&self) -> f64 {

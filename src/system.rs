@@ -108,7 +108,7 @@ impl System {
         self.get_atomtype();
         self.get_neighbours();
         self.get_dihedral();
-        self.get_energyparameters();
+        // self.get_energyparameters();
         self.get_hydrogen_bonded();
     }
 
