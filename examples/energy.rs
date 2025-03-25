@@ -8,7 +8,7 @@ const FORCE_FIELD: FF = FF::AmberFB15;
 
 fn main() {
     // let mut sys = System::from_pdb("Result/sample/sample_0000.pdb", FORCE_FIELD.init());
-    let mut sys = System::new("AA", FORCE_FIELD.init());
+    let mut sys = System::new("AAAAAAAAAA", FORCE_FIELD.init());
     // for i in sys.particles.iter() {
     //     println!("{:?}", i);
     // }

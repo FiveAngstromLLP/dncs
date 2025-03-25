@@ -172,7 +172,7 @@ impl RotateAtDihedral {
         }
     }
 
-    pub fn from_pdb(file: &str) -> Vec<f64> {
+    pub fn from_pdb(file: &str) -> Vec<f32> {
         let mut s = System::from_pdb(file, FF::Amber99SB.init());
         s.particles = s
             .particles
@@ -198,7 +198,7 @@ impl RotateAtDihedral {
         dihedral
     }
 
-    pub fn current_dihedral(&self) -> Vec<f64> {
+    pub fn current_dihedral(&self) -> Vec<f32> {
         let mut dihedral = Vec::new();
         for dih in self.system.dihedral.iter() {
             if let Some((a, b, c, d)) = self
@@ -244,7 +244,7 @@ impl RotateAtDihedral {
         sys.particles = self.rotated.clone();
     }
 
-    pub fn rotated_energy(&mut self, angle: Vec<f64>) -> f64 {
+    pub fn rotated_energy(&mut self, angle: Vec<f64>) -> f32 {
         self.rotate(angle);
         let ff = Amber::new(Arc::clone(&self.system));
         ff.energy()
@@ -267,7 +267,7 @@ impl RotateAtDihedral {
         mat * b
     }
 
-    pub fn dihedral_angle(a: &Atom, b: &Atom, c: &Atom, d: &Atom) -> f64 {
+    pub fn dihedral_angle(a: &Atom, b: &Atom, c: &Atom, d: &Atom) -> f32 {
         let u1 = Vector3::new(
             b.position[0] - a.position[0],
             b.position[1] - a.position[1],
@@ -285,10 +285,10 @@ impl RotateAtDihedral {
         );
         let sinth = (u2.norm() * u1).dot(&u2.cross(&u3));
         let costh = u1.cross(&u2).dot(&u2.cross(&u3));
-        sinth.atan2(costh)
+        sinth.atan2(costh) as f32
     }
 
-    pub fn energy(&self) -> f64 {
+    pub fn energy(&self) -> f32 {
         Amber::new(Arc::clone(&self.system)).energy()
     }
 
@@ -322,7 +322,7 @@ impl FromStr for Method {
 pub struct Sampler {
     pub method: Method,
     pub folder: String,
-    pub energy: Vec<(usize, f64)>,
+    pub energy: Vec<(usize, f32)>,
     pub dihedral: usize,
     pub angles: Vec<Vec<f64>>,
     pub system: Arc<System>,

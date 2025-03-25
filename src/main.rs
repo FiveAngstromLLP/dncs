@@ -13,8 +13,8 @@ struct Args {
 enum SubCommands {
     #[command(about = "Generate conformational samples")]
     Sample(SampleArgs),
-    #[command(about = "Minimize generated conformers")]
-    Minimize(MinimizeArgs),
+    // #[command(about = "Minimize generated conformers")]
+    // Minimize(MinimizeArgs),
     #[command(about = "Generate dihedral angles")]
     Pdbtoangle {
         /// PDB file path
@@ -74,14 +74,14 @@ fn main() {
             let mut sample = Sampler::new(Arc::new(sys), sample_args.method, sample_args.folder);
             sample.sample(sample_args.samples, sample_args.temperature);
         }
-        SubCommands::Minimize(minimize_args) => {
-            let mut minize = Minimizer::new(
-                minimize_args.folder,
-                minimize_args.forcefield.init(),
-                minimize_args.minimize,
-            );
-            minize.minimize_all();
-        }
+        // SubCommands::Minimize(minimize_args) => {
+        //     let mut minize = Minimizer::new(
+        //         minimize_args.folder,
+        //         minimize_args.forcefield.init(),
+        //         minimize_args.minimize,
+        //     );
+        //     minize.minimize_all();
+        // }
         SubCommands::Pdbtoangle { file } => {
             let dihedral_angle = RotateAtDihedral::from_pdb(&file)
                 .iter()
