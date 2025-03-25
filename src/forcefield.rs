@@ -179,6 +179,14 @@ impl Amber {
                 if let (Some(k), Some(n), Some(th)) = (ptf.k4, ptf.periodicity4, ptf.phase4) {
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
+
+                if let (Some(k), Some(n), Some(th)) = (ptf.k5, ptf.periodicity5, ptf.phase5) {
+                    energy += k * (1.0 + (n * dh - th).cos());
+                }
+
+                if let (Some(k), Some(n), Some(th)) = (ptf.k6, ptf.periodicity6, ptf.phase6) {
+                    energy += k * (1.0 + (n * dh - th).cos());
+                }
             }
         }
         energy // Unit >> kJ/mol
