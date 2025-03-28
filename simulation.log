@@ -1,0 +1,24 @@
+2025-03-28 14:39:30,882 - INFO - Starting sample generation
+2025-03-28 14:39:36,978 - INFO - Sample generation completed successfully
+2025-03-28 14:39:36,980 - INFO - Starting molecular dynamics simulation
+2025-03-28 14:39:37,023 - INFO - 2025-03-28 14:39:37.023934
+No of Samples: 10
+ForceField: ['amber14-all.xml', 'amber14/tip3p.xml']
+Integrator Parameters:
+Steps: 50000
+temperature: 300.0 Kelvin
+dt: 0.1 picoseconds
+No of Solvent: 5000
+FrictionalCoefficient: 1.0 picosecond^(-1)
+2025-03-28 14:42:08,997 - INFO - Starting sample generation
+2025-03-28 14:42:15,082 - INFO - Sample generation completed successfully
+2025-03-28 14:42:15,085 - INFO - Starting molecular dynamics simulation
+2025-03-28 14:42:15,131 - INFO - 2025-03-28 14:42:15.131807
+No of Samples: 10
+ForceField: ['amber14-all.xml', 'amber14/tip3p.xml']
+Integrator Parameters:
+Steps: 500
+temperature: 300.0 Kelvin
+dt: 0.01 picoseconds
+No of Solvent: 5000
+FrictionalCoefficient: 1.0 picosecond^(-1)

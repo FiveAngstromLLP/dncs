@@ -1,4 +1,3 @@
-use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::{fmt::Debug, io::Write};
 
@@ -45,19 +44,12 @@ struct Atom {
     serial: usize,
     name: String,
     residue: String,
-    chain_id: String,
     sequence: usize,
     position: [f64; 3],
-    occupancy: f64,
-    bfactor: f64,
-    element: String,
-    mass: f64,
     charge: f64,
-    atomtype: String,
     sigma: f64,
     epsilon: f64,
-    velocity: [f64; 3],
-    force: [f64; 3],
+    atomtype: String,
 }
 
 impl Convert for Atom {
@@ -67,88 +59,46 @@ impl Convert for Atom {
             serial: line.get(7..12).unwrap_or("").trim().parse().unwrap_or(0),
             name: line.get(12..17).unwrap_or("").trim().to_string(),
             residue: line.get(17..21).unwrap_or("").trim().to_string(),
-            chain_id: line.get(21..23).unwrap_or("").trim().to_string(),
             sequence: line.get(23..27).unwrap_or("").trim().parse().unwrap_or(0),
             position: [
                 line.get(31..39).unwrap_or("").trim().parse().unwrap_or(0.0),
                 line.get(39..47).unwrap_or("").trim().parse().unwrap_or(0.0),
                 line.get(47..54).unwrap_or("").trim().parse().unwrap_or(0.0),
             ],
-            occupancy: line.get(55..60).unwrap_or("").trim().parse().unwrap_or(0.0),
-            bfactor: line.get(60..66).unwrap_or("").trim().parse().unwrap_or(0.0),
-            element: line.get(76..78).unwrap_or("").trim().to_string(),
-            mass: line.get(78..87).unwrap_or("").trim().parse().unwrap_or(0.0),
-            charge: line.get(87..97).unwrap_or("").trim().parse().unwrap_or(0.0),
-            atomtype: line.get(97..).unwrap_or("").trim().to_string(),
+            charge: 0.0,
             epsilon: 0.0,
             sigma: 0.0,
-            velocity: [0.0; 3],
-            force: [0.0; 3],
+            atomtype: "".to_string(),
         }
     }
     fn to_string(&self) -> String {
-        let name = convention(self.name.to_string());
         format!(
-            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}{:>6.2}{:>6.2}          {:>2}",
+            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}",
             self.record,
             self.serial,
-            match self.name.len() {
-                3 => format!(" {}", name),
-                _ => name,
-            },
+            self.name,
             self.residue,
             self.sequence,
             self.position[0],
             self.position[1],
             self.position[2],
-            self.occupancy,
-            self.bfactor,
-            self.element
         )
-    }
-}
-
-fn convention(name: String) -> String {
-    if name.len() == 3
-        && (name.contains("HA")
-            || name.contains("HB")
-            || name.contains("HG")
-            || name.contains("HD"))
-    {
-        print!("{} ", name);
-        let d = name.chars().last().unwrap();
-        if d.is_numeric() {
-            let mdigit = 4 - d.to_digit(10).unwrap();
-            println!("{};", name.replace(d, &mdigit.to_string()));
-            return name.replace(d, &mdigit.to_string());
-        } else {
-            return name;
-        }
-    } else {
-        return name;
     }
 }
 
 impl Debug for Atom {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let name = convention(self.name.to_string());
         write!(
             f,
-            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}{:>6.2}{:>6.2}          {:>2}",
+            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}",
             self.record,
             self.serial,
-            match self.name.len() {
-                3 => format!(" {}", name),
-                _ => name,
-            },
+            self.name,
             self.residue,
             self.sequence,
             self.position[0],
             self.position[1],
             self.position[2],
-            self.occupancy,
-            self.bfactor,
-            self.element
         )
     }
 }
@@ -161,9 +111,10 @@ struct Bond {
 
 impl Convert for Bond {
     fn new(line: &str) -> Self {
+        let words = line.split_whitespace().collect::<Vec<&str>>();
         Bond {
-            a: line.get(8..13).unwrap_or("").trim().to_string(),
-            b: line.get(13..).unwrap_or("").trim().to_string(),
+            a: words[1].to_string(),
+            b: words[2].to_string(),
         }
     }
     fn to_string(&self) -> String {
@@ -273,16 +224,15 @@ impl Debug for Diheds {
 struct Monomer<T> {
     tcode: String,
     scode: String,
-    natom: usize,
     atoms: Vec<T>,
 }
 
 impl<T> Convert for Monomer<T> {
     fn new(line: &str) -> Self {
+        let words: Vec<&str> = line.split_whitespace().collect();
         Monomer {
-            tcode: line.get(0..4).unwrap_or("").trim().to_string(),
-            scode: line.get(4..6).unwrap_or("").trim().to_string(),
-            natom: line.get(6..).unwrap_or("").trim().parse().unwrap_or(0),
+            tcode: words[0].to_string(),
+            scode: words[1].to_string(),
             atoms: Vec::new(),
         }
     }
@@ -308,11 +258,8 @@ impl<T: Convert + Serialize + Debug> FileHandling for Polymer<T> {
         let data = std::fs::read_to_string(filepath).expect("File Not Found");
         let mut monomers = Vec::new();
         let lines: Vec<_> = data.lines().filter(|l| !l.is_empty()).collect();
-        let ra = Regex::new(r"^[\sA-Z]+\s[A-Z\s]\s+\d+$").unwrap();
-        let rb = Regex::new(r"^[\sA-Z]+\s[A-Z\s]\s+\d+\s+$").unwrap();
-        let rc = Regex::new(r"^[\sA-Z]+\s[A-Z\s]\s+\d+\s+\d+$").unwrap();
         for line in lines {
-            if ra.is_match(line) | rb.is_match(line) | rc.is_match(line) {
+            if line.len() < 6 {
                 monomers.push(Monomer::new(line))
             } else if let Some(last) = monomers.last_mut() {
                 last.atoms.push(T::new(line));
@@ -330,7 +277,7 @@ impl<T: Convert + Serialize + Debug> FileHandling for Polymer<T> {
     fn to_lib(&self, filepath: &str) {
         let mut outfile = std::fs::File::create(filepath).expect("File Not Created");
         for m in &self.seq {
-            let l = format!("{:<4}{}{:>3}", m.tcode, m.scode, m.natom);
+            let l = format!("{:<4}{}", m.tcode, m.scode);
             writeln!(outfile, "{}", l).expect("Error Writing Monomer");
             for atom in &m.atoms {
                 writeln!(outfile, "{:?}", atom).expect("Error Writing Atom")

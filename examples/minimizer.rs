@@ -17,9 +17,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Generating Samples..");
     sample.sample(NO_OF_SAMPLE, 300.0);
     // Minimizer
-    let mut minimizer = Minimizer::new(FOLDER.to_string(), FORCE_FIELD.init(), 10);
+    // let mut minimizer = Minimizer::new(FOLDER.to_string(), FORCE_FIELD.init(), 10);
     println!("Executing Minimizer..");
-    minimizer.minimize_all();
+    // minimizer.minimize_all();
     println!("Completed!");
     Ok(())
 }

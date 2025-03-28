@@ -48,11 +48,11 @@ impl Amber {
             harmonic_angle += self.harmonic_angle_force(iatom);
         }
 
-        println!("Lennard-Jones energy: {}", lennard_jones);
-        println!("Electrostatic energy: {}", electrostatic);
-        println!("Harmonic bond energy: {}", harmonic_bond);
-        println!("Harmonic angle energy: {}", harmonic_angle);
-        println!("Periodic torsional energy: {}", torsional);
+        // println!("Lennard-Jones energy: {}", lennard_jones);
+        // println!("Electrostatic energy: {}", electrostatic);
+        // println!("Harmonic bond energy: {}", harmonic_bond);
+        // println!("Harmonic angle energy: {}", harmonic_angle);
+        // println!("Periodic torsional energy: {}", torsional);
 
         lennard_jones + electrostatic + harmonic_bond + harmonic_angle + torsional
     }
@@ -78,10 +78,10 @@ impl Amber {
                     nb.coulomb14scale as f32 * Self::electrostatic_energy(iatom, jatom);
             }
         }
-        println!(
-            "Electrostatic energy of {}: {}: {}",
-            iatom.residue, iatom.name, electrostatic
-        );
+        // println!(
+        //     "Electrostatic energy of {}: {}: {}",
+        //     iatom.residue, iatom.name, electrostatic
+        // );
         electrostatic // Unit >> kJ/mol
     }
 
@@ -105,10 +105,10 @@ impl Amber {
                 lennard_jones += nb.lj14scale as f32 * Self::lennard_jones_energy(iatom, jatom);
             }
         }
-        println!(
-            "Lennard-Jones energy of {}: {}: {}",
-            iatom.residue, iatom.name, lennard_jones
-        );
+        // println!(
+        //     "Lennard-Jones energy of {}: {}: {}",
+        //     iatom.residue, iatom.name, lennard_jones
+        // );
         lennard_jones // Unit >> kJ/mol
     }
 
@@ -117,10 +117,10 @@ impl Amber {
         let hbforce = self.system.forcefield.harmonic_bond_force.bonds.clone();
         let mut energy = 0.0;
         for jatom in self.system.firstbonded[iatom.serial - 1].iter() {
-            if let Some(hbf) = hbforce.iter().find(|h| {
-                Some(h.class1.to_string()) == iatom.atomtype
-                    && Some(h.class2.to_string()) == jatom.atomtype
-            }) {
+            if let Some(hbf) = hbforce
+                .iter()
+                .find(|h| h.class1 == iatom.atomtype && h.class2 == jatom.atomtype)
+            {
                 let d = Self::distance(iatom, jatom);
                 let eng = 0.5 * hbf.k as f32 * (d - hbf.length as f32).powi(2);
                 energy += eng
@@ -136,9 +136,9 @@ impl Amber {
         for jatom in self.system.firstbonded[iatom.serial - 1].iter() {
             for katom in self.system.secondbonded[iatom.serial - 1].iter() {
                 if let Some(haf) = haforce.iter().find(|h| {
-                    Some(h.class1.to_string()) == iatom.atomtype
-                        && Some(h.class2.to_string()) == jatom.atomtype
-                        && Some(h.class2.to_string()) == katom.atomtype
+                    h.class1 == iatom.atomtype
+                        && h.class2 == jatom.atomtype
+                        && h.class3 == katom.atomtype
                 }) {
                     let a = Self::angle(iatom, jatom, katom);
 
@@ -154,18 +154,13 @@ impl Amber {
         let periodic = self.system.forcefield.periodic_torsion_force.clone();
         let mut energy = 0.0; // KJ/Mol/nm
         for (a, b, c, d) in self.system.dihedral_angle.iter() {
-            let (at, bt, ct, dt) = match (&a.atomtype, &b.atomtype, &c.atomtype, &d.atomtype) {
-                (Some(at), Some(bt), Some(ct), Some(dt)) => (at, bt, ct, dt),
-                _ => continue,
-            };
-
             let dh = RotateAtDihedral::dihedral_angle(a, b, c, d);
 
             if let Some(ptf) = periodic.proper.iter().find(|h| {
-                h.class1.contains(at)
-                    && h.class2.contains(bt)
-                    && h.class3.contains(ct)
-                    && h.class4.contains(dt)
+                h.class1.contains(&a.atomtype)
+                    && h.class2.contains(&b.atomtype)
+                    && h.class3.contains(&c.atomtype)
+                    && h.class4.contains(&d.atomtype)
             }) {
                 energy += ptf.k1 as f32
                     * (1.0 + (ptf.periodicity1 as f32 * dh - ptf.phase1 as f32).cos());
@@ -219,16 +214,6 @@ impl Amber {
         }
         let sigma = ((i.sigma + j.sigma) / 2.0) as f32; // Unit >> nm
         let epsilon = (i.epsilon * j.epsilon).sqrt() as f32; // Unit >> kJ/mol
-        println!(
-            "iatom: {}\tjatom: {}\tSigma: {}\t{}\t, Epsilon: {}\t{}\t, energy: {} ",
-            i.name,
-            j.name,
-            i.sigma,
-            j.sigma,
-            i.epsilon,
-            j.epsilon,
-            4.0 * epsilon * ((sigma / r).powi(12) - (sigma / r).powi(6))
-        );
         4.0 * epsilon as f32 * ((sigma / r).powi(12) - (sigma / r).powi(6)) // Unit >> kJ/mol
     }
 

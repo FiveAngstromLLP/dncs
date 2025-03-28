@@ -3,55 +3,53 @@
     {
       "tcode": "ALA",
       "scode": "A",
-      "natom": 2,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         }
       ]
     },
     {
       "tcode": "ARG",
       "scode": "R",
-      "natom": 6,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HH22"
         },
         {
           "a": "CB",
           "b": "CG",
-          "c": "HG1",
+          "c": "HG3",
           "d": "HH22"
         },
         {
           "a": "CG",
           "b": "CD",
-          "c": "HD1",
+          "c": "HD3",
           "d": "HH22"
         },
         {
@@ -65,24 +63,23 @@
     {
       "tcode": "ASN",
       "scode": "N",
-      "natom": 4,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HD22"
         },
         {
@@ -96,86 +93,77 @@
     {
       "tcode": "ASP",
       "scode": "D",
-      "natom": 4,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
-          "d": "HD2"
-        },
-        {
-          "a": "CB",
-          "b": "CG",
-          "c": "OD1",
-          "d": "HD2"
+          "c": "HB3",
+          "d": "OD2"
         }
       ]
     },
     {
       "tcode": "CYS",
       "scode": "C",
-      "natom": 3,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
-          "d": "HG3"
+          "c": "HB3",
+          "d": "HG"
         }
       ]
     },
     {
       "tcode": "GLN",
       "scode": "Q",
-      "natom": 5,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HE21"
         },
         {
           "a": "CB",
           "b": "CG",
-          "c": "HG1",
+          "c": "HG3",
           "d": "HE21"
         },
         {
@@ -183,42 +171,35 @@
           "b": "CD",
           "c": "OE1",
           "d": "HE21"
-        },
-        {
-          "a": "CD",
-          "b": "NE2",
-          "c": "HE22",
-          "d": "HE21"
         }
       ]
     },
     {
       "tcode": "GLU",
       "scode": "E",
-      "natom": 5,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HE2"
         },
         {
           "a": "CB",
           "b": "CG",
-          "c": "HG1",
+          "c": "HG3",
           "d": "HE2"
         },
         {
@@ -238,43 +219,41 @@
     {
       "tcode": "GLY",
       "scode": "G",
-      "natom": 2,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
-          "c": "HA1",
-          "d": "HO"
+          "c": "HA3",
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         }
       ]
     },
     {
-      "tcode": "HIS",
+      "tcode": "HIP",
       "scode": "H",
-      "natom": 4,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HE2"
         },
         {
@@ -288,19 +267,18 @@
     {
       "tcode": "ILE",
       "scode": "I",
-      "natom": 4,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
@@ -319,24 +297,23 @@
     {
       "tcode": "LEU",
       "scode": "L",
-      "natom": 4,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HD22"
         },
         {
@@ -350,36 +327,35 @@
     {
       "tcode": "LYS",
       "scode": "K",
-      "natom": 6,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HZ1"
         },
         {
           "a": "CB",
           "b": "CG",
-          "c": "HG1",
+          "c": "HG3",
           "d": "HZ1"
         },
         {
           "a": "CG",
           "b": "CD",
-          "c": "HD1",
+          "c": "HD3",
           "d": "HZ1"
         },
         {
@@ -399,24 +375,23 @@
     {
       "tcode": "MET",
       "scode": "M",
-      "natom": 5,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HE2"
         },
         {
@@ -442,24 +417,23 @@
     {
       "tcode": "PHE",
       "scode": "F",
-      "natom": 4,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HZ"
         },
         {
@@ -473,37 +447,35 @@
     {
       "tcode": "PRO",
       "scode": "P",
-      "natom": 1,
       "atoms": [
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         }
       ]
     },
     {
       "tcode": "SER",
       "scode": "S",
-      "natom": 3,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HG"
         },
         {
@@ -517,19 +489,18 @@
     {
       "tcode": "THR",
       "scode": "T",
-      "natom": 3,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
@@ -554,24 +525,23 @@
     {
       "tcode": "TRP",
       "scode": "W",
-      "natom": 4,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HH2"
         },
         {
@@ -585,24 +555,23 @@
     {
       "tcode": "TYR",
       "scode": "Y",
-      "natom": 4,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "CB",
-          "c": "HB1",
+          "c": "HB3",
           "d": "HH"
         },
         {
@@ -622,19 +591,18 @@
     {
       "tcode": "VAL",
       "scode": "V",
-      "natom": 3,
       "atoms": [
         {
           "a": "N",
           "b": "CA",
           "c": "HA",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
           "b": "C",
           "c": "O",
-          "d": "HO"
+          "d": "OXT"
         },
         {
           "a": "CA",
@@ -653,37 +621,6 @@
           "b": "CG2",
           "c": "HG23",
           "d": "HG23"
-        }
-      ]
-    },
-    {
-      "tcode": "AIB",
-      "scode": "B",
-      "natom": 2,
-      "atoms": [
-        {
-          "a": "N",
-          "b": "CA",
-          "c": "CB1",
-          "d": "HO"
-        },
-        {
-          "a": "CA",
-          "b": "C",
-          "c": "O",
-          "d": "HO"
-        },
-        {
-          "a": "CA",
-          "b": "CB1",
-          "c": "HB12",
-          "d": "HB11"
-        },
-        {
-          "a": "CA",
-          "b": "CB2",
-          "c": "HB22",
-          "d": "HB21"
         }
       ]
     }

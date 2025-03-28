@@ -1,111 +1,104 @@
-ALA A  2
-         N      CA     HA     HO 
-         CA     C      O      HO 
-ARG R  6
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HH22
-         CB     CG    HG1    HH22
-         CG     CD    HD1    HH22
-         CD     NE     HE    HH22
-ASN N  4
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HD22
-         CB     CG    OD1    HD22
-ASP D  4
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HD2 
-         CB     CG    OD1    HD2 
-CYS C  3
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HG3 
-GLN Q  5
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HE21
-         CB     CG    HG1    HE21
-         CG     CD    OE1    HE21
-         CD    NE2    HE22   HE21
-GLU E  5
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HE2 
-         CB     CG    HG1    HE2 
-         CG     CD    OE1    HE2 
-         CG     CD    OE2    HE2 
-GLY G  2
-         N      CA    HA1     HO 
-         CA     C      O      HO 
-HIS H  4
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HE2 
-         CB     CG    ND1    HE2 
-ILE I  4
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB     HB    HG22
-         CB    CG1    HG11   HG22
-LEU L  4
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HD22
-         CB     CG     HG    HD22
-LYS K  6
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HZ1 
-         CB     CG    HG1    HZ1 
-         CG     CD    HD1    HZ1 
-         CD     CE    HE1    HZ1 
-         CE     NZ    HZ2    HZ1 
-MET M  5
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HE2 
-         CB     CG    HG1    HE2 
-         CG     SD     CE    HE2 
-         SD     CE    HE1    HE2 
-PHE F  4
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1     HZ 
-         CB     CG    CD1     HZ 
-PRO P  1
-         CA     C      O      HO 
-SER S  3
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1     HG 
-         CB     OG     HG     HG 
-THR T  3
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB     HB    HG23
-         CB    CG2    HG21   HG23
-         CB    OG1    HG1    HG1 
-TRP W  4
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1    HH2 
-         CB     CG    CD1    HH2 
-TYR Y  4
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB    HB1     HH 
-         CB     CG    CD1     HH 
-         CZ     OH     HH     HH 
-VAL V  3
-         N      CA     HA     HO 
-         CA     C      O      HO 
-         CA     CB     HB    HG22
-         CB    CG1    HG11   HG13
-         CB    CG2    HG23   HG23
-AIB B  2
-         N      CA    CB1     HO 
-         CA     C      O      HO 
-         CA    CB1    HB12   HB11
-         CA    CB2    HB22   HB21
+ALA A
+    N       CA      HA      OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+ARG R
+    N       CA      HA      OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+    CA      CB      HB3     HH22    N       CA      CB      CG
+    CB      CG      HG3     HH22    CA      CB      CG      CD
+    CG      CD      HD3     HH22    CB      CG      CD      NE
+    CD      NE      HE      HH22    CG      CD      NE      CZ
+ASN N
+    N       CA      HA      OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+    CA      CB      HB3     HD22    N       CA      CB      CG
+    CB      CG      OD1     HD22    CA      CB      CG      OD1
+ASP D
+    N       CA      HA      OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+    CA      CB      HB3     OD2     N       CA      CB      CG
+CYS C
+    N       CA      HA      OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+    CA      CB      HB3     HG      N       CA      CB      SG
+GLN Q
+    N       CA      HA      OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+    CA      CB      HB3     HE21    N       CA      CB      CG
+    CB      CG      HG3     HE21    CA      CB      CG      CD
+    CG      CD      OE1     HE21    CB      CG      CD      OE1
+GLU E
+    N       CA      HA      OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+    CA      CB      HB3     HE2     N       CA      CB      CG
+    CB      CG      HG3     HE2     CA      CB      CG      CD
+    CG      CD      OE1     HE2     CB      CG      CD      OE1
+    CG      CD      OE2     HE2     CG      CD      OE2     HE2
+GLY G
+    N       CA      HA3     OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+HIP H
+    N       CA      HA      OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+    CA      CB      HB3     HE2     N       CA      CB      CG
+    CB      CG      ND1     HE2     CA      CB      CG      ND1
+ILE I
+    N       CA      HA      OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+    CA      CB      HB      HG22    N       CA      CB      CG1
+    CB      CG1     HG11    HG22    CA      CB      CG1     CD1
+LEU L
+    N       CA      HA      OXT     C       N       CA      C
+    CA      C       O       OXT     N       CA      C       N
+    CA      CB      HB3     HD22    N       CA      CB      CG
+    CB      CG      HG      HD22    CA      CB      CG      CD1
+LYS K
+    N        CA     HA      OXT     C       N       CA      C
+    CA       C      O       OXT     N       CA      C       N
+    CA       CB     HB3     HZ1     N       CA      CB      CG
+    CB       CG     HG3     HZ1     CA      CB      CG      CD
+    CG       CD     HD3     HZ1     CB      CG      CD      CE
+    CD       CE     HE1     HZ1     CG      CD      CE      NZ
+    CE       NZ     HZ2     HZ1     CD      CE      NZ      HZ
+MET M
+    N        CA     HA      OXT     C       N       CA      C
+    CA       C      O       OXT     N       CA      C       N
+    CA       CB     HB3     HE2     N       CA      CB      CG
+    CB       CG     HG1     HE2     CA      CB      CG      SD
+    CG       SD     CE      HE2     CB      CG      SD      CE
+    SD       CE     HE1     HE2     CG      SD      CE      HE
+PHE F
+    N        CA     HA      OXT     C       N       CA      C
+    CA       C      O       OXT     N       CA      C       N
+    CA       CB     HB3     HZ      N       CA      CB      CG
+    CB       CG     CD1     HZ      CA      CB      CG      CD1
+PRO P
+    CA       C      O       OXT     N       CA      C       N
+SER S
+    N        CA     HA      OXT     C       N       CA      C
+    CA       C      O       OXT     N       CA      C       N
+    CA       CB     HB3     HG      N       CA      CB      OG
+    CB       OG     HG      HG      CA      CB      OG      HG
+THR T
+    N        CA     HA      OXT     C       N       CA      C
+    CA       C      O       OXT     N       CA      C       N
+    CA       CB     HB      HG23    N       CA      CB      OG1
+    CB       CG2    HG21    HG23    CA      CB      OG1     HG1
+    CB       OG1    HG1     HG1     CA      CB      CG2     HG2
+TRP W
+    N        CA     HA      OXT     C       N       CA      C
+    CA       C      O       OXT     N       CA      C       N
+    CA       CB     HB3     HH2     N       CA      CB      CG
+    CB       CG     CD1     HH2     CA      CB      CG      CD1
+TYR Y
+    N        CA     HA      OXT     C       N       CA      C
+    CA       C      O       OXT     N       CA      C       N
+    CA       CB     HB3     HH      N       CA      CB      CG
+    CB       CG     CD1     HH      CA      CB      CG      CD1
+    CZ       OH     HH      HH      CE1     CZ      OH      HH
+VAL V
+    N        CA     HA      OXT     C       N       CA      C
+    CA       C      O       OXT     N       CA      C       N
+    CA       CB     HB      HG22    N       CA      CB      CG1
+    CB       CG1    HG11    HG13    CA      CB      CG1     HG1
+    CB       CG2    HG23    HG23    CA      CB      CG2     HG2

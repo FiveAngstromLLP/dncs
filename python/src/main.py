@@ -15,12 +15,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+import os
+import gc
 import toml
 import time
 import dncs
+import logging
 from typing import List
 from dataclasses import dataclass
-from integrator import DncsIntegrator, CleanUp, MDSimulation
+from integrator import OptimizedMolecularDynamics, MDSimulation
 
 @dataclass
 class SimulationConfig:
@@ -46,52 +49,118 @@ class GenerateSamples:
         self.generate_samples()
 
     def generate_samples(self):
-        sample = dncs.Polymer(self.config.sequence, "amberfb15.xml")
-        dncs.SobolSampler(
-            sample,
-            self.config.n_samples,
-            self.config.method,
-            self.config.temp,
-            f"{self.config.folder}/{self.config.moleculename}"
+        # Configure logging
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s'
         )
+        logger = logging.getLogger(__name__)
 
-def runopenmm(config):
-    # Run Integrator
-    integrator = DncsIntegrator(config)
-    integrator.run_integrator()
-    CleanUp(config)
+        try:
+            # Ensure output directory exists
+            output_dir = f"{self.config.folder}/{self.config.moleculename}"
+            os.makedirs(output_dir, exist_ok=True)
 
-    md = MDSimulation(config)
-    md.run_simulation()
+            # Generate polymer samples
+            sample = dncs.Polymer(self.config.sequence, "amberfb15.xml")
+            dncs.SobolSampler(
+                sample,
+                self.config.n_samples,
+                self.config.method,
+                self.config.temp,
+                output_dir
+            )
+            logger.info("Sample generation completed successfully")
 
+        except Exception as e:
+            logger.error(f"Error in sample generation: {e}")
+            raise
 
+def run_openmm(config: SimulationConfig):
+    """
+    Run OpenMM molecular dynamics simulation
+
+    Args:
+        config (SimulationConfig): Simulation configuration
+    """
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+    logger = logging.getLogger(__name__)
+
+    try:
+        # Run molecular dynamics integrator
+        logger.info("Starting molecular dynamics simulation")
+        dynamics = OptimizedMolecularDynamics(config)
+        dynamics.run_parallel_simulation()
+
+        # Run MD simulation
+        logger.info("Starting long MD simulation")
+        md_sim = MDSimulation(config)
+        md_sim.run_simulation()
+
+        logger.info("Molecular dynamics simulation completed")
+
+    except Exception as e:
+        logger.error(f"Error in OpenMM simulation: {e}")
+        raise
+
+def main():
+    """
+    Main entry point for DNCS simulation
+    """
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('simulation.log'),
+            logging.StreamHandler()
+        ]
+    )
+    logger = logging.getLogger(__name__)
+
+    try:
+        # Load configuration from TOML file
+        config_path = 'dncs.toml'
+        if not os.path.exists(config_path):
+            raise FileNotFoundError(f"Configuration file {config_path} not found")
+
+        with open(config_path, 'r') as f:
+            toml_config = toml.load(f)
+
+        # Create configuration object
+        config = SimulationConfig(**toml_config['simulation'])
+
+        # Start timing
+        start_time = time.time()
+
+        # Generate conformational samples
+        logger.info("Starting sample generation")
+        GenerateSamples(config)
+
+        # Run simulation if interface is OpenMM
+        if config.interface == "openmm":
+            run_openmm(config)
+
+        # Calculate and log total simulation time
+        end_time = time.time()
+        simulation_time = end_time - start_time
+
+        if simulation_time > 60:
+            minutes = simulation_time / 60
+            logger.info(f"Total simulation time: {minutes:.5f} minutes")
+        else:
+            logger.info(f"Total simulation time: {simulation_time:.5f} seconds")
+
+    except Exception as e:
+        logger.error(f"Simulation failed: {e}")
+
+    finally:
+        # Final cleanup
+        gc.collect()
 
 if __name__ == "__main__":
-    # Load configuration from dncs.toml file
-    with open('dncs.toml', 'r') as f:
-        toml_config = toml.load(f)
-
-    config = SimulationConfig(**toml_config['simulation'])
-
-    start_time = time.time()
-
-
-    #Generate conformational samples
-    GenerateSamples(config)
-    print("Completed Sampling")
-
-    if config.interface == "openmm":
-        runopenmm(config)
-
-    end_time = time.time()
-    simulation_time = end_time - start_time
-
-    if simulation_time > 60:
-        minutes = simulation_time / 60
-        print(f"Total simulation time: {minutes:.5f} minutes")
-    else:
-        print(f"Total simulation time: {simulation_time:.5f} seconds")
-
-    # # Final cleanup
-    import gc
-    gc.collect()
+    main()

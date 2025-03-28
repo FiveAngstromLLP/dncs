@@ -97,34 +97,18 @@ pub struct Atom {
     pub name: String,
     /// Residue name
     pub residue: String,
-    /// Chain identifier
-    pub chain_id: String,
     /// Residue sequence number
     pub sequence: usize,
     /// Atom position (x, y, z coordinates)
     pub position: [f64; 3],
-    /// Occupancy
-    pub occupancy: f64,
-    /// Temperature factor (B-factor)
-    pub bfactor: f64,
-    /// Element symbol
-    pub element: String,
-    /// Atomic mass
-    pub mass: f64,
     /// Atomic charge
     pub charge: f64,
-    /// Atom type (for force field calculations)
-    pub atomtype: Option<String>,
-    /// Atom TypeId
-    pub typeid: Option<String>,
     /// Lennard-Jones parameter sigma
     pub sigma: f64,
     /// Lennard-Jones parameter epsilon
     pub epsilon: f64,
-    /// Atomic velocity (vx, vy, vz)
-    pub velocity: [f64; 3],
-    /// Force acting on the atom (fx, fy, fz)
-    pub force: [f64; 3],
+    /// Atom type
+    pub atomtype: String,
 }
 
 impl Atom {
@@ -134,24 +118,16 @@ impl Atom {
             serial: line.get(7..12).unwrap_or("").trim().parse().unwrap_or(0),
             name: line.get(12..17).unwrap_or("").trim().to_string(),
             residue: line.get(17..21).unwrap_or("").trim().to_string(),
-            chain_id: line.get(21..23).unwrap_or("").trim().to_string(),
             sequence: line.get(23..27).unwrap_or("").trim().parse().unwrap_or(0),
             position: [
                 line.get(31..39).unwrap_or("").trim().parse().unwrap_or(0.0),
                 line.get(39..47).unwrap_or("").trim().parse().unwrap_or(0.0),
                 line.get(47..54).unwrap_or("").trim().parse().unwrap_or(0.0),
             ],
-            occupancy: line.get(55..60).unwrap_or("").trim().parse().unwrap_or(0.0),
-            bfactor: line.get(60..66).unwrap_or("").trim().parse().unwrap_or(0.0),
-            element: line.get(76..78).unwrap_or("").trim().to_string(),
-            mass: line.get(78..87).unwrap_or("").trim().parse().unwrap_or(0.0),
-            charge: line.get(87..97).unwrap_or("").trim().parse().unwrap_or(0.0),
-            atomtype: Some(line.get(97..).unwrap_or("").trim().to_string()),
-            typeid: None,
+            charge: 0.0,
             epsilon: 0.0,
             sigma: 0.0,
-            velocity: [0.0; 3],
-            force: [0.0; 3],
+            atomtype: String::new(),
         }
     }
 }
@@ -160,21 +136,15 @@ impl Debug for Atom {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{:<6}{:>5} {:^4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}{:>6.2}{:>6.2}          {:>2}",
+            "{:<6}{:>5} {:<4} {:^4} {:>4}    {:>8.3}{:>8.3}{:>8.3}",
             self.record,
             self.serial,
-            match self.name.len() {
-                3 => format!(" {}", self.name),
-                _ => self.name.to_string(),
-            },
+            self.name,
             self.residue,
             self.sequence,
             self.position[0],
             self.position[1],
             self.position[2],
-            self.occupancy,
-            self.bfactor,
-            self.element
         )
     }
 }
@@ -216,8 +186,6 @@ pub struct Monomer<T> {
     pub tcode: String,
     /// Single-letter code for the monomer type
     pub scode: String,
-    /// Number of atoms in the monomer
-    pub natom: usize,
     /// Vector of atoms that make up the monomer
     pub atoms: Vec<T>,
 }
@@ -248,7 +216,7 @@ pub fn generate(seq: &str) -> Vec<Atom> {
         .collect();
 
     // Handle N-terminal
-    if let Some(m) = data.iter().find(|lib| lib.0.tcode == "NH") {
+    if let Some(m) = data.iter().find(|lib| lib.0.tcode == "NHT") {
         let atoms = if !seq.starts_with('P') {
             &m.0.atoms
         } else {
@@ -287,6 +255,9 @@ pub fn generate(seq: &str) -> Vec<Atom> {
                     atom.position[0] += dumm[0];
                     atom.position[1] += dumm[1];
                     atom.position[2] += dumm[2];
+                    // if r == seq.len() - 1 && atom.name == "O" {
+                    //     continue;
+                    // }
                     sequence.push(atom);
                     atomno += 1;
                     resno = r;
@@ -309,11 +280,15 @@ pub fn generate(seq: &str) -> Vec<Atom> {
                 dumm[2] += atom.position[2];
                 break;
             } else {
+                // if atom.name == "OXT" {
+                //     atom.record = "TER".to_string();
+                // }
                 atom.serial = atomno;
                 atom.sequence = resno + 1;
                 atom.position[0] += dumm[0];
                 atom.position[1] += dumm[1];
                 atom.position[2] += dumm[2];
+                atom.residue = sequence[sequence.len() - 1].residue.clone();
                 sequence.push(atom);
                 atomno += 1;
             }
@@ -324,26 +299,23 @@ pub fn generate(seq: &str) -> Vec<Atom> {
 
 /// Write polymer structure to a PDB file
 pub fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
-    let mut a: Vec<Atom> = atoms
-        .iter()
-        .filter(|atom| atom.residue != "OH")
-        .cloned()
-        .collect();
-    if let Some(terminal) = atoms
-        .iter()
-        .find(|atom| atom.residue == "OH" && atom.name == "O1")
-        .cloned()
-    {
-        let mut terminal = terminal;
-        terminal.name = "OXT".to_string();
-        terminal.residue = a.last().unwrap().residue.clone();
-        a.push(terminal);
-    }
-    a.iter_mut().enumerate().for_each(|(i, atom)| {
+    // if let Some(terminal) = atoms
+    //     .iter()
+    //     .find(|atom| atom.residue == "OH" && atom.name == "O1")
+    //     .cloned()
+    // {
+    //     let mut terminal = terminal;
+    //     terminal.name = "OXT".to_string();
+    //     terminal.residue = a.last().unwrap().residue.clone();
+    //     a.push(terminal);
+    // }
+    let mut atoms = atoms;
+    atoms.iter_mut().enumerate().for_each(|(i, atom)| {
         atom.serial = i;
     });
-    a.remove(0);
-    a.iter()
+    atoms.remove(0);
+    atoms
+        .iter()
         .map(|atom| format!("{:?}", atom))
         .collect::<Vec<String>>()
         .join("\n")

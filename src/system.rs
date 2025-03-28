@@ -82,8 +82,7 @@ impl System {
                         if atom_type.name == atom.name {
                             for forcefield_type in &self.forcefield.atom_types.types {
                                 if forcefield_type.name == atom_type.atype {
-                                    atom.typeid = Some(forcefield_type.name.to_string());
-                                    atom.atomtype = Some(forcefield_type.class.to_string());
+                                    atom.atomtype = forcefield_type.class.to_string();
                                     if let Some(nb) = self
                                         .forcefield
                                         .nonbonded_force
@@ -128,7 +127,7 @@ impl System {
                 } else if let Some(enp) = ENERGYPARAM
                     .seq
                     .iter()
-                    .find(|f| Some(f.atomtype.to_string()) == typ)
+                    .find(|f| Some(f.atomtype.to_string()) == Some(typ.clone()))
                 {
                     atom.sigma = enp.sigma;
                     atom.epsilon = enp.epsilon;
@@ -153,7 +152,7 @@ impl System {
         );
         for (i, s) in self.seq.chars().enumerate() {
             if let Some(m) = DIHEDS.seq.iter().find(|f| f.scode == s.to_string()) {
-                let n = if sidechain { m.natom } else { 2 };
+                let n = if sidechain { m.atoms.len() } else { 2 };
                 for d in m.atoms.iter().take(n) {
                     for atom in self.particles.iter() {
                         if atom.name == d.a && atom.sequence == i + 1 {
@@ -179,30 +178,9 @@ impl System {
     }
 
     fn get_dihedral_for_angle(&mut self, sidechain: bool) {
-        let lastseq = self.particles.last().unwrap().sequence;
-        let mut val: (Atom, Atom, Atom, Atom) = (
-            Atom::new("".to_string()),
-            Atom::new("".to_string()),
-            Atom::new("".to_string()),
-            Atom::new("".to_string()),
-        );
-
-        for atom in self.particles.iter() {
-            if atom.name == "H" && atom.sequence == 1 {
-                val.0 = atom.clone();
-            } else if atom.name == "N" && atom.sequence == 1 {
-                val.1 = atom.clone();
-            } else if atom.name == "CA" && atom.sequence == 1 {
-                val.2 = atom.clone();
-            } else if atom.name == "C" && atom.sequence == 1 {
-                val.3 = atom.clone();
-            }
-        }
-        self.dihedral_angle.push(val.clone());
-
         for (i, s) in self.seq.chars().enumerate() {
             if let Some(m) = VAR.seq.iter().find(|f| f.scode == s.to_string()) {
-                let n = if sidechain { m.natom } else { 2 };
+                let n = if sidechain { m.atoms.len() } else { 2 };
                 for d in m.atoms.iter().take(n) {
                     let seqb = if d.a == "C" && d.b == "N" && d.c == "CA" && d.d == "C" {
                         i + 2
@@ -232,40 +210,27 @@ impl System {
                 }
             }
         }
-
-        for atom in self.particles.iter() {
-            if atom.name == "N" && atom.sequence == lastseq {
-                val.0 = atom.clone();
-            } else if atom.name == "CA" && atom.sequence == lastseq {
-                val.1 = atom.clone();
-            } else if atom.name == "C" && atom.sequence == lastseq {
-                val.2 = atom.clone();
-            } else if atom.name == "O" && atom.sequence == lastseq {
-                val.3 = atom.clone();
-            }
-        }
-        self.dihedral_angle.push(val);
     }
 
     /// Find hydrogen-bonded atom pairs
     fn get_hydrogen_bonded(&mut self) {
-        for i in self.particles.iter().take(self.particles.len() - 1) {
-            if i.name == "H" || i.name == "HN" {
-                for j in self.particles.iter().skip(i.serial + 1) {
-                    if j.sequence < i.sequence && j.name == "O" {
-                        self.hydrogen.push((i.clone(), j.clone()))
-                    }
-                }
-            } else if i.name == "O" {
-                for j in self.particles.iter().skip(i.serial + 1) {
-                    if let Some(k) = self.particles.iter().find(|a| a.serial == i.serial + 1) {
-                        if k.sequence < j.sequence && j.name == "H" {
-                            self.hydrogen.push((i.clone(), j.clone()))
-                        }
-                    }
-                }
-            }
-        }
+        // for i in self.particles.iter().take(self.particles.len() - 1) {
+        //     if i.name == "H" || i.name == "HN" {
+        //         for j in self.particles.iter().skip(i.serial + 1) {
+        //             if j.sequence < i.sequence && j.name == "O" {
+        //                 self.hydrogen.push((i.clone(), j.clone()))
+        //             }
+        //         }
+        //     } else if i.name == "O" {
+        //         for j in self.particles.iter().skip(i.serial + 1) {
+        //             if let Some(k) = self.particles.iter().find(|a| a.serial == i.serial + 1) {
+        //                 if k.sequence < j.sequence && j.name == "H" {
+        //                     self.hydrogen.push((i.clone(), j.clone()))
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     /// Get Neighbours
