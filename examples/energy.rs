@@ -3,7 +3,7 @@ use std::sync::Arc;
 use libdncs::*;
 
 // Configuration
-const SEQUENCE: &str = "DAEFRHDSGYEVHHQKLVFFAEDVGSNKGAIIGLMVGGVVIA";
+const SEQUENCE: &str = "AA";
 const FORCE_FIELD: FF = FF::AmberFB15;
 
 fn main() {
