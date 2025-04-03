@@ -6,7 +6,7 @@ fn main() {
     let mut system = System::new("YGGFM", FF::Amber99SB.init());
     system.get_neighbours();
 
-    for (index, neighbour) in system.firstbonded.iter().enumerate() {
+    for (index, neighbour) in system.bonded.iter().enumerate() {
         print!(
             " {}::{} >>",
             index + 1,
