@@ -32,6 +32,7 @@ pub struct System {
     pub dihedral_angle: Vec<(Atom, Atom, Atom, Atom)>,
     pub firstbonded: Vec<Particles>,
     pub secondbonded: Vec<Particles>,
+    pub thirdbonded: Vec<Particles>,
     pub nonbonded: Vec<Particles>,
     pub bonded1_4: Vec<Particles>,
     pub hydrogen: Vec<(Atom, Atom)>,
@@ -50,6 +51,7 @@ impl System {
             dihedral_angle: Vec::new(),
             firstbonded: vec![Vec::new(); total],
             secondbonded: vec![Vec::new(); total],
+            thirdbonded: vec![Vec::new(); total],
             nonbonded: vec![Vec::new(); total],
             bonded1_4: vec![Vec::new(); total],
             hydrogen: Vec::new(),
@@ -68,6 +70,7 @@ impl System {
             dihedral_angle: Vec::new(),
             firstbonded: vec![Vec::new(); total],
             secondbonded: vec![Vec::new(); total],
+            thirdbonded: vec![Vec::new(); total],
             nonbonded: vec![Vec::new(); total],
             bonded1_4: vec![Vec::new(); total],
             hydrogen: Vec::new(),
@@ -275,6 +278,7 @@ impl System {
             neighbor.get_neighbours();
             self.firstbonded[i] = neighbor.firstbonded;
             self.secondbonded[i] = neighbor.secondbonded;
+            self.thirdbonded[i] = neighbor.thirdbonded;
             self.nonbonded[i] = neighbor.nonbonded;
             self.bonded1_4[i] = neighbor.bonded1_4;
         }
@@ -344,6 +348,7 @@ struct Neighbor {
     polymer: Particles,
     firstbonded: Particles,
     secondbonded: Particles,
+    thirdbonded: Particles,
     nonbonded: Particles,
     bonded1_4: Particles,
 }
@@ -355,6 +360,7 @@ impl Neighbor {
             polymer,
             firstbonded: Vec::new(),
             secondbonded: Vec::new(),
+            thirdbonded: Vec::new(),
             nonbonded: Vec::new(),
             bonded1_4: Vec::new(),
         }
@@ -412,7 +418,7 @@ impl Neighbor {
     }
 
     /// Third Bonded atoms
-    fn third_bonded(&self) -> (Vec<Atom>, Vec<Atom>, Vec<Atom>) {
+    fn third_bonded(&mut self) -> (Vec<Atom>, Vec<Atom>, Vec<Atom>) {
         let (first, second) = self.second_bonded();
         let mut third = Vec::new();
         for satom in second.iter() {
@@ -431,6 +437,7 @@ impl Neighbor {
                             && !first.contains(jatom)
                         {
                             third.push(jatom.clone());
+                            self.thirdbonded.push(jatom.clone());
                         }
                     }
                 }
@@ -440,7 +447,7 @@ impl Neighbor {
     }
 
     /// Fourth Bonded atoms
-    fn fourth_bonded(&self) -> Vec<Atom> {
+    fn fourth_bonded(&mut self) -> Vec<Atom> {
         let (first, second, third) = self.third_bonded();
         self.polymer
             .iter()
@@ -450,7 +457,7 @@ impl Neighbor {
             .collect()
     }
 
-    fn formated_fourth(&self) -> Vec<Atom> {
+    fn formated_fourth(&mut self) -> Vec<Atom> {
         let fourth = self.fourth_bonded();
         let mut val = Vec::new();
         if let Some(f) = fourth.first() {
