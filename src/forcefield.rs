@@ -218,13 +218,12 @@ impl Amber {
         let sigma = (i.sigma + j.sigma) / 2.0; // Unit >> nm
         let epsilon = (i.epsilon * j.epsilon).sqrt(); // Unit >> kJ/mol
         println!(
-            "iatom: {}\tjatom: {}\tSigma: {}\t{}\t, Epsilon: {}\t{}\t, energy: {} ",
+            "iatom: {}: {}\tjatom: {}: {}\t r: {}\t, energy: {} ",
             i.name,
+            i.serial,
             j.name,
-            i.sigma,
-            j.sigma,
-            i.epsilon,
-            j.epsilon,
+            j.serial,
+            r,
             4.0 * epsilon * ((sigma / r).powi(12) - (sigma / r).powi(6))
         );
         4.0 * epsilon * ((sigma / r).powi(12) - (sigma / r).powi(6)) // Unit >> kJ/mol
@@ -235,7 +234,7 @@ impl Amber {
         let r = Self::distance(i, j); // Unit >> nm
         let q1 = i.charge * 1.602176634e-19;
         let q2 = j.charge * 1.602176634e-19;
-        let k = (8.9875517682e9 * 6.02214076e23) / 1000.0; // Coulomb's constant in vacuum (kJ/mol)
+        let k = (8.9875517682e9 * 6.02214076e23) / 1000.0 * 1e9; // Coulomb's constant in vacuum (kJ/mol)
         k * q1 * q2 / r // Unit >> kJ/mol
     }
 
