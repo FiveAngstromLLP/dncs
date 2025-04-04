@@ -77,10 +77,10 @@ impl Amber {
                 electrostatic += nb.coulomb14scale * Self::electrostatic_energy(iatom, jatom);
             }
         }
-        println!(
-            "Electrostatic energy of {}: {}: {}",
-            iatom.residue, iatom.name, electrostatic
-        );
+        // println!(
+        //     "Electrostatic energy of {}: {}: {}",
+        //     iatom.residue, iatom.name, electrostatic
+        // );
         electrostatic // Unit >> kJ/mol
     }
 
@@ -104,10 +104,10 @@ impl Amber {
                 lennard_jones += nb.lj14scale * Self::lennard_jones_energy(iatom, jatom);
             }
         }
-        println!(
-            "Lennard-Jones energy of {}: {}: {}",
-            iatom.residue, iatom.name, lennard_jones
-        );
+        // println!(
+        //     "Lennard-Jones energy of {}: {}: {}",
+        //     iatom.residue, iatom.name, lennard_jones
+        // );
         lennard_jones // Unit >> kJ/mol
     }
 
@@ -116,13 +116,15 @@ impl Amber {
         let hbforce = self.system.forcefield.harmonic_bond_force.bonds.clone();
         let mut energy = 0.0;
         for jatom in self.system.firstbonded[iatom.serial - 1].iter() {
-            if let Some(hbf) = hbforce.iter().find(|h| {
-                Some(h.class1.to_string()) == iatom.atomtype
-                    && Some(h.class2.to_string()) == jatom.atomtype
-            }) {
-                let d = Self::distance(iatom, jatom);
-                let eng = 0.5 * hbf.k * (d - hbf.length).powi(2);
-                energy += eng
+            if jatom.serial > iatom.serial {
+                if let Some(hbf) = hbforce.iter().find(|h| {
+                    Some(h.class1.to_string()) == iatom.atomtype
+                        && Some(h.class2.to_string()) == jatom.atomtype
+                }) {
+                    let d = Self::distance(iatom, jatom);
+                    let eng = 0.5 * hbf.k * (d - hbf.length).powi(2);
+                    energy += eng
+                }
             }
         }
         energy // Unit >> kJ/mol
@@ -133,15 +135,30 @@ impl Amber {
         let haforce = self.system.forcefield.harmonic_angle_force.angles.clone();
         let mut energy = 0.0;
         for jatom in self.system.firstbonded[iatom.serial - 1].iter() {
-            for katom in self.system.secondbonded[iatom.serial - 1].iter() {
-                if let Some(haf) = haforce.iter().find(|h| {
-                    Some(h.class1.to_string()) == iatom.atomtype
-                        && Some(h.class2.to_string()) == jatom.atomtype
-                        && Some(h.class2.to_string()) == katom.atomtype
-                }) {
-                    let a = Self::angle(iatom, jatom, katom);
+            if jatom.serial > iatom.serial {
+                for katom in self.system.firstbonded[jatom.serial - 1].iter() {
+                    if katom.serial > jatom.serial {
+                        if let Some(haf) = haforce.iter().find(|h| {
+                            Some(h.class1.to_string()) == iatom.atomtype
+                                && Some(h.class2.to_string()) == jatom.atomtype
+                                && Some(h.class2.to_string()) == katom.atomtype
+                        }) {
+                            let a = Self::angle(iatom, jatom, katom);
+                            // println!(
+                            //     "{}:{}, {}:{}, {}:{} Ang: {}; Eng: {}",
+                            //     iatom.name,
+                            //     iatom.serial,
+                            //     jatom.name,
+                            //     jatom.serial,
+                            //     katom.name,
+                            //     katom.serial,
+                            //     a,
+                            //     0.5 * haf.k * (a - haf.angle).powi(2)
+                            // );
 
-                    energy += 0.5 * haf.k * (a - haf.angle).powi(2);
+                            energy += 0.5 * haf.k * (a - haf.angle).powi(2);
+                        }
+                    }
                 }
             }
         }
@@ -212,29 +229,20 @@ impl Amber {
     #[inline]
     fn lennard_jones_energy(i: &Atom, j: &Atom) -> f64 {
         let r = Self::distance(i, j); // Unit >> nm
-        if r == 0.0 {
-            return 0.0; // Avoid division by zero
-        }
         let sigma = (i.sigma + j.sigma) / 2.0; // Unit >> nm
         let epsilon = (i.epsilon * j.epsilon).sqrt(); // Unit >> kJ/mol
-        println!(
-            "iatom: {}: {}\tjatom: {}: {}\t r: {}\t, energy: {} ",
-            i.name,
-            i.serial,
-            j.name,
-            j.serial,
-            r,
-            4.0 * epsilon * ((sigma / r).powi(12) - (sigma / r).powi(6))
-        );
+        if r < 2.5 * sigma {
+            return 0.0; // Avoid division by zero
+        }
         4.0 * epsilon * ((sigma / r).powi(12) - (sigma / r).powi(6)) // Unit >> kJ/mol
     }
 
     #[inline]
     fn electrostatic_energy(i: &Atom, j: &Atom) -> f64 {
         let r = Self::distance(i, j); // Unit >> nm
-        let q1 = i.charge * 1.602176634e-19;
-        let q2 = j.charge * 1.602176634e-19;
-        let k = (8.9875517682e9 * 6.02214076e23) / 1000.0 * 1e9; // Coulomb's constant in vacuum (kJ/mol)
+        let q1 = i.charge;
+        let q2 = j.charge;
+        let k = 138.93545727242866; // Coulomb's constant in vacuum (kJ/mol)
         k * q1 * q2 / r // Unit >> kJ/mol
     }
 
@@ -244,12 +252,12 @@ impl Amber {
             j.position[0] - i.position[0],
             j.position[1] - i.position[1],
             j.position[2] - i.position[2],
-        ) * 0.1; // Unit >> nm
+        ); // Unit >> nm
         let rkj = Vector3::new(
             j.position[0] - k.position[0],
             j.position[1] - k.position[1],
             j.position[2] - k.position[2],
-        ) * 0.1; // Unit >> nm
+        ); // Unit >> nm
 
         let cos_theta = rij.dot(&rkj) / (rij.magnitude() * rkj.magnitude());
         cos_theta.acos()

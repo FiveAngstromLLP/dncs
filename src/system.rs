@@ -705,38 +705,12 @@ impl Neighbor {
                     | ("HIS", "CE1", _)
                     | ("HIS", "HE1", _)
                     | ("HIS", "NE2", _)
-                    | ("HIS", "HE2", _) => {
-                        // for l in self
-                        //     .polymer
-                        //     .iter()
-                        //     .skip(self.atom.serial + 1)
-                        //     .filter(|f| f.name == "C")
-                        // {
-                        //     nonbonded.push(l.clone());
-                        //     if let Some(last) = self.polymer.last() {
-                        //         nonbonded.push(last.clone());
-                        //     }
-                        skip_update = true;
-                        // }
-                    }
+                    | ("HIS", "HE2", _) => skip_update = true,
                     _ => nonbonded.push(jatom.clone()),
                 }
             } else if self.atom.sequence + 1 == jatom.sequence && jatom.residue == "PRO" {
                 match self.atom.name.as_str() {
-                    "C" | "O" => {
-                        // for l in self
-                        //     .polymer
-                        //     .iter()
-                        //     .skip(self.atom.serial + 1)
-                        //     .filter(|f| f.name == "C")
-                        // {
-                        //     nonbonded.push(l.clone());
-                        //     if let Some(last) = self.polymer.last() {
-                        //         nonbonded.push(last.clone());
-                        //     }
-                        skip_update = true;
-                        // }
-                    }
+                    "C" | "O" => skip_update = true,
                     _ => nonbonded.push(jatom.clone()),
                 }
             } else {

@@ -4,9 +4,9 @@ use libdncs::*;
 
 // Configuration
 const NAME: &str = "DNCS";
-const SEQUENCE: &str = "YGGFM";
+const SEQUENCE: &str = "AAAAAAAAA";
 const FORCE_FIELD: FF = FF::AmberFB15;
-const NO_OF_SAMPLE: usize = 10;
+const NO_OF_SAMPLE: usize = 1000;
 
 fn main() {
     let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());

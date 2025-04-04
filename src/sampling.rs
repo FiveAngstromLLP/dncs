@@ -277,12 +277,12 @@ impl RotateAtDihedral {
             c.position[0] - b.position[0],
             c.position[1] - b.position[1],
             c.position[2] - b.position[2],
-        );
+        ) * 0.1;
         let u3 = Vector3::new(
             d.position[0] - c.position[0],
             d.position[1] - c.position[1],
             d.position[2] - c.position[2],
-        );
+        ) * 0.1;
         let sinth = (u2.norm() * u1).dot(&u2.cross(&u3));
         let costh = u1.cross(&u2).dot(&u2.cross(&u3));
         sinth.atan2(costh)
