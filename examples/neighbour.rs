@@ -3,7 +3,7 @@ extern crate libdncs;
 use libdncs::{System, FF};
 
 fn main() {
-    let mut system = System::new("AAAAA", FF::Amber99SB.init());
+    let mut system = System::new("YGGFM", FF::Amber99SB.init());
     system.get_neighbours();
 
     use std::fs;
@@ -25,7 +25,7 @@ fn main() {
 
         // Write all atom pairs with this bond distance
         for (i, particle_i) in system.particles.iter().enumerate() {
-            write!(file, "{}:{} \t>> ", i, particle_i.name).expect("Failed to write to file");
+            write!(file, "{}:{} \t>> ", i + 1, particle_i.name).expect("Failed to write to file");
 
             for (j, particle_j) in system.particles.iter().enumerate() {
                 // Check if particles are bonded at the specified bond distance
@@ -49,7 +49,8 @@ fn main() {
                 };
 
                 if is_bonded {
-                    write!(file, "{}:{}; ", j, particle_j.name).expect("Failed to write to file");
+                    write!(file, "{}:{}; ", j + 1, particle_j.name)
+                        .expect("Failed to write to file");
                 }
             }
 
