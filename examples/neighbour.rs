@@ -3,7 +3,7 @@ extern crate libdncs;
 use libdncs::{System, FF};
 
 fn main() {
-    let mut system = System::new("YGGFM", FF::Amber99SB.init());
+    let mut system = System::new("AA", FF::Amber99SB.init());
     system.get_neighbours();
 
     use std::fs;

@@ -123,6 +123,10 @@ impl Amber {
                 }) {
                     let d = Self::distance(iatom, jatom);
                     let eng = 0.5 * hbf.k * (d - hbf.length).powi(2);
+                    println!(
+                        "{}:{}; {}:{}; r: {}; eng: {} kJ/mol",
+                        iatom.serial, iatom.name, jatom.serial, jatom.name, d, eng
+                    );
                     energy += eng
                 }
             }
@@ -136,25 +140,30 @@ impl Amber {
         let mut energy = 0.0;
         for jatom in self.system.firstbonded[iatom.serial - 1].iter() {
             if jatom.serial > iatom.serial {
+                // print!("{}:{}\t", jatom.serial, jatom.name);
                 for katom in self.system.firstbonded[jatom.serial - 1].iter() {
                     if katom.serial > jatom.serial {
+                        // println!("{}:{}", katom.serial, katom.name);
                         if let Some(haf) = haforce.iter().find(|h| {
                             Some(h.class1.to_string()) == iatom.atomtype
                                 && Some(h.class2.to_string()) == jatom.atomtype
                                 && Some(h.class2.to_string()) == katom.atomtype
+                                || Some(h.class1.to_string()) == jatom.atomtype
+                                    && Some(h.class2.to_string()) == jatom.atomtype
+                                    && Some(h.class2.to_string()) == iatom.atomtype
                         }) {
                             let a = Self::angle(iatom, jatom, katom);
-                            // println!(
-                            //     "{}:{}, {}:{}, {}:{} Ang: {}; Eng: {}",
-                            //     iatom.name,
-                            //     iatom.serial,
-                            //     jatom.name,
-                            //     jatom.serial,
-                            //     katom.name,
-                            //     katom.serial,
-                            //     a,
-                            //     0.5 * haf.k * (a - haf.angle).powi(2)
-                            // );
+                            println!(
+                                "{}:{}, {}:{}, {}:{} Ang: {}; Eng: {}",
+                                iatom.name,
+                                iatom.serial,
+                                jatom.name,
+                                jatom.serial,
+                                katom.name,
+                                katom.serial,
+                                a,
+                                0.5 * haf.k * (a - haf.angle).powi(2)
+                            );
 
                             energy += 0.5 * haf.k * (a - haf.angle).powi(2);
                         }
@@ -243,7 +252,10 @@ impl Amber {
         let q1 = i.charge;
         let q2 = j.charge;
         let k = 138.93545727242866; // Coulomb's constant in vacuum (kJ/mol)
-        k * q1 * q2 / r // Unit >> kJ/mol
+        if r < 0.8 || r > 1.2 {
+            return 0.0; // Unit >> kJ/mol
+        }
+        return k * q1 * q2 / r;
     }
 
     #[inline]

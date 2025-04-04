@@ -292,6 +292,11 @@ pub fn generate(seq: &str) -> Vec<Atom> {
                     resno = r;
                 }
             }
+            if r % 2 == 0 {
+                dumm = [dumm[0] - 0.14, dumm[1] - 0.14, dumm[2] - 0.14];
+            } else {
+                dumm = [dumm[0] - 0.11, dumm[1] - 0.11, dumm[2] - 0.11];
+            }
         }
     }
 
