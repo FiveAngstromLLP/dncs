@@ -124,8 +124,15 @@ impl Amber {
                     let d = Self::distance(iatom, jatom);
                     let eng = 0.5 * hbf.k * (d - hbf.length).powi(2);
                     println!(
-                        "{}:{}; {}:{}; r: {}; eng: {} kJ/mol",
-                        iatom.serial, iatom.name, jatom.serial, jatom.name, d, eng
+                        "{:?}:{:?}\t{}:{}; {}:{}; r: {}; eng: {} kJ/mol",
+                        iatom.position,
+                        jatom.position,
+                        iatom.serial,
+                        iatom.name,
+                        jatom.serial,
+                        jatom.name,
+                        d,
+                        eng
                     );
                     energy += eng
                 }
@@ -153,17 +160,19 @@ impl Amber {
                                     && Some(h.class2.to_string()) == iatom.atomtype
                         }) {
                             let a = Self::angle(iatom, jatom, katom);
-                            println!(
-                                "{}:{}, {}:{}, {}:{} Ang: {}; Eng: {}",
-                                iatom.name,
-                                iatom.serial,
-                                jatom.name,
-                                jatom.serial,
-                                katom.name,
-                                katom.serial,
-                                a,
-                                0.5 * haf.k * (a - haf.angle).powi(2)
-                            );
+                            // println!(
+                            //     "{:?}:{:?}; {}:{}, {}:{}, {}:{} Ang: {}; Eng: {}",
+                            //     iatom.position,
+                            //     jatom.position,
+                            //     iatom.name,
+                            //     iatom.serial,
+                            //     jatom.name,
+                            //     jatom.serial,
+                            //     katom.name,
+                            //     katom.serial,
+                            //     a,
+                            //     0.5 * haf.k * (a - haf.angle).powi(2)
+                            // );
 
                             energy += 0.5 * haf.k * (a - haf.angle).powi(2);
                         }
@@ -277,11 +286,20 @@ impl Amber {
 
     #[inline]
     fn distance(i: &Atom, j: &Atom) -> f64 {
-        let rij = Vector3::new(
-            j.position[0] - i.position[0],
-            j.position[1] - i.position[1],
-            j.position[2] - i.position[2],
-        );
-        rij.map(|r| r.powi(2)).sum().sqrt() * 0.1 // Unit >> nm
+        let x = j.position[0] - i.position[0];
+        let y = j.position[1] - i.position[1];
+        let z = j.position[2] - i.position[2];
+
+        // println!(
+        //     "{:?}:{:?};\t{}:{}; {}:{}; r: {}",
+        //     i.position,
+        //     j.position,
+        //     i.name,
+        //     i.serial,
+        //     j.name,
+        //     j.serial,
+        //     (x * x + y * y + z * z).sqrt() * 0.1
+        // );
+        (x * x + y * y + z * z).sqrt() * 0.1 // Unit >> nm
     }
 }

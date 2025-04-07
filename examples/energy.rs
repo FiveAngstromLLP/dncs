@@ -1,35 +1,26 @@
-use std::sync::Arc;
-
 use libdncs::*;
-
-// Configuration
-
-// const SEQUENCE: &str = "AA";
+use std::sync::Arc;
 const FORCE_FIELD: FF = FF::AmberFB15;
 
 fn main() {
-    // let mut sys = System::from_pdb("Result/sample/sample_0000.pdb", FORCE_FIELD.init());
-    let mut sys = System::new("AAAAAAAAAA", FORCE_FIELD.init());
-    // for i in sys.particles.iter() {
-    //     println!("{:?}", i);
-    // }
+    let mut sys = System::from_pdb("experiment.pdb", FORCE_FIELD.init());
+    // let sys = System::new("YGGFM", FORCE_FIELD.init());
+    // sys.to_pdb("experiment.pdb");
 
-    // System
-    // let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());
-    sys.to_pdb("experiment.pdb");
+    // let pdb: Vec<Atom> = std::fs::read_to_string("experiment.pdb")
+    //     .unwrap()
+    //     .lines()
+    //     .filter(|x| x.starts_with("ATOM"))
+    //     .map(String::from)
+    //     .map(Atom::new)
+    //     .collect();
+
+    // let
     sys.init_parameters();
-    let amber = Amber::new(Arc::new(sys));
-    let eng = amber.energy();
-    println!("Energy: {} kJ/mol", eng);
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_name() {
-        let sys = System::new("BA", FORCE_FIELD.init());
-        println!("{}", sys.particles);
-    }
+    // let amber = Amber::new(Arc::new(sys));
+    // let eng = amber.energy();
+    // println!("Energy: {} kJ/mol", eng);
+    //
+    // let mut sample =
 }

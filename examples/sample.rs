@@ -4,12 +4,13 @@ use libdncs::*;
 
 // Configuration
 const NAME: &str = "DNCS";
-const SEQUENCE: &str = "AA";
+const SEQUENCE: &str = "YGGFM";
 const FORCE_FIELD: FF = FF::AmberFB15;
-const NO_OF_SAMPLE: usize = 4;
+const NO_OF_SAMPLE: usize = 1;
 
 fn main() {
     let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());
+    sys.to_pdb("sample.pdb");
     sys.init_parameters();
     let folder = format!("Result/{}", NAME);
     let mut sample = Sampler::new(Arc::new(sys), Method::Fold, folder.to_string());
