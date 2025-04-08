@@ -222,15 +222,18 @@ impl RotateAtDihedral {
 
     /// Rotate the atoms at Dihedral angle
     pub fn rotate(&mut self, angle: Vec<f64>) {
-        for (a, theta) in self.system.dihedral.iter().zip(angle) {
-            // let mut phi = theta;
+        for (a, phi) in self.system.dihedral.iter().zip(angle.clone()) {
+            // let phi = theta;
+            // let phi = 90.0;
             // if i != 0 || i != self.system.dihedral.len() - 1 {
             //     phi += 180.0
             // }
             if let Some(p) = self.rotated.iter().find(|i| i.serial == a.0.serial) {
+                // println!("{:?}", p);
                 let v1 = Vector3::new(p.position[0], p.position[1], p.position[2]);
                 if let Some(q) = self.rotated.iter().find(|i| i.serial == a.1.serial) {
                     let v2 = Vector3::new(q.position[0], q.position[1], q.position[2]);
+                    // println!("V1: {:?}; V2: {:?}, {:?}", v1, v2, angle);
                     let dcos = Self::elemen(v1, v2);
                     for j in self
                         .rotated
@@ -239,10 +242,12 @@ impl RotateAtDihedral {
                         .skip(a.2.serial - 1)
                     {
                         let avector = Vector3::new(j.position[0], j.position[1], j.position[2]);
-                        let r = Self::rotor(dcos, avector - v1, theta) + v1;
+                        // println!("AVECTOR: {:?} => {}:{}", avector, j.serial, j.name);
+                        let r = Self::rotor(dcos, avector - v1, phi) + v1;
                         j.position[0] = r[0];
                         j.position[1] = r[1];
                         j.position[2] = r[2];
+                        // println!("NEWPOSITION: {:?}", j.position);
                     }
                 }
             }
@@ -353,42 +358,63 @@ impl Sampler {
         }
     }
 
-    pub fn sample(&mut self, max: usize, out: usize) {
-        assert!(max > out);
+    pub fn sample(&mut self, max: usize) {
+        // assert!(max > out);
 
-        let mut rotate = RotateAtDihedral::new(Arc::clone(&self.system));
         let s = Sobol::new(self.dihedral, self.method.clone());
         for i in 0..max {
+            let mut rotate = RotateAtDihedral::new(Arc::clone(&self.system));
             rotate.rotate(s.get_index(i));
-            let energy_val = rotate.energy();
-            self.energy.push((i, energy_val));
-        }
-
-        // Sort self.energy tuples based on energy values (index 1)
-        self.energy.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
-
-        for i in 0..out {
-            let idx = self.energy[i];
-
-            // Rotate to that specific configuration
-            rotate.rotate(s.get_index(idx.0));
+            // let energy_val = rotate.energy();
+            // self.energy.push((i, energy_val));
 
             // Generate the PDB string
-            let pdb_content = rotate.to_pdbstring(i, idx.1);
+            // let pdb_content = rotate.to_pdbstring(i, energy_val);
 
             // Write to file
             let filename = format!("{}/sample_{:04}.pdb", self.folder, i);
             let mut file = std::fs::File::create(&filename).unwrap();
-            file.write_all(pdb_content.as_bytes()).unwrap();
+            file.write_all(rotate.to_pdbstring(i, 0.0).as_bytes())
+                .unwrap();
+
+            // Sort self.energy tuples based on energy values (index 1)
+            // self.energy.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+
+            // for i in 0..out {
+            //     let idx = self.energy[i];
+
+            //     let mut rotate = RotateAtDihedral::new(Arc::clone(&self.system));
+            //     // Rotate to that specific configuration
+            //     rotate.rotate(s.get_index(idx.0));
+
+            //     // Generate the PDB string
+            //     let pdb_content = rotate.to_pdbstring(i, idx.1);
+
+            //     // Write to file
+            //     let filename = format!("{}/sample_{:04}.pdb", self.folder, i);
+            //     let mut file = std::fs::File::create(&filename).unwrap();
+            //     file.write_all(pdb_content.as_bytes()).unwrap();
         }
 
         let mut file = std::fs::File::create(&format!("{}/sample.out", self.folder)).unwrap();
-        for i in 0..out {
-            let idx = self.energy[i];
-            let angle = s.get_index(idx.0);
 
-            file.write_all(format!("{} {:?}\n", idx.1, angle).as_bytes())
-                .unwrap();
+        let mut energies: Vec<(usize, f64)> = Vec::new();
+        for i in 0..max {
+            let filename = format!("{}/sample_{:04}.pdb", self.folder, i);
+            let mut sys = System::from_pdb(&filename, self.system.forcefield.clone());
+            sys.init_parameters();
+
+            let eng = Amber::new(Arc::new(sys)).energy();
+
+            energies.push((i, eng));
+
+            println!("Energy: {}:  {}kJ/mol", i, eng);
+        }
+
+        energies.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+
+        for (i, eng) in energies {
+            writeln!(file, "Sample {}: {}kJ/mol", i, eng).unwrap();
         }
     }
 }
