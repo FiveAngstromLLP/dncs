@@ -22,7 +22,6 @@ use crate::system::{Particles, System};
 use clap::ValueEnum;
 use nalgebra::{Matrix3, Vector3};
 use rand::Rng;
-use rayon::iter::{ParallelBridge, ParallelIterator};
 // use rayon::prelude::*;
 use std::io::Write;
 use std::str::FromStr;
@@ -111,7 +110,7 @@ impl Iterator for Sobol {
                 .map(|i| *i as f64 / f64::powi(2.0, SIZE as i32))
                 .collect();
             // let num = bakers_transform(num);
-            let num = uniform_noise(&num, 0.05);
+            // let num = uniform_noise(&num, 0.05);
             Some(num)
         } else {
             None
@@ -215,11 +214,11 @@ impl RotateAtDihedral {
 
     /// Rotate the atoms at Dihedral angle
     pub fn rotate(&mut self, angle: Vec<f64>) {
-        for (i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {
-            let mut phi = theta;
-            if i != 0 || i != self.system.dihedral.len() - 1 {
-                phi += 180.0
-            }
+        for (a, theta) in self.system.dihedral.iter().zip(angle) {
+            // let mut phi = theta;
+            // if i != 0 || i != self.system.dihedral.len() - 1 {
+            //     phi += 180.0
+            // }
             if let Some(p) = self.rotated.iter().find(|i| i.serial == a.0.serial) {
                 let v1 = Vector3::new(p.position[0], p.position[1], p.position[2]);
                 if let Some(q) = self.rotated.iter().find(|i| i.serial == a.1.serial) {
@@ -232,7 +231,7 @@ impl RotateAtDihedral {
                         .skip(a.2.serial - 1)
                     {
                         let avector = Vector3::new(j.position[0], j.position[1], j.position[2]);
-                        let r = Self::rotor(dcos, avector - v1, phi) + v1;
+                        let r = Self::rotor(dcos, avector - v1, theta) + v1;
                         j.position[0] = r[0];
                         j.position[1] = r[1];
                         j.position[2] = r[2];
@@ -303,6 +302,7 @@ pub enum Method {
     Fold,
     Search,
     Explore,
+    None,
 }
 
 impl FromStr for Method {
@@ -313,6 +313,7 @@ impl FromStr for Method {
             "fold" => Ok(Method::Fold),
             "search" => Ok(Method::Search),
             "explore" => Ok(Method::Explore),
+            "none" => Ok(Method::None),
             _ => Err(format!("Invalid method: {}", s)),
         }
     }
@@ -334,10 +335,10 @@ impl Sampler {
         if std::path::Path::new(&folder).exists() {
             std::fs::remove_dir_all(&folder).unwrap();
         }
-        std::fs::create_dir_all(format!("{}/sample", folder)).unwrap();
+        std::fs::create_dir_all(folder.to_string()).unwrap();
         Self {
             method,
-            folder: format!("{}/sample", folder),
+            folder: folder.to_string(),
             energy: Vec::new(),
             dihedral: system.dihedral.len(),
             angles: Vec::new(),
@@ -351,7 +352,6 @@ impl Sampler {
             .take(max)
             .enumerate()
             .into_iter()
-            .par_bridge()
             .map(|(i, phi)| {
                 let angle: Vec<f64> = self.transform_angle(phi);
                 let mut rotate = RotateAtDihedral::new(Arc::clone(&self.system));
@@ -361,6 +361,7 @@ impl Sampler {
                 let mut file = std::fs::File::create(filename).unwrap();
                 file.write_all(atoms_to_pdbstring(rotate.rotated.clone()).as_bytes())
                     .unwrap();
+                println!("Total Energy: {} kJ/mol", energy_val);
                 (angle, (i, energy_val))
             })
             .collect();
@@ -378,6 +379,7 @@ impl Sampler {
         let mut rng = rand::thread_rng();
 
         match self.method {
+            Method::None => angle.iter().map(|x| x * scale).collect(),
             Method::Explore => angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect(),
             Method::Fold => {
                 let s = scale / 4.0;

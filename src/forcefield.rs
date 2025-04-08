@@ -118,22 +118,24 @@ impl Amber {
         for jatom in self.system.firstbonded[iatom.serial - 1].iter() {
             if jatom.serial > iatom.serial {
                 if let Some(hbf) = hbforce.iter().find(|h| {
-                    Some(h.class1.to_string()) == iatom.atomtype
-                        && Some(h.class2.to_string()) == jatom.atomtype
+                    (Some(h.class1.to_string()) == iatom.atomtype
+                        && Some(h.class2.to_string()) == jatom.atomtype)
+                        || (Some(h.class1.to_string()) == jatom.atomtype
+                            && Some(h.class2.to_string()) == iatom.atomtype)
                 }) {
                     let d = Self::distance(iatom, jatom);
                     let eng = 0.5 * hbf.k * (d - hbf.length).powi(2);
-                    println!(
-                        "{:?}:{:?}\t{}:{}; {}:{}; r: {}; eng: {} kJ/mol",
-                        iatom.position,
-                        jatom.position,
-                        iatom.serial,
-                        iatom.name,
-                        jatom.serial,
-                        jatom.name,
-                        d,
-                        eng
-                    );
+                    // println!(
+                    //     "{:?}:{:?}\t{}:{}; {}:{}; r: {}; eng: {} kJ/mol",
+                    //     iatom.position,
+                    //     jatom.position,
+                    //     iatom.serial,
+                    //     iatom.name,
+                    //     jatom.serial,
+                    //     jatom.name,
+                    //     d,
+                    //     eng
+                    // );
                     energy += eng
                 }
             }
