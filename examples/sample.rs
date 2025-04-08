@@ -6,12 +6,11 @@ use libdncs::*;
 
 const SEQUENCE: &str = "YGGFM";
 const FORCE_FIELD: FF = FF::AmberFB15;
-const NO_OF_SAMPLE: usize = 100;
 
 fn main() {
     let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());
     sys.to_pdb("sample.pdb");
     sys.init_parameters();
-    let mut sample = Sampler::new(Arc::new(sys), Method::None, "Result".to_string());
-    sample.sample(NO_OF_SAMPLE, 300.0);
+    let mut sample = Sampler::new(Arc::new(sys), Method::Search, "Result".to_string());
+    sample.sample(10000, 25);
 }

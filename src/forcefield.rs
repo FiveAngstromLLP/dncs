@@ -125,17 +125,17 @@ impl Amber {
                 }) {
                     let d = Self::distance(iatom, jatom);
                     let eng = 0.5 * hbf.k * (d - hbf.length).powi(2);
-                    // println!(
-                    //     "{:?}:{:?}\t{}:{}; {}:{}; r: {}; eng: {} kJ/mol",
-                    //     iatom.position,
-                    //     jatom.position,
-                    //     iatom.serial,
-                    //     iatom.name,
-                    //     jatom.serial,
-                    //     jatom.name,
-                    //     d,
-                    //     eng
-                    // );
+                    println!(
+                        "{:?}:{:?}\t{}:{}; {}:{}; r: {}; eng: {} kJ/mol",
+                        iatom.position,
+                        jatom.position,
+                        iatom.serial,
+                        iatom.name,
+                        jatom.serial,
+                        jatom.name,
+                        d,
+                        eng
+                    );
                     energy += eng
                 }
             }
