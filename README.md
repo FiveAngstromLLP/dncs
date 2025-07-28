@@ -5,17 +5,17 @@ Welcome to the comprehensive documentation for DNCS (Digital Nets Conformational
 ## Quick Navigation
 
 ### 📚 **Getting Started**
-- [**Tutorial**](TUTORIAL.md) - Complete guide from basics to advanced usage
-- [**API Reference**](API_REFERENCE.md) - Comprehensive API documentation
-- [**Python API**](PYTHON_API.md) - Detailed Python interface documentation
+- [**Tutorial**](docs/TUTORIAL.md) - Complete guide from basics to advanced usage
+- [**API Reference**](docs/API_REFERENCE.md) - Comprehensive API documentation
+- [**Python API**](docs/PYTHON_API.md) - Detailed Python interface documentation
 
 ### 🔧 **Core Components**
-- [**System**](system.md) - Molecular system management
-- [**Sampling**](sampling.md) - Conformational sampling methods
-- [**Force Fields**](forcefield.md) - Energy calculations and force fields
-- [**Minimizer**](minimizer.md) - Energy minimization
-- [**Parser**](parser.md) - File parsing and data structures
-- [**CLI**](cli.md) - Command-line interface
+- [**System**](docs/system.md) - Molecular system management
+- [**Sampling**](docs/sampling.md) - Conformational sampling methods
+- [**Force Fields**](docs/forcefield.md) - Energy calculations and force fields
+- [**Minimizer**](docs/minimizer.md) - Energy minimization
+- [**Parser**](docs/parser.md) - File parsing and data structures
+- [**CLI**](docs/cli.md) - Command-line interface
 
 ## Overview
 
