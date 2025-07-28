@@ -94,5 +94,5 @@ Result/moleculename/
 ```
 
 Documentation : 
-- [API Reference](docs/API_Reference.md)
+- [API Reference](docs/API_REFERENCE.md)
 - [Python API](docs/PYTHON_API.md)
