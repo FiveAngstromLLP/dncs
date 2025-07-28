@@ -5,17 +5,17 @@ Welcome to the comprehensive documentation for DNCS (Digital Nets Conformational
 ## Quick Navigation
 
 ### 📚 **Getting Started**
-- [**Tutorial**](TUTORIAL.md) - Complete guide from basics to advanced usage
-- [**API Reference**](API_REFERENCE.md) - Comprehensive API documentation
-- [**Python API**](PYTHON_API.md) - Detailed Python interface documentation
+- [**Tutorial**](docs/TUTORIAL.md) - Complete guide from basics to advanced usage
+- [**API Reference**](docs/API_REFERENCE.md) - Comprehensive API documentation
+- [**Python API**](docs/PYTHON_API.md) - Detailed Python interface documentation
 
 ### 🔧 **Core Components**
-- [**System**](system.md) - Molecular system management
-- [**Sampling**](sampling.md) - Conformational sampling methods
-- [**Force Fields**](forcefield.md) - Energy calculations and force fields
-- [**Minimizer**](minimizer.md) - Energy minimization
-- [**Parser**](parser.md) - File parsing and data structures
-- [**CLI**](cli.md) - Command-line interface
+- [**System**](docs/system.md) - Molecular system management
+- [**Sampling**](docs/sampling.md) - Conformational sampling methods
+- [**Force Fields**](docs/forcefield.md) - Energy calculations and force fields
+- [**Minimizer**](docs/minimizer.md) - Energy minimization
+- [**Parser**](docs/parser.md) - File parsing and data structures
+- [**CLI**](docs/cli.md) - Command-line interface
 
 ## Overview
 
@@ -29,58 +29,58 @@ DNCS is designed for molecular simulation researchers who need:
 
 ## Documentation Structure
 
-### 🎯 **For New Users**
+###  **For New Users**
 
-1. **Start Here**: [Tutorial](TUTORIAL.md)
+1. **Start Here**: [Tutorial](docs/TUTORIAL.md)
    - Installation and setup
    - Basic concepts and theory
    - Step-by-step examples
    - Best practices
 
-2. **Quick Reference**: [API Reference](API_REFERENCE.md)
+2. **Quick Reference**: [API Reference](docs/API_REFERENCE.md)
    - Complete API documentation
    - Code examples for all functions
    - Configuration options
    - Error handling
 
-### 🔬 **For Python Users**
+### **For Python Users**
 
-- [**Python API Documentation**](PYTHON_API.md)
+- [**Python API Documentation**](docs/PYTHON_API.md)
   - Complete Python interface
   - Integration examples
   - Performance tips
   - Advanced usage patterns
 
-### ⚙️ **For Advanced Users**
+### **For Advanced Users**
 
 - **Component Documentation**:
-  - [System](system.md) - Core molecular system class
-  - [Sampling](sampling.md) - Sobol sequences and sampling methods
-  - [Force Fields](forcefield.md) - AMBER force field implementation
+  - [System](docs/system.md) - Core molecular system class
+  - [Sampling](docs/sampling.md) - Sobol sequences and sampling methods
+  - [Force Fields](docs/forcefield.md) - AMBER force field implementation
   - [Minimizer](minimizer.md) - L-BFGS energy minimization
-  - [Parser](parser.md) - PDB parsing and data structures
+  - [Parser](docs/parser.md) - PDB parsing and data structures
 
 ## Key Features
 
-### 🧬 **Molecular Systems**
+### **Molecular Systems**
 - Support for amino acid sequences
 - PDB file import/export
 - Multiple force field support
 - Comprehensive atom property management
 
-### 📊 **Conformational Sampling**
+### **Conformational Sampling**
 - **Sobol Sequences**: Low-discrepancy sampling for uniform coverage
 - **Multiple Methods**: Fold, Search, and Explore sampling strategies
 - **Temperature Control**: Boltzmann weighting at different temperatures
 - **Parallel Processing**: Efficient multi-core utilization
 
-### ⚡ **Performance**
+### **Performance**
 - **Rust Core**: High-performance implementation
 - **Python Bindings**: Easy-to-use interface
 - **Memory Efficient**: Optimized memory management
 - **Scalable**: Handles large molecular systems
 
-### 🔗 **Integration**
+### **Integration**
 - **OpenMM**: Molecular dynamics simulation
 - **Standard Formats**: PDB input/output
 - **Flexible Configuration**: TOML configuration files
@@ -183,11 +183,59 @@ docs/
 └── cli.md             # Command-line interface
 ```
 
+
+### For Python OpenMM simulation, create a `dncs.toml` file:
+
+```toml
+[simulation]
+moleculename = "6RRO" # MOLECULE NAME
+folder = "Result"
+sequence = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" # INPUT SEQUENCE
+interface = "openmm" # INTERFACE TO OPENMM (OpenMM Should be installed from https://openmm.org/
+n_samples = 100 # Number of Samples (This divides the timesteps into segments)
+md_simulation = 10 # Top-N Samples for md simulation
+temp = 300.0 # equilibration temperature.
+forcefield = [
+    "amber14-all.xml",
+    "amber14/tip3p.xml",
+] # Force Field specification
+device = "HIP" # Device to run MD simulation
+solvent = 10 # Solvation
+steps = 50 # Equlibration timesteps (uses Langevin Integrator from OpenMM)
+gamma = 1.0 # Friction coefficient
+dt = 0.002 # Integrator timestep
+md_steps = 1 # MD timestep
+method = "fold" # Adaptive Sampling
+```
+
+### Output Structure [Python Simulation]
+
+The Python interface generates the following directory structure:
+```
+Result/moleculename/
+    ├── dncs.log                # Log file
+    ├── Langevin/               # Langevin dynamics results
+    │   ├── Equilibrated_*.pdb  # Equilibrated structures
+    │   └── equilibrated.out    # Angle measurements
+    ├── MDSimulation/           # Molecular dynamics results
+    │   └── simulated_*.pdb     # Simulation trajectory structures
+    ├── Minimized/              # Energy minimization results
+    │   ├── Minimized_*.pdb     # Minimized structures
+    │   └── minimized.out       # Final angles
+    ├── Sampled/                # Initial sampling results
+    │   ├── angles.out          # Initial angles
+    │   └── sample_*.pdb        # Initial structures
+    ├── sampled.pdb             # Sampled structure
+    ├── minimized.pdb           # Minimized structure
+    ├── equilibrated.pdb        # Equilibrated structure
+    └── linear.pdb              # Linear structure
+```
+
 ## Support and Contributing
 
 ### Getting Help
-1. Check the [Tutorial](TUTORIAL.md) for step-by-step guidance
-2. Consult the [API Reference](API_REFERENCE.md) for detailed function documentation
+1. Check the [Tutorial](docs/TUTORIAL.md) for step-by-step guidance
+2. Consult the [API Reference](docs/API_REFERENCE.md) for detailed function documentation
 3. Review examples in component documentation
 4. Check the troubleshooting section in the tutorial
 
