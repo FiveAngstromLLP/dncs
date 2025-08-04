@@ -51,7 +51,6 @@ class GenerateSamples:
             sample,
             self.config.n_samples,
             self.config.method,
-            self.config.temp,
             f"{self.config.folder}/{self.config.moleculename}"
         )
 

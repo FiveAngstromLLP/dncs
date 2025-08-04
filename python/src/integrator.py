@@ -120,10 +120,7 @@ class DncsIntegrator:
             print("No minimized structures found. Skipping equilibration.")
             return
 
-        # Calculate steps per structure
-        steps_per_structure = int(self.config.steps / self.config.md_simulation)
-
-        print(f"Running equilibration with {len(minimized_files)} structures, {steps_per_structure} steps each")
+        print(f"Running equilibration with {len(minimized_files)} structures, {self.config.steps} steps each")
 
         # Create Langevin directory
         os.makedirs(f"{self.outfolder}/Langevin", exist_ok=True)
@@ -153,11 +150,11 @@ class DncsIntegrator:
             simulation.context.setVelocitiesToTemperature(temperature)
 
             # Run equilibration steps
-            simulation.step(steps_per_structure)
+            simulation.step(self.config.steps)
 
             # Get equilibrated state and save
             equilibrated_state = simulation.context.getState(getEnergy=True, getPositions=True)
-            self.log.info(f"EQUILIBRATED ENERGY AFTER {steps_per_structure} STEPS FOR MODEL {model_num} = {equilibrated_state.getPotentialEnergy()}")
+            self.log.info(f"EQUILIBRATED ENERGY AFTER {self.config.steps} STEPS FOR MODEL {model_num} = {equilibrated_state.getPotentialEnergy()}")
             print(f"Equilibrated energy for model {model_num}: {equilibrated_state.getPotentialEnergy()}")
 
             # Save equilibrated structure
@@ -269,10 +266,7 @@ class MDSimulation:
             print("No equilibrated structures found. Skipping production MD.")
             return
 
-        # Calculate steps per structure for production MD
-        steps_per_structure = int(self.config.md_steps / len(self.pdbs))
-
-        print(f"Running production MD with {len(self.pdbs)} equilibrated structures, {steps_per_structure} steps each")
+        print(f"Running production MD with {len(self.pdbs)} equilibrated structures, {self.config.md_steps} steps each")
 
         for i, pdb_file in enumerate(self.pdbs):
             print(f"Production MDSimulation {i+1}/{len(self.pdbs)}")
@@ -304,7 +298,7 @@ class MDSimulation:
             simulation.context.setVelocitiesToTemperature(temperature)
 
             # Run production MD steps
-            simulation.step(steps_per_structure)
+            simulation.step(self.config.md_steps)
 
             # Save final structure after production MD
             final_state = simulation.context.getState(getPositions=True)

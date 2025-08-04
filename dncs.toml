@@ -1,5 +1,5 @@
 [simulation]
-moleculename = "Alanine-dipeptide" # MOLECULE NAME
+moleculename = "6RRO" # MOLECULE NAME
 folder = "Result"
 sequence = "GFIVKRFKILV" # INPUT SEQUENCE
 interface = "openmm" # INTERFACE TO OPENMM (OpenMM Should be installed from https://openmm.org/
@@ -15,5 +15,5 @@ solvent = 1000 # Solvation
 steps = 5000 # Equlibration timesteps (uses Langevin Integrator from OpenMM)
 gamma = 1.0 # Friction coefficient
 dt = 0.002 # Integrator timestep
-md_steps = 1 # MD timestep
+md_steps = 1000 # MD timestep for production run
 method = "fold" # Adaptive Sampling

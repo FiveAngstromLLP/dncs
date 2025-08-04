@@ -88,7 +88,6 @@ impl SobolSampler {
         system: &Polymer,
         no_of_samples: usize,
         method: String,
-        temp: f64,
         folder: String,
     ) -> PyResult<SobolSampler> {
         let m = match method.as_str() {
