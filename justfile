@@ -4,5 +4,7 @@
 
 @install:
     pip install -r python/requirements.txt
-    pip install maturin
+    maturin develop --release -m python/Cargo.toml
+
+@install-dncs:
     maturin develop --release -m python/Cargo.toml

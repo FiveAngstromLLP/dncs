@@ -27,7 +27,6 @@ from openmm.openmm import Platform, LangevinMiddleIntegrator
 from openmm.unit import kelvin, nano, pico
 
 
-
 class DncsIntegrator:
     def __init__(self, config):
         self.config = config
@@ -50,16 +49,20 @@ class DncsIntegrator:
 
     def run_integrator(self):
         self.log_parameters()
+        # Run sampling and minimization in parallel as before
         with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
             futures = []
             for i, pdb in enumerate(self.pdbs):
                 model = PDBFile(os.path.join(self.inpfolder, pdb))
                 modeller = Modeller(model.topology, model.positions)
-                futures.append(executor.submit(self.run_simulation, modeller, i+1))
+                futures.append(executor.submit(self.run_minimization, modeller, i+1))
             concurrent.futures.wait(futures)
         for future in futures:
             if future.exception():
                 print(f"Error occurred: {future.exception()}")
+
+        # Run equilibration with single context
+        self.run_equilibration()
 
     def log_parameters(self):
         date = datetime.datetime.now()
@@ -69,7 +72,7 @@ class DncsIntegrator:
                    f"FrictionalCoefficient: {self.config.gamma} picosecond^(-1)")
         self.log.info(message)
 
-    def run_simulation(self, modeller: Modeller, i: int):
+    def run_minimization(self, modeller: Modeller, i: int):
         try:
             platform = Platform.getPlatformByName(self.config.device)
 
@@ -85,12 +88,12 @@ class DncsIntegrator:
             simulation = Simulation(modeller.topology, system, integrator, platform)
             simulation.context.setPositions(modeller.getPositions())
 
-            self.run_and_save_simulation(simulation, i)
+            self.run_and_save_minimization(simulation, i)
 
         except Exception as e:
             print(f"Error in run_simulation for model {i}: {e}")
 
-    def run_and_save_simulation(self, simulation: Simulation, i: int):
+    def run_and_save_minimization(self, simulation: Simulation, i: int):
         state = simulation.context.getState(getEnergy=True, getPositions=True)
         self.log.info(f"ENERGY FOR MODEL {i} = {state.getPotentialEnergy()}")
         print(f"Initial energy for model {i}: {state.getPotentialEnergy()}")
@@ -100,23 +103,66 @@ class DncsIntegrator:
         minimized_state = simulation.context.getState(getEnergy=True, getPositions=True)
         self.log.info(f"MINIMIZED ENERGY FOR MODEL {i} = {minimized_state.getPotentialEnergy()}")
         print(f"Minimized energy for model {i}: {minimized_state.getPotentialEnergy()}")
-        simulation.step(self.config.steps)
-        equilibrated_state = simulation.context.getState(getEnergy=True, getPositions=True)
-        self.log.info(f"EQUILIBRATED ENERGY AFTER {self.config.steps} STEPS FOR MODEL {i} = {equilibrated_state.getPotentialEnergy()}")
-        print(f"Equilibrated energy for model {i}: {equilibrated_state.getPotentialEnergy()}")
+        # Save minimized structure
+        self.save_pdb(
+            f"{self.outfolder}/Minimized/Minimized_{i:04}.pdb",
+            simulation.topology,
+            minimized_state.getPositions()
+        )
 
-        self.save_pdb(f"{self.outfolder}/Langevin/Equilibrated_{i:04}.pdb",
-                      simulation.topology, equilibrated_state.getPositions())
+    def run_equilibration(self):
+        """Run equilibration with single OpenMM context, cycling through minimized structures"""
+        # Get all minimized structures
+        minimized_dir = f"{self.outfolder}/Minimized"
+        minimized_files = sorted([f for f in os.listdir(minimized_dir) if f.endswith('.pdb')])
 
-        energy = float(str(equilibrated_state.getPotentialEnergy()).split(" ")[0])
-        weight = math.exp(-energy / (self.config.temp * 1.380649e-23 * 6.02214076e23))
+        if not minimized_files:
+            print("No minimized structures found. Skipping equilibration.")
+            return
 
+        # Calculate steps per structure
+        steps_per_structure = int(self.config.steps / self.config.md_simulation)
 
+        print(f"Running equilibration with {len(minimized_files)} structures, {steps_per_structure} steps each")
 
-        if weight > 1.0:
+        # Create Langevin directory
+        os.makedirs(f"{self.outfolder}/Langevin", exist_ok=True)
 
+        platform = Platform.getPlatformByName(self.config.device)
+
+        for i, pdb_file in enumerate(minimized_files):
+            model_num = i + 1
+            pdb_path = os.path.join(minimized_dir, pdb_file)
+            pdb = PDBFile(pdb_path)
+
+            # Create individual simulation context for each structure to avoid position count mismatch
+            system = self.forcefield.createSystem(pdb.topology, ignoreExternalBonds=True)
+            integrator = LangevinMiddleIntegrator(
+                self.config.temp * kelvin,
+                self.config.gamma / pico.factor,
+                self.config.dt * pico.factor
+            )
+
+            simulation = Simulation(pdb.topology, system, integrator, platform)
+
+            # Set positions from minimized structure
+            simulation.context.setPositions(pdb.positions)
+
+            # Set velocities to temperature to reduce artifacts
+            temperature = self.config.temp * kelvin
+            simulation.context.setVelocitiesToTemperature(temperature)
+
+            # Run equilibration steps
+            simulation.step(steps_per_structure)
+
+            # Get equilibrated state and save
+            equilibrated_state = simulation.context.getState(getEnergy=True, getPositions=True)
+            self.log.info(f"EQUILIBRATED ENERGY AFTER {steps_per_structure} STEPS FOR MODEL {model_num} = {equilibrated_state.getPotentialEnergy()}")
+            print(f"Equilibrated energy for model {model_num}: {equilibrated_state.getPotentialEnergy()}")
+
+            # Save equilibrated structure
             self.save_pdb(
-                f"{self.outfolder}/Minimized/Minimized_{i:04}.pdb",
+                f"{self.outfolder}/Langevin/Equilibrated_{model_num:04}.pdb",
                 simulation.topology,
                 equilibrated_state.getPositions()
             )
@@ -216,13 +262,25 @@ class MDSimulation:
         self.pdbs = sorted([f for f in os.listdir(self.inpfolder) if f.endswith('.pdb')])
 
     def run_simulation(self):
+        """Run production MD with individual OpenMM contexts using equilibrated structures"""
         platform = Platform.getPlatformByName(self.config.device)
 
-        steps_per_segment = int(self.config.md_steps / len(self.pdbs))
-        for i, pdb in enumerate(self.pdbs):
+        if not self.pdbs:
+            print("No equilibrated structures found. Skipping production MD.")
+            return
 
-            print(f"processing {i}th structure..")
-            pdbdata = PDBFile(f"{self.inpfolder}/{pdb}")
+        # Calculate steps per structure for production MD
+        steps_per_structure = int(self.config.md_steps / len(self.pdbs))
+
+        print(f"Running production MD with {len(self.pdbs)} equilibrated structures, {steps_per_structure} steps each")
+
+        for i, pdb_file in enumerate(self.pdbs):
+            print(f"Production MDSimulation {i+1}/{len(self.pdbs)}")
+
+            # Load equilibrated structure
+            pdbdata = PDBFile(f"{self.inpfolder}/{pdb_file}")
+
+            # Create individual simulation context for each structure
             system = self.forcefield.createSystem(pdbdata.topology)
             integrator = LangevinMiddleIntegrator(
                 self.config.temp * kelvin,
@@ -230,20 +288,27 @@ class MDSimulation:
                 self.config.dt*pico.factor
             )
 
-            s = Simulation(pdbdata.topology, system, integrator, platform)
-            s.context.setPositions(pdbdata.positions)
-            s.reporters.append(StateDataReporter(sys.stdout, 100, step=True,
+            simulation = Simulation(pdbdata.topology, system, integrator, platform)
+
+            # Add reporters
+            simulation.reporters.append(StateDataReporter(sys.stdout, 100, step=True,
                                               potentialEnergy=True,
                                               kineticEnergy=True,
                                               temperature=True))
-            # s.reporters.append(PDBReporter(f"{self.config.folder}/{self.config.moleculename}/MDSimulation/trajectory{i}.pdb", 100))
-            s.step(steps_per_segment)
 
-            position = s.context.getState(getPositions=True).getPositions()
-            save_pdb(f"{self.outfolder}/simulated_{i}.pdb", s.topology, position)
+            # Set positions from equilibrated structure
+            simulation.context.setPositions(pdbdata.positions)
 
+            # Set velocities to temperature for production MD
+            temperature = self.config.temp * kelvin
+            simulation.context.setVelocitiesToTemperature(temperature)
 
+            # Run production MD steps
+            simulation.step(steps_per_structure)
 
+            # Save final structure after production MD
+            final_state = simulation.context.getState(getPositions=True)
+            save_pdb(f"{self.outfolder}/production_md_{i+1:04}.pdb", simulation.topology, final_state.getPositions())
 
 def save_pdb(filename: str, topology, positions):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
