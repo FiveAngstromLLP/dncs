@@ -51,7 +51,7 @@ class GenerateSamples:
             sample,
             self.config.n_samples,
             self.config.method,
-            f"{self.config.folder}/{self.config.moleculename}"
+            f"{self.config.folder}/{self.config.moleculename}/sample"
         )
 
 def runopenmm(config):

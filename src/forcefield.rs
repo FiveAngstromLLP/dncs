@@ -48,11 +48,11 @@ impl Amber {
             harmonic_angle += self.harmonic_angle_force(iatom);
         }
 
-        println!("Lennard-Jones energy: {}", lennard_jones);
-        println!("Electrostatic energy: {}", electrostatic);
-        println!("Harmonic bond energy: {}", harmonic_bond);
-        println!("Harmonic angle energy: {}", harmonic_angle);
-        println!("Periodic torsional energy: {}", torsional);
+        // println!("Lennard-Jones energy: {}", lennard_jones);
+        // println!("Electrostatic energy: {}", electrostatic);
+        // println!("Harmonic bond energy: {}", harmonic_bond);
+        // println!("Harmonic angle energy: {}", harmonic_angle);
+        // println!("Periodic torsional energy: {}", torsional);
 
         lennard_jones + electrostatic + harmonic_bond + harmonic_angle + torsional
     }
@@ -77,10 +77,10 @@ impl Amber {
                 electrostatic += nb.coulomb14scale * Self::electrostatic_energy(iatom, jatom);
             }
         }
-        println!(
-            "Electrostatic energy of {}: {}: {}",
-            iatom.residue, iatom.name, electrostatic
-        );
+        // println!(
+        //     "Electrostatic energy of {}: {}: {}",
+        //     iatom.residue, iatom.name, electrostatic
+        // );
         electrostatic // Unit >> kJ/mol
     }
 
@@ -104,10 +104,10 @@ impl Amber {
                 lennard_jones += nb.lj14scale * Self::lennard_jones_energy(iatom, jatom);
             }
         }
-        println!(
-            "Lennard-Jones energy of {}: {}: {}",
-            iatom.residue, iatom.name, lennard_jones
-        );
+        // println!(
+        //     "Lennard-Jones energy of {}: {}: {}",
+        //     iatom.residue, iatom.name, lennard_jones
+        // );
         lennard_jones // Unit >> kJ/mol
     }
 
@@ -116,7 +116,7 @@ impl Amber {
         let hbforce = self.system.forcefield.harmonic_bond_force.bonds.clone();
         let mut energy = 0.0;
         for jatom in self.system.firstbonded[iatom.serial - 1].iter() {
-            if jatom.serial > iatom.serial && iatom.name != "N" {
+            if jatom.serial > iatom.serial {
                 if let Some(hbf) = hbforce.iter().find(|h| {
                     (Some(h.class1.to_string()) == iatom.atomtype
                         && Some(h.class2.to_string()) == jatom.atomtype)
@@ -125,17 +125,17 @@ impl Amber {
                 }) {
                     let d = Self::distance(iatom, jatom);
                     let eng = 0.5 * hbf.k * (d - hbf.length).powi(2);
-                    println!(
-                        "Harmonic Bond Energy {:?}:{:?}\t{}:{}; {}:{}; r: {}; eng: {} kJ/mol",
-                        iatom.position,
-                        jatom.position,
-                        iatom.serial,
-                        iatom.name,
-                        jatom.serial,
-                        jatom.name,
-                        d * 10.0,
-                        eng
-                    );
+                    // println!(
+                    //     "Harmonic Bond Energy {:?}:{:?}\t{}:{}; {}:{}; r: {}; eng: {} kJ/mol",
+                    //     iatom.position,
+                    //     jatom.position,
+                    //     iatom.serial,
+                    //     iatom.name,
+                    //     jatom.serial,
+                    //     jatom.name,
+                    //     d * 10.0,
+                    //     eng
+                    // );
                     energy += eng
                 }
             }
@@ -162,19 +162,19 @@ impl Amber {
                                     && Some(h.class2.to_string()) == iatom.atomtype
                         }) {
                             let a = Self::angle(iatom, jatom, katom);
-                            println!(
-                                "{:?}:{:?}; {}:{}, {}:{}, {}:{} Ang: {}; Eng: {}",
-                                iatom.position,
-                                jatom.position,
-                                iatom.name,
-                                iatom.serial,
-                                jatom.name,
-                                jatom.serial,
-                                katom.name,
-                                katom.serial,
-                                a,
-                                0.5 * haf.k * (a - haf.angle).powi(2)
-                            );
+                            // println!(
+                            //     "{:?}:{:?}; {}:{}, {}:{}, {}:{} Ang: {}; Eng: {}",
+                            //     iatom.position,
+                            //     jatom.position,
+                            //     iatom.name,
+                            //     iatom.serial,
+                            //     jatom.name,
+                            //     jatom.serial,
+                            //     katom.name,
+                            //     katom.serial,
+                            //     a,
+                            //     0.5 * haf.k * (a - haf.angle).powi(2)
+                            // );
 
                             energy += 0.5 * haf.k * (a - haf.angle).powi(2);
                         }
@@ -203,49 +203,49 @@ impl Amber {
                     && h.class3.contains(ct)
                     && h.class4.contains(dt)
             }) {
-                println!(
-                    "Periodic torsional energy before k1 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                    a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
-                );
+                // println!(
+                //     "Periodic torsional energy before k1 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
+                //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                // );
                 energy += ptf.k1 * (1.0 + (ptf.periodicity1 * dh - ptf.phase1).cos());
 
                 if let (Some(k), Some(n), Some(th)) = (ptf.k2, ptf.periodicity2, ptf.phase2) {
-                    println!(
-                        "Periodic torsional energy before k2 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                        a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
-                    );
+                    // println!(
+                    //     "Periodic torsional energy before k2 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
+                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                    // );
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
 
                 if let (Some(k), Some(n), Some(th)) = (ptf.k3, ptf.periodicity3, ptf.phase3) {
-                    println!(
-                        "Periodic torsional energy before k3 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                        a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
-                    );
+                    // println!(
+                    //     "Periodic torsional energy before k3 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
+                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                    // );
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
 
                 if let (Some(k), Some(n), Some(th)) = (ptf.k4, ptf.periodicity4, ptf.phase4) {
-                    println!(
-                        "Periodic torsional energy before k4 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                        a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
-                    );
+                    // println!(
+                    //     "Periodic torsional energy before k4 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
+                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                    // );
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
 
                 if let (Some(k), Some(n), Some(th)) = (ptf.k5, ptf.periodicity5, ptf.phase5) {
-                    println!(
-                        "Periodic torsional energy before k5 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                        a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
-                    );
+                    // println!(
+                    //     "Periodic torsional energy before k5 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
+                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                    // );
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
 
                 if let (Some(k), Some(n), Some(th)) = (ptf.k6, ptf.periodicity6, ptf.phase6) {
-                    println!(
-                        "Periodic torsional energy before k6 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                        a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
-                    );
+                    // println!(
+                    //     "Periodic torsional energy before k6 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
+                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                    // );
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
             }

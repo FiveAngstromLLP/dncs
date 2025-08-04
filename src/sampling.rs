@@ -408,7 +408,7 @@ impl Sampler {
 
             energies.push((i, eng));
 
-            println!("Energy: {}:  {}kJ/mol", i, eng);
+            // println!("Energy: {}:  {}kJ/mol", i, eng);
         }
 
         energies.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
