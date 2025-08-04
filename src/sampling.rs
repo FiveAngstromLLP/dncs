@@ -17,12 +17,11 @@
  */
 #![allow(dead_code)]
 use crate::forcefield::Amber;
-use crate::parser::{self, atoms_to_pdbstring, Atom, FF};
+use crate::parser::{self, Atom, FF};
 use crate::system::{Particles, System};
 use clap::ValueEnum;
 use nalgebra::{Matrix3, Vector3};
 use rand::Rng;
-use rayon::iter::{ParallelBridge, ParallelIterator};
 // use rayon::prelude::*;
 use std::io::Write;
 use std::str::FromStr;
@@ -40,12 +39,13 @@ const SIZE: usize = 32;
 pub struct Sobol {
     count: usize,
     total: usize,
+    method: Method,
     current: Vec<usize>,
     direction: Vec<Vec<usize>>,
 }
 
 impl Sobol {
-    pub fn new(dimension: usize) -> Self {
+    pub fn new(dimension: usize, method: Method) -> Self {
         assert!(
             (1..=21201).contains(&dimension),
             "DIMESNSION must in range (1-21201)"
@@ -53,6 +53,7 @@ impl Sobol {
         let mut sobol = Self {
             count: 0,
             total: usize::pow(2, SIZE as u32),
+            method,
             current: vec![0; dimension],
             direction: vec![vec![0; SIZE]; dimension],
         };
@@ -92,49 +93,63 @@ impl Sobol {
             })
             .collect()
     }
-}
 
-impl Iterator for Sobol {
-    type Item = Vec<f64>;
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.count < self.total {
-            let rmz = (self.count ^ (self.total - 1)).trailing_zeros() as usize;
-            let val: Vec<usize> = self.current.clone();
-            self.count += 1;
-            self.current = val
-                .iter()
-                .enumerate()
-                .map(|(d, m)| self.direction[d][rmz] ^ m)
-                .collect();
-            let num: Vec<f64> = val
-                .iter()
-                .map(|i| *i as f64 / f64::powi(2.0, SIZE as i32))
-                .collect();
-            // let num = bakers_transform(num);
-            let num = uniform_noise(&num, 0.05);
-            Some(num)
-        } else {
-            None
+    pub fn get_index(&self, index: usize) -> Vec<f64> {
+        let mut result = Vec::with_capacity(self.current.len());
+
+        // For each dimension
+        for d in 0..self.current.len() {
+            let mut x: usize = 0;
+            let mut i: u32 = 0;
+            let mut idx = index;
+
+            while idx > 0 {
+                if idx & 1 == 1 {
+                    x ^= self.direction[d][i as usize];
+                }
+                idx >>= 1;
+                i += 1;
+            }
+
+            let numerator = x as f64;
+            let denominator = f64::powi(2.0, SIZE as i32);
+            result.push(numerator / denominator);
         }
+        self.transform_angle(uniform_noise(result.as_slice(), 0.05))
     }
-}
 
-#[inline]
-fn bakers_transform(input: Vec<f64>) -> Vec<f64> {
-    let m = input.len();
-    if m < 2 {
-        input
-    } else {
-        let k = ((m as f64 * input[0]).floor() as usize + 1).min(m);
-        let first = m as f64 * input[0] - (k - 1) as f64;
-        let transformed: Vec<f64> = std::iter::once(first)
-            .chain(
-                input[1..]
-                    .iter()
-                    .map(|&xi| (xi + (k - 1) as f64) / m as f64),
-            )
-            .collect();
-        transformed
+    pub fn transform_angle(&self, angle: Vec<f64>) -> Vec<f64> {
+        let scale = 360.0;
+        let mut rng = rand::thread_rng();
+
+        match self.method {
+            Method::None => angle.iter().map(|x| x * scale).collect(),
+            Method::Explore => angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect(),
+            Method::Fold => {
+                let s = scale / 4.0;
+                let transform_idx = rng.gen_range(0..4);
+                match transform_idx {
+                    0 => angle.iter().map(|x| x * s).collect(),
+                    1 => angle.iter().map(|x| (x * s) - s).collect(),
+                    2 => angle.iter().map(|x| (x * s) - (2.0 * s)).collect(),
+                    _ => angle.iter().map(|x| (x * s) + s).collect(),
+                }
+            }
+            Method::Search => {
+                let s1 = scale / 2.0;
+                let s = scale / 4.0;
+                let transform_idx = rng.gen_range(0..7);
+                match transform_idx {
+                    0 => angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect(),
+                    1 => angle.iter().map(|x| x * s1).collect(),
+                    2 => angle.iter().map(|x| (x * s1) - s1).collect(),
+                    3 => angle.iter().map(|x| x * s).collect(),
+                    4 => angle.iter().map(|x| (x * s) - s).collect(),
+                    5 => angle.iter().map(|x| (x * s) - (2.0 * s)).collect(),
+                    _ => angle.iter().map(|x| (x * s) + s).collect(),
+                }
+            }
+        }
     }
 }
 
@@ -148,14 +163,6 @@ fn uniform_noise(point: &[f64], noise_amplitude: f64) -> Vec<f64> {
             (x + noise).clamp(0.0, 1.0)
         })
         .collect()
-}
-
-#[test]
-fn sobol() {
-    let s = Sobol::new(10);
-    for i in s.take(10) {
-        println!("{:?}", i)
-    }
 }
 
 #[derive(Clone)]
@@ -215,15 +222,18 @@ impl RotateAtDihedral {
 
     /// Rotate the atoms at Dihedral angle
     pub fn rotate(&mut self, angle: Vec<f64>) {
-        for (i, (a, theta)) in self.system.dihedral.iter().zip(angle).enumerate() {
-            let mut phi = theta;
-            if i != 0 || i != self.system.dihedral.len() - 1 {
-                phi += 180.0
-            }
+        for (a, phi) in self.system.dihedral.iter().zip(angle.clone()) {
+            // let phi = theta;
+            // let phi = 90.0;
+            // if i != 0 || i != self.system.dihedral.len() - 1 {
+            //     phi += 180.0
+            // }
             if let Some(p) = self.rotated.iter().find(|i| i.serial == a.0.serial) {
+                // println!("{:?}", p);
                 let v1 = Vector3::new(p.position[0], p.position[1], p.position[2]);
                 if let Some(q) = self.rotated.iter().find(|i| i.serial == a.1.serial) {
                     let v2 = Vector3::new(q.position[0], q.position[1], q.position[2]);
+                    // println!("V1: {:?}; V2: {:?}, {:?}", v1, v2, angle);
                     let dcos = Self::elemen(v1, v2);
                     for j in self
                         .rotated
@@ -232,10 +242,12 @@ impl RotateAtDihedral {
                         .skip(a.2.serial - 1)
                     {
                         let avector = Vector3::new(j.position[0], j.position[1], j.position[2]);
+                        // println!("AVECTOR: {:?} => {}:{}", avector, j.serial, j.name);
                         let r = Self::rotor(dcos, avector - v1, phi) + v1;
                         j.position[0] = r[0];
                         j.position[1] = r[1];
                         j.position[2] = r[2];
+                        // println!("NEWPOSITION: {:?}", j.position);
                     }
                 }
             }
@@ -277,15 +289,15 @@ impl RotateAtDihedral {
             c.position[0] - b.position[0],
             c.position[1] - b.position[1],
             c.position[2] - b.position[2],
-        );
+        ) * 0.1;
         let u3 = Vector3::new(
             d.position[0] - c.position[0],
             d.position[1] - c.position[1],
             d.position[2] - c.position[2],
-        );
+        ) * 0.1;
         let sinth = (u2.norm() * u1).dot(&u2.cross(&u3));
         let costh = u1.cross(&u2).dot(&u2.cross(&u3));
-        sinth.atan2(costh).to_degrees()
+        sinth.atan2(costh)
     }
 
     pub fn energy(&self) -> f64 {
@@ -303,6 +315,7 @@ pub enum Method {
     Fold,
     Search,
     Explore,
+    None,
 }
 
 impl FromStr for Method {
@@ -313,6 +326,7 @@ impl FromStr for Method {
             "fold" => Ok(Method::Fold),
             "search" => Ok(Method::Search),
             "explore" => Ok(Method::Explore),
+            "none" => Ok(Method::None),
             _ => Err(format!("Invalid method: {}", s)),
         }
     }
@@ -324,7 +338,6 @@ pub struct Sampler {
     pub folder: String,
     pub energy: Vec<(usize, f64)>,
     pub dihedral: usize,
-    pub angles: Vec<Vec<f64>>,
     pub system: Arc<System>,
     pub rotate: RotateAtDihedral,
 }
@@ -334,147 +347,74 @@ impl Sampler {
         if std::path::Path::new(&folder).exists() {
             std::fs::remove_dir_all(&folder).unwrap();
         }
-        std::fs::create_dir_all(format!("{}/sample", folder)).unwrap();
+        std::fs::create_dir_all(folder.to_string()).unwrap();
         Self {
             method,
-            folder: format!("{}/sample", folder),
+            folder: folder.to_string(),
             energy: Vec::new(),
             dihedral: system.dihedral.len(),
-            angles: Vec::new(),
             system: Arc::clone(&system),
             rotate: RotateAtDihedral::new(Arc::clone(&system)),
         }
     }
 
-    pub fn sample(&mut self, max: usize, temp: f64) {
-        let results: Vec<_> = Sobol::new(self.dihedral)
-            .take(max)
-            .enumerate()
-            .into_iter()
-            .par_bridge()
-            .map(|(i, phi)| {
-                let angle: Vec<f64> = self.transform_angle(phi);
-                let mut rotate = RotateAtDihedral::new(Arc::clone(&self.system));
-                rotate.rotate(angle.clone());
-                let energy_val = rotate.energy();
-                let filename = format!("{}/sobol_{:04}.pdb", self.folder, i);
-                let mut file = std::fs::File::create(filename).unwrap();
-                file.write_all(atoms_to_pdbstring(rotate.rotated.clone()).as_bytes())
-                    .unwrap();
-                (angle, (i, energy_val))
-            })
-            .collect();
+    pub fn sample(&mut self, max: usize) {
+        // assert!(max > out);
 
-        let (angles, energy): (Vec<_>, Vec<_>) = results.into_iter().unzip();
-        self.angles = angles;
-        self.energy = energy;
-        self.conformational_sort(temp);
-        self.rename();
-        self.write_angles();
-    }
+        let s = Sobol::new(self.dihedral, self.method.clone());
+        for i in 0..max {
+            let mut rotate = RotateAtDihedral::new(Arc::clone(&self.system));
+            rotate.rotate(s.get_index(i));
+            // let energy_val = rotate.energy();
+            // self.energy.push((i, energy_val));
 
-    pub fn transform_angle(&self, angle: Vec<f64>) -> Vec<f64> {
-        let scale = 360.0;
-        let mut rng = rand::thread_rng();
+            // Generate the PDB string
+            // let pdb_content = rotate.to_pdbstring(i, energy_val);
 
-        match self.method {
-            Method::Explore => angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect(),
-            Method::Fold => {
-                let s = scale / 4.0;
-                let transform_idx = rng.gen_range(0..4);
-                match transform_idx {
-                    0 => angle.iter().map(|x| x * s).collect(),
-                    1 => angle.iter().map(|x| (x * s) - s).collect(),
-                    2 => angle.iter().map(|x| (x * s) - (2.0 * s)).collect(),
-                    _ => angle.iter().map(|x| (x * s) + s).collect(),
-                }
-            }
-            Method::Search => {
-                let s1 = scale / 2.0;
-                let s = scale / 4.0;
-                let transform_idx = rng.gen_range(0..7);
-                match transform_idx {
-                    0 => angle.iter().map(|x| (x * scale) - (scale / 2.0)).collect(),
-                    1 => angle.iter().map(|x| x * s1).collect(),
-                    2 => angle.iter().map(|x| (x * s1) - s1).collect(),
-                    3 => angle.iter().map(|x| x * s).collect(),
-                    4 => angle.iter().map(|x| (x * s) - s).collect(),
-                    5 => angle.iter().map(|x| (x * s) - (2.0 * s)).collect(),
-                    _ => angle.iter().map(|x| (x * s) + s).collect(),
-                }
-            }
+            // Write to file
+            let filename = format!("{}/sample_{:04}.pdb", self.folder, i);
+            let mut file = std::fs::File::create(&filename).unwrap();
+            file.write_all(rotate.to_pdbstring(i, 0.0).as_bytes())
+                .unwrap();
+
+            // Sort self.energy tuples based on energy values (index 1)
+            // self.energy.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+
+            // for i in 0..out {
+            //     let idx = self.energy[i];
+
+            //     let mut rotate = RotateAtDihedral::new(Arc::clone(&self.system));
+            //     // Rotate to that specific configuration
+            //     rotate.rotate(s.get_index(idx.0));
+
+            //     // Generate the PDB string
+            //     let pdb_content = rotate.to_pdbstring(i, idx.1);
+
+            //     // Write to file
+            //     let filename = format!("{}/sample_{:04}.pdb", self.folder, i);
+            //     let mut file = std::fs::File::create(&filename).unwrap();
+            //     file.write_all(pdb_content.as_bytes()).unwrap();
         }
-    }
 
-    fn rotatesample(&mut self, angle: Vec<f64>) {
-        self.rotate = RotateAtDihedral::new(Arc::clone(&self.system));
-        self.rotate.rotate(angle);
-    }
+        let mut file = std::fs::File::create(&format!("{}/sample.out", self.folder)).unwrap();
 
-    fn conformational_sort(&mut self, temp: f64) {
-        let _ = temp;
-        // let kbt: f64 = temp * 1.380649e-23 * 6.02214076e23 / 4184.0; // KCal/mol
-        // let weight: Vec<f64> = self.energy.iter().map(|e| (-e / kbt).exp()).collect();
-        // let z: f64 = weight.iter().sum();
-        // let normalized: Vec<f64> = weight.iter().map(|w| w / z).collect();
+        let mut energies: Vec<(usize, f64)> = Vec::new();
+        for i in 0..max {
+            let filename = format!("{}/sample_{:04}.pdb", self.folder, i);
+            let mut sys = System::from_pdb(&filename, self.system.forcefield.clone());
+            sys.init_parameters();
 
-        // Create indices and sort them based on energy values
+            let eng = Amber::new(Arc::new(sys)).energy();
 
-        self.energy.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+            energies.push((i, eng));
 
-        let indices: Vec<usize> = self.energy.iter().map(|(i, _)| *i).collect();
-        let angles: Vec<Vec<f64>> = (0..self.energy.len())
-            .map(|i| self.angles[indices[i]].clone())
-            .collect();
-        self.angles = angles;
-    }
-
-    fn rename(&self) {
-        // 1. Create a map of original indices to file paths:
-        let file_map: std::collections::HashMap<usize, std::path::PathBuf> =
-            std::fs::read_dir(&self.folder)
-                .unwrap()
-                .filter_map(|entry| {
-                    let entry = entry.unwrap();
-                    let path = entry.path();
-                    if path.extension().map_or(false, |ext| ext == "pdb") {
-                        let file_name = path.file_stem().unwrap().to_str().unwrap();
-
-                        if let Some(index_str) = file_name.split('_').last() {
-                            if let Ok(index) = index_str.parse::<usize>() {
-                                return Some((index, path));
-                            }
-                        }
-                    }
-                    None
-                })
-                .collect();
-
-        // 2. Iterate over the sorted energy indices and rename files
-        for (new_index, (original_index, _energy)) in self.energy.iter().enumerate() {
-            if let Some(old_path) = file_map.get(original_index) {
-                let new_path = format!("{}/sample_{:04}.pdb", self.folder, new_index);
-                if let Err(e) = std::fs::rename(old_path, &new_path) {
-                    eprintln!("Failed to rename {:?} to {}: {}", old_path, new_path, e);
-                }
-            }
+            println!("Energy: {}:  {}kJ/mol", i, eng);
         }
-    }
 
-    pub fn write_angles(&self) {
-        let mut file = std::fs::File::create(format!("{}/sampled.out", self.folder)).unwrap();
-        for (i, (angles, energy)) in self.angles.iter().zip(self.energy.iter()).enumerate() {
-            let line = format!(
-                "{}, {:.3}, {}\n",
-                i + 1,
-                energy.1,
-                angles
-                    .iter()
-                    .map(|&a| format!("{:.2}", a))
-                    .collect::<Vec<String>>()
-                    .join(", ")
-            );
-            file.write_all(line.as_bytes()).unwrap();
+        energies.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+
+        for (i, eng) in energies {
+            writeln!(file, "Sample {}: {}kJ/mol", i, eng).unwrap();
         }
     }
 }

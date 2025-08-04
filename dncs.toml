@@ -1,5 +1,5 @@
 [simulation]
-moleculename = "6RRO" # MOLECULE NAME
+moleculename = "Alanine-dipeptide" # MOLECULE NAME
 folder = "Result"
 sequence = "GFIVKRFKILV" # INPUT SEQUENCE
 interface = "openmm" # INTERFACE TO OPENMM (OpenMM Should be installed from https://openmm.org/

@@ -1,32 +1,13 @@
-use std::sync::Arc;
-
 use libdncs::*;
-
-// Configuration
-const SEQUENCE: &str = "YGGFM";
+use std::sync::Arc;
 const FORCE_FIELD: FF = FF::AmberFB15;
 
 fn main() {
-    let sys = System::new("BB", FORCE_FIELD.init());
-    for i in sys.particles.iter() {
-        println!("{:?}", i);
-    }
-
-    // System
-    let mut sys = System::new(SEQUENCE, FORCE_FIELD.init());
+    let mut sys = System::new("AA", FORCE_FIELD.init());
     sys.init_parameters();
-    let amber = Amber::new(Arc::new(sys));
+
+    let amber = Amber::new(Arc::new(sys.clone()));
+    assert!(&sys.particles.len() == &amber.system.particles.len());
     let eng = amber.energy();
-    println!("Energy: {} KCal/Mol", eng);
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_name() {
-        let sys = System::new("BA", FORCE_FIELD.init());
-        println!("{}", sys.particles);
-    }
+    println!("Energy: {} kJ/mol", eng);
 }

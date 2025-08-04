@@ -8,7 +8,8 @@ const FORCE_FIELD: FF = FF::AmberFB15;
 fn main() {
     let start_time = std::time::Instant::now();
 
-    let mut sys = System::new("A".repeat(50).as_str(), FORCE_FIELD.init());
+    let mut sys = System::new("AA", FORCE_FIELD.init());
+    sys.to_pdb("output.pdb");
 
     let init_start_time = std::time::Instant::now();
     sys.init_parameters();
