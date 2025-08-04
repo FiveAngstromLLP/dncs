@@ -1,4 +1,4 @@
-set shell:=["poweshell.exe","-c"]
+# set shell:=["poweshell.exe","-c"]
 @run:
     python python/src/main.py
 

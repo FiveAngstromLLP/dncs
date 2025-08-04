@@ -110,7 +110,7 @@ Must be one of the below:
         };
 
         let mut sample = Sampler::new(Arc::new(system.polymer.clone()), m, folder);
-        sample.sample(no_of_samples, 256);
+        sample.sample(no_of_samples);
         Ok(SobolSampler { sampler: sample })
     }
 }
