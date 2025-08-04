@@ -32,6 +32,7 @@ pub struct System {
     pub dihedral_angle: Vec<(Atom, Atom, Atom, Atom)>,
     pub firstbonded: Vec<Particles>,
     pub secondbonded: Vec<Particles>,
+    pub thirdbonded: Vec<Particles>,
     pub nonbonded: Vec<Particles>,
     pub bonded1_4: Vec<Particles>,
     pub hydrogen: Vec<(Atom, Atom)>,
@@ -50,6 +51,7 @@ impl System {
             dihedral_angle: Vec::new(),
             firstbonded: vec![Vec::new(); total],
             secondbonded: vec![Vec::new(); total],
+            thirdbonded: vec![Vec::new(); total],
             nonbonded: vec![Vec::new(); total],
             bonded1_4: vec![Vec::new(); total],
             hydrogen: Vec::new(),
@@ -68,6 +70,7 @@ impl System {
             dihedral_angle: Vec::new(),
             firstbonded: vec![Vec::new(); total],
             secondbonded: vec![Vec::new(); total],
+            thirdbonded: vec![Vec::new(); total],
             nonbonded: vec![Vec::new(); total],
             bonded1_4: vec![Vec::new(); total],
             hydrogen: Vec::new(),
@@ -108,7 +111,7 @@ impl System {
         self.get_atomtype();
         self.get_neighbours();
         self.get_dihedral();
-        self.get_energyparameters();
+        // self.get_energyparameters();
         self.get_hydrogen_bonded();
     }
 
@@ -275,6 +278,7 @@ impl System {
             neighbor.get_neighbours();
             self.firstbonded[i] = neighbor.firstbonded;
             self.secondbonded[i] = neighbor.secondbonded;
+            self.thirdbonded[i] = neighbor.thirdbonded;
             self.nonbonded[i] = neighbor.nonbonded;
             self.bonded1_4[i] = neighbor.bonded1_4;
         }
@@ -344,6 +348,7 @@ struct Neighbor {
     polymer: Particles,
     firstbonded: Particles,
     secondbonded: Particles,
+    thirdbonded: Particles,
     nonbonded: Particles,
     bonded1_4: Particles,
 }
@@ -355,6 +360,7 @@ impl Neighbor {
             polymer,
             firstbonded: Vec::new(),
             secondbonded: Vec::new(),
+            thirdbonded: Vec::new(),
             nonbonded: Vec::new(),
             bonded1_4: Vec::new(),
         }
@@ -412,7 +418,7 @@ impl Neighbor {
     }
 
     /// Third Bonded atoms
-    fn third_bonded(&self) -> (Vec<Atom>, Vec<Atom>, Vec<Atom>) {
+    fn third_bonded(&mut self) -> (Vec<Atom>, Vec<Atom>, Vec<Atom>) {
         let (first, second) = self.second_bonded();
         let mut third = Vec::new();
         for satom in second.iter() {
@@ -431,6 +437,7 @@ impl Neighbor {
                             && !first.contains(jatom)
                         {
                             third.push(jatom.clone());
+                            self.thirdbonded.push(jatom.clone());
                         }
                     }
                 }
@@ -440,7 +447,7 @@ impl Neighbor {
     }
 
     /// Fourth Bonded atoms
-    fn fourth_bonded(&self) -> Vec<Atom> {
+    fn fourth_bonded(&mut self) -> Vec<Atom> {
         let (first, second, third) = self.third_bonded();
         self.polymer
             .iter()
@@ -450,7 +457,7 @@ impl Neighbor {
             .collect()
     }
 
-    fn formated_fourth(&self) -> Vec<Atom> {
+    fn formated_fourth(&mut self) -> Vec<Atom> {
         let fourth = self.fourth_bonded();
         let mut val = Vec::new();
         if let Some(f) = fourth.first() {
@@ -698,38 +705,12 @@ impl Neighbor {
                     | ("HIS", "CE1", _)
                     | ("HIS", "HE1", _)
                     | ("HIS", "NE2", _)
-                    | ("HIS", "HE2", _) => {
-                        for l in self
-                            .polymer
-                            .iter()
-                            .skip(self.atom.serial + 1)
-                            .filter(|f| f.name == "C")
-                        {
-                            nonbonded.push(l.clone());
-                            if let Some(last) = self.polymer.last() {
-                                nonbonded.push(last.clone());
-                            }
-                            skip_update = true;
-                        }
-                    }
+                    | ("HIS", "HE2", _) => skip_update = true,
                     _ => nonbonded.push(jatom.clone()),
                 }
             } else if self.atom.sequence + 1 == jatom.sequence && jatom.residue == "PRO" {
                 match self.atom.name.as_str() {
-                    "C" | "O" => {
-                        for l in self
-                            .polymer
-                            .iter()
-                            .skip(self.atom.serial + 1)
-                            .filter(|f| f.name == "C")
-                        {
-                            nonbonded.push(l.clone());
-                            if let Some(last) = self.polymer.last() {
-                                nonbonded.push(last.clone());
-                            }
-                            skip_update = true;
-                        }
-                    }
+                    "C" | "O" => skip_update = true,
                     _ => nonbonded.push(jatom.clone()),
                 }
             } else {

@@ -292,6 +292,11 @@ pub fn generate(seq: &str) -> Vec<Atom> {
                     resno = r;
                 }
             }
+            if r % 2 == 0 {
+                dumm = [dumm[0] - 0.14, dumm[1] - 0.14, dumm[2] - 0.14];
+            } else {
+                dumm = [dumm[0] - 0.11, dumm[1] - 0.11, dumm[2] - 0.11];
+            }
         }
     }
 
@@ -324,29 +329,31 @@ pub fn generate(seq: &str) -> Vec<Atom> {
 
 /// Write polymer structure to a PDB file
 pub fn atoms_to_pdbstring(atoms: Vec<Atom>) -> String {
-    let mut a: Vec<Atom> = atoms
-        .iter()
-        .filter(|atom| atom.residue != "OH")
-        .cloned()
-        .collect();
-    if let Some(terminal) = atoms
-        .iter()
-        .find(|atom| atom.residue == "OH" && atom.name == "O1")
-        .cloned()
-    {
-        let mut terminal = terminal;
-        terminal.name = "OXT".to_string();
-        terminal.residue = a.last().unwrap().residue.clone();
-        a.push(terminal);
-    }
-    a.iter_mut().enumerate().for_each(|(i, atom)| {
-        atom.serial = i;
-    });
-    a.remove(0);
-    a.iter()
-        .map(|atom| format!("{:?}", atom))
-        .collect::<Vec<String>>()
-        .join("\n")
+    let str: Vec<String> = atoms.iter().map(|x| format!("{:?}\n", x)).collect();
+    str.join("")
+    // let mut a: Vec<Atom> = atoms
+    //     .iter()
+    //     .filter(|atom| atom.residue != "OH")
+    //     .cloned()
+    //     .collect();
+    // if let Some(terminal) = atoms
+    //     .iter()
+    //     .find(|atom| atom.residue == "OH" && atom.name == "O1")
+    //     .cloned()
+    // {
+    //     let mut terminal = terminal;
+    //     terminal.name = "OXT".to_string();
+    //     terminal.residue = a.last().unwrap().residue.clone();
+    //     a.push(terminal);
+    // }
+    // a.iter_mut().enumerate().for_each(|(i, atom)| {
+    //     atom.serial = i;
+    // });
+    // a.remove(0);
+    // a.iter()
+    //     .map(|atom| format!("{:?}", atom))
+    //     .collect::<Vec<String>>()
+    //     .join("\n")
 }
 
 /// PDB to Atom

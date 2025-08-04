@@ -1,10 +1,8 @@
 use libdncs::Sobol;
-use rayon::iter::{ParallelBridge, ParallelIterator};
 
 fn main() {
-    let s = Sobol::new(10);
-    s.take(10)
-        .into_iter()
-        .par_bridge()
-        .for_each(|i| println!("{:?}", i));
+    let s = Sobol::new(10, libdncs::Method::Fold);
+    for i in 0..100 {
+        println!("{:?}", s.get_index(i));
+    }
 }
