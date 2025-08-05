@@ -21,12 +21,12 @@ import dncs
 import math
 import logging
 import datetime
-import concurrent.futures
+
 import numpy as np
 from typing import Optional, Tuple, Dict, Any
-from openmm.app import ForceField, PDBFile, Simulation, Modeller, PDBReporter, StateDataReporter, DCDReporter
+from openmm.app import ForceField, PDBFile, Simulation, Modeller, PDBReporter, StateDataReporter, DCDReporter, PME, NoCutoff, HBonds
 from openmm.openmm import Platform, LangevinMiddleIntegrator, MonteCarloBarostat
-from openmm.unit import kelvin, atmosphere
+from openmm.unit import kelvin, atmosphere, picosecond, nanosecond
 from openmm import unit
 
 
@@ -151,17 +151,12 @@ class DncsIntegrator:
 
     def run_integrator(self):
         self.log_parameters()
-        # Run sampling and minimization in parallel as before
-        with concurrent.futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
-            futures = []
-            for i, pdb in enumerate(self.pdbs):
-                model = PDBFile(os.path.join(self.inpfolder, pdb))
-                modeller = Modeller(model.topology, model.positions)
-                futures.append(executor.submit(self.run_minimization, modeller, i+1))
-            concurrent.futures.wait(futures)
-        for future in futures:
-            if future.exception():
-                print(f"Error occurred: {future.exception()}")
+        # Run sampling and minimization sequentially to avoid pickle issues with OpenMM objects
+        for i, pdb in enumerate(self.pdbs):
+            model = PDBFile(os.path.join(self.inpfolder, pdb))
+            modeller = Modeller(model.topology, model.positions)
+            self.run_minimization(modeller, i+1)
+
 
         # Run equilibration with single context
         self.run_equilibration()
@@ -210,9 +205,9 @@ class DncsIntegrator:
             # Create system with proper parameters
             system = self.forcefield.createSystem(
                 modeller.topology,
-                nonbondedMethod=self.forcefield.PME if self.config.solvent > 0 else self.forcefield.NoCutoff,
+                nonbondedMethod=PME if self.config.solvent > 0 else NoCutoff,
                 nonbondedCutoff=1.0*unit.nanometer,
-                constraints=self.forcefield.HBonds,
+                constraints=HBonds,
                 rigidWater=True,
                 removeCMMotion=True
             )
@@ -288,7 +283,7 @@ class DncsIntegrator:
             self.log.info(f"Structure {i}: Post-minimization energy = {final_energy}")
             self.log.info(f"Structure {i}: Energy change = {energy_change}")
             print(f"Minimized energy for structure {i}: {final_energy}")
-            print(f"Energy change: {energy_change}")
+            # print(f"Energy change: {energy_change}")
 
             # Validate minimization success
             if energy_change.value_in_unit(unit.kilojoule_per_mole) > 0:
@@ -352,9 +347,9 @@ class DncsIntegrator:
                 # Create system with proper settings
                 system = self.forcefield.createSystem(
                     pdb_data.topology,
-                    nonbondedMethod=self.forcefield.PME,
+                    nonbondedMethod=PME,
                     nonbondedCutoff=1.0*unit.nanometer,
-                    constraints=self.forcefield.HBonds,
+                    constraints=HBonds,
                     rigidWater=True,
                     removeCMMotion=True
                 )
@@ -765,9 +760,9 @@ class MDSimulation:
                 # Create system with proper settings
                 system = self.forcefield.createSystem(
                     pdbdata.topology,
-                    nonbondedMethod=self.forcefield.PME,
-                    nonbondedCutoff=1.0*unit.nano,
-                    constraints=self.forcefield.HBonds,
+                    nonbondedMethod=PME,
+                    nonbondedCutoff=1.0*unit.nanometer,
+                    constraints=HBonds,
                     rigidWater=True,
                     removeCMMotion=True
                 )

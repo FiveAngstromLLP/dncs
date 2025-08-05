@@ -10,8 +10,8 @@ forcefield = [
     "amber14-all.xml",
     "amber14/tip3p.xml",
 ] # Force Field specification
-device = "CUDA" # Device to run MD simulation
-solvent = 1000 # Solvation
+device = "CPU" # Device to run MD simulation
+solvent = 100 # Solvation
 steps = 5000 # Equlibration timesteps (uses Langevin Integrator from OpenMM)
 gamma = 1.0 # Friction coefficient
 dt = 0.002 # Integrator timestep
