@@ -422,11 +422,13 @@ class MDSimulation:
             print(f"Production MD {model_num}: {state.getPotentialEnergy()}")
 
             # Save final frame to output
-            self.save_pdb(
+            save_pdb(
                 f"{self.outfolder}/MD/Production_{model_num:04}.pdb",
                 simulation.topology,
                 state.getPositions()
             )
+
+
 def save_pdb(filename: str, topology, positions):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     PDBFile.writeFile(topology, positions, open(filename, "w"))

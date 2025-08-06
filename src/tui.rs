@@ -151,6 +151,9 @@ pub struct PeptideSelector {
     enum_options: Vec<String>,
     enum_selected_index: usize,
     enum_list_state: ListState,
+    save_message: Option<String>,
+    save_message_timer: u8,
+    exit_and_run: bool,
 }
 
 impl PeptideSelector {
@@ -204,6 +207,9 @@ impl PeptideSelector {
             enum_options: Vec::new(),
             enum_selected_index: 0,
             enum_list_state: ListState::default(),
+            save_message: None,
+            save_message_timer: 0,
+            exit_and_run: false,
         })
     }
 
@@ -479,25 +485,6 @@ impl PeptideSelector {
         }
         Ok(())
     }
-
-    fn run_just_command(&self) -> Result<(), Box<dyn Error>> {
-        // Save current configuration to TOML
-        self.save_config_to_toml()?;
-
-        // Run the just run command
-        let output = Command::new("just").arg("run").output()?;
-
-        if !output.status.success() {
-            eprintln!(
-                "Command failed with error: {}",
-                String::from_utf8_lossy(&output.stderr)
-            );
-        } else {
-            println!("Simulation started successfully!");
-            println!("Output: {}", String::from_utf8_lossy(&output.stdout));
-        }
-        Ok(())
-    }
 }
 
 impl PeptideSelector {
@@ -520,75 +507,107 @@ impl PeptideSelector {
         )?;
         terminal.show_cursor()?;
 
+        // If exit_and_run is true, clear screen and run the command
+        if self.exit_and_run {
+            // Clear screen
+            print!("\x1B[2J\x1B[H");
+            println!("Configuration saved. Running simulation...\n");
+
+            // Run the just run command and display output
+            let mut child = std::process::Command::new("just").arg("run").spawn()?;
+
+            let status = child.wait()?;
+            if !status.success() {
+                eprintln!("Simulation failed with exit code: {}", status);
+            }
+        }
+
         result
     }
 
     fn run_app<B: Backend>(&mut self, terminal: &mut Terminal<B>) -> Result<(), Box<dyn Error>> {
-        loop {
+        while !self.exit_and_run {
             terminal.draw(|f| self.ui(f))?;
 
-            if let Event::Key(key) = event::read()? {
-                if key.kind == KeyEventKind::Press {
-                    // Handle mode-specific keys first (including enum selection)
-                    let handled = match self.app_mode {
-                        AppMode::PeptideSelection => self.handle_peptide_keys(key.code)?,
-                        AppMode::Configuration => self.handle_config_keys(key.code)?,
-                        AppMode::ConfigurationReview => self.handle_review_keys(key.code)?,
-                        AppMode::Help => false, // Help mode falls through to global keys
-                    };
+            if self.save_message_timer > 0 {
+                self.save_message_timer -= 1;
+                if self.save_message_timer == 0 {
+                    self.save_message = None;
+                }
+            }
 
-                    // If mode-specific handler didn't handle the key, try global keys
-                    if !handled {
-                        match key.code {
-                            KeyCode::Char('q') => {
-                                return Ok(());
-                            }
-                            KeyCode::Esc => {
-                                // Only exit on ESC if not in search mode and no editing/enum selection active
-                                if !self.search_mode
-                                    && self.editing_field.is_none()
-                                    && !self.enum_selection_mode
-                                {
+            if event::poll(std::time::Duration::from_millis(250))? {
+                if let Event::Key(key) = event::read()? {
+                    if key.kind == KeyEventKind::Press {
+                        // Handle mode-specific keys first (including enum selection)
+                        let handled = match self.app_mode {
+                            AppMode::PeptideSelection => self.handle_peptide_keys(key.code)?,
+                            AppMode::Configuration => self.handle_config_keys(key.code)?,
+                            AppMode::ConfigurationReview => self.handle_review_keys(key.code)?,
+                            AppMode::Help => false, // Help mode falls through to global keys
+                        };
+
+                        // If mode-specific handler didn't handle the key, try global keys
+                        if !handled {
+                            match key.code {
+                                KeyCode::Char('q') => {
                                     return Ok(());
                                 }
-                            }
-                            KeyCode::Char('h') | KeyCode::F(1) => {
-                                self.app_mode = if self.app_mode == AppMode::Help {
-                                    AppMode::PeptideSelection
-                                } else {
-                                    AppMode::Help
-                                };
-                            }
-                            KeyCode::Tab => {
-                                // Only allow tab switching from main modes, not review mode
-                                if self.app_mode != AppMode::ConfigurationReview {
-                                    self.tab_index = (self.tab_index + 1) % 2;
-                                    self.app_mode = if self.tab_index == 0 {
+                                KeyCode::Esc => {
+                                    // Only exit on ESC if not in search mode and no editing/enum selection active
+                                    if !self.search_mode
+                                        && self.editing_field.is_none()
+                                        && !self.enum_selection_mode
+                                    {
+                                        return Ok(());
+                                    }
+                                }
+                                KeyCode::Char('h') | KeyCode::F(1) => {
+                                    self.app_mode = if self.app_mode == AppMode::Help {
                                         AppMode::PeptideSelection
                                     } else {
-                                        AppMode::Configuration
+                                        AppMode::Help
                                     };
                                 }
-                            }
-                            KeyCode::F(5) => {
-                                // Save configuration
-                                if let Err(e) = self.save_config_to_toml() {
-                                    eprintln!("Error saving config: {}", e);
+                                KeyCode::Tab => {
+                                    // Only allow tab switching from main modes, not review mode
+                                    if self.app_mode != AppMode::ConfigurationReview {
+                                        self.tab_index = (self.tab_index + 1) % 2;
+                                        self.app_mode = if self.tab_index == 0 {
+                                            AppMode::PeptideSelection
+                                        } else {
+                                            AppMode::Configuration
+                                        };
+                                    }
                                 }
-                            }
-                            KeyCode::F(9) => {
-                                // Run simulation
-                                if let Err(e) = self.update_toml_and_run() {
-                                    eprintln!("Error: {}", e);
+                                KeyCode::F(5) => {
+                                    // Save configuration only
+                                    if let Err(e) = self.save_config_to_toml() {
+                                        self.save_message =
+                                            Some(format!("Error saving config: {}", e));
+                                    } else {
+                                        self.save_message =
+                                            Some("Configuration saved to dncs.toml".to_string());
+                                    }
+                                    self.save_message_timer = 8; // Show message for ~2 seconds
                                 }
-                                return Ok(());
+                                KeyCode::F(9) => {
+                                    // Run simulation
+                                    if let Err(e) = self.update_toml_and_run() {
+                                        eprintln!("Error: {}", e);
+                                    }
+                                    return Ok(());
+                                }
+                                _ => {}
                             }
-                            _ => {}
                         }
                     }
                 }
             }
         }
+
+        // If we reach here, exit_and_run is true, so we need to exit and run the command
+        Ok(())
     }
 
     fn handle_peptide_keys(&mut self, key: KeyCode) -> Result<bool, Box<dyn Error>> {
@@ -667,7 +686,11 @@ impl PeptideSelector {
                 }
                 KeyCode::Enter => {
                     // Save the selected enum value
-                    if !self.edit_buffer.is_empty() {
+                    if matches!(self.editing_field, Some(ConfigField::Forcefield)) {
+                        // For force fields, save current selections
+                        self.edit_buffer = self.config.forcefield.join(", ");
+                        self.save_edited_field();
+                    } else if !self.edit_buffer.is_empty() {
                         self.save_edited_field();
                     }
                     // Clean up enum selection state
@@ -678,6 +701,22 @@ impl PeptideSelector {
                     self.enum_options.clear();
                     self.enum_selected_index = 0;
                     return Ok(true);
+                }
+                KeyCode::Char(' ') => {
+                    // Toggle selection for force fields only
+                    if matches!(self.editing_field, Some(ConfigField::Forcefield)) {
+                        if let Some(option) = self.enum_options.get(self.enum_selected_index) {
+                            if self.config.forcefield.contains(option) {
+                                // Remove from selection
+                                self.config.forcefield.retain(|x| x != option);
+                            } else {
+                                // Add to selection
+                                self.config.forcefield.push(option.clone());
+                            }
+                        }
+                        return Ok(true);
+                    }
+                    return Ok(false); // Not handled for non-forcefield enums
                 }
                 KeyCode::Esc => {
                     // Cancel enum selection without saving
@@ -769,15 +808,49 @@ impl PeptideSelector {
                 }
                 KeyCode::Enter => {
                     // Save the selected enum value
-                    self.save_edited_field();
+                    if matches!(self.editing_field, Some(ConfigField::Forcefield)) {
+                        // For force fields, save current selections
+                        self.edit_buffer = self.config.forcefield.join(", ");
+                        self.save_edited_field();
+                    } else if !self.edit_buffer.is_empty() {
+                        self.save_edited_field();
+                    }
+                    // Clean up enum selection state
                     self.editing_field = None;
                     self.edit_buffer.clear();
                     self.enum_selection_mode = false;
                     self.enum_list_state = ListState::default();
                     self.enum_options.clear();
+                    self.enum_selected_index = 0;
+                    return Ok(true);
                 }
-                // Remove ESC exit behavior - user doesn't want it
-                _ => {}
+                KeyCode::Char(' ') => {
+                    // Toggle selection for force fields only
+                    if matches!(self.editing_field, Some(ConfigField::Forcefield)) {
+                        if let Some(option) = self.enum_options.get(self.enum_selected_index) {
+                            if self.config.forcefield.contains(option) {
+                                // Remove from selection
+                                self.config.forcefield.retain(|x| x != option);
+                            } else {
+                                // Add to selection
+                                self.config.forcefield.push(option.clone());
+                            }
+                        }
+                        return Ok(true);
+                    }
+                    return Ok(false); // Not handled for non-forcefield enums
+                }
+                KeyCode::Esc => {
+                    // Cancel enum selection without saving
+                    self.editing_field = None;
+                    self.edit_buffer.clear();
+                    self.enum_selection_mode = false;
+                    self.enum_list_state = ListState::default();
+                    self.enum_options.clear();
+                    self.enum_selected_index = 0;
+                    return Ok(true);
+                }
+                _ => return Ok(false), // Let other keys fall through
             }
             return Ok(true);
         }
@@ -806,10 +879,12 @@ impl PeptideSelector {
                 }
             }
             KeyCode::Char('r') if self.editing_field.is_none() => {
-                // Run simulation with current configuration
-                if let Err(e) = self.run_just_command() {
-                    eprintln!("Error running simulation: {}", e);
+                // Save current configuration and prepare to exit TUI to run simulation
+                if let Err(e) = self.save_config_to_toml() {
+                    eprintln!("Error saving config: {}", e);
+                    return Ok(true);
                 }
+                self.exit_and_run = true;
                 return Ok(true);
             }
             KeyCode::Esc => {
@@ -873,18 +948,24 @@ impl PeptideSelector {
                 if let Some(options) = self.get_enum_options(field) {
                     self.enum_selection_mode = true;
                     self.enum_options = options;
-                    // Find current value index
-                    let current_value = self.get_field_value(field);
-                    self.enum_selected_index = self
-                        .enum_options
-                        .iter()
-                        .position(|opt| opt == &current_value)
-                        .unwrap_or(0);
+                    // For force field, handle multiple selections differently
+                    if matches!(field, ConfigField::Forcefield) {
+                        self.edit_buffer = self.config.forcefield.join(", ");
+                        self.enum_selected_index = 0;
+                    } else {
+                        // Find current value index
+                        let current_value = self.get_field_value(field);
+                        self.enum_selected_index = self
+                            .enum_options
+                            .iter()
+                            .position(|opt| opt == &current_value)
+                            .unwrap_or(0);
+                        self.edit_buffer = self.enum_options[self.enum_selected_index].clone();
+                    }
                     // Ensure the enum list state is properly initialized
                     let mut enum_state = ListState::default();
                     enum_state.select(Some(self.enum_selected_index));
                     self.enum_list_state = enum_state;
-                    self.edit_buffer = self.enum_options[self.enum_selected_index].clone();
                 } else {
                     self.enum_selection_mode = false;
                     self.enum_list_state = ListState::default();
@@ -1006,8 +1087,18 @@ impl PeptideSelector {
                 }
                 ConfigField::Forcefield => {
                     if self.enum_selection_mode {
-                        // For enum mode, replace the entire forcefield list with the selected option
-                        self.config.forcefield = vec![self.edit_buffer.clone()];
+                        // Handle selected forcefield(s)
+                        if self.edit_buffer.contains(", ") {
+                            // Multiple forcefields selected
+                            self.config.forcefield = self
+                                .edit_buffer
+                                .split(", ")
+                                .map(|s| s.trim().to_string())
+                                .collect();
+                        } else {
+                            // Single forcefield selected
+                            self.config.forcefield = vec![self.edit_buffer.clone()];
+                        }
                     } else {
                         // For manual editing, allow comma-separated values
                         self.config.forcefield = self
@@ -1141,16 +1232,24 @@ impl PeptideSelector {
             }
             AppMode::Configuration => {
                 if self.enum_selection_mode {
-                    "▼ DROPDOWN ACTIVE: ↑/↓ Navigate | ENTER: Select | ESC: Cancel"
+                    if matches!(self.editing_field, Some(ConfigField::Forcefield)) {
+                        "▼ FORCE FIELDS: ↑/↓ Navigate | SPACE: Toggle | ENTER: Confirm | ESC: Cancel"
+                    } else {
+                        "▼ DROPDOWN ACTIVE: ↑/↓ Navigate | ENTER: Select | ESC: Cancel"
+                    }
                 } else if self.editing_field.is_some() {
                     "Type value | ENTER: Save | ESC: Cancel"
                 } else {
-                    "↑/↓: Navigate | ENTER: Edit | TAB: Peptides | F5: Save | F9: Run | h: Help | q: Quit"
+                    "↑/↓: Navigate | ENTER: Edit | TAB: Peptides | F5: Save Config | F9: Run | h: Help | q: Quit"
                 }
             }
             AppMode::ConfigurationReview => {
                 if self.enum_selection_mode {
-                    "↑/↓: Select option | ENTER: Confirm | ESC: Cancel"
+                    if matches!(self.editing_field, Some(ConfigField::Forcefield)) {
+                        "▼ FORCE FIELDS: ↑/↓ Navigate | SPACE: Toggle | ENTER: Confirm | ESC: Cancel"
+                    } else {
+                        "↑/↓: Select option | ENTER: Confirm | ESC: Cancel"
+                    }
                 } else if self.editing_field.is_some() {
                     "Type value | ENTER: Save | ESC: Cancel editing"
                 } else {
@@ -1160,7 +1259,14 @@ impl PeptideSelector {
             AppMode::Help => "Any key to return",
         };
 
-        let status = Paragraph::new(status_text)
+        // Show save message if available
+        let status_text_with_save = if let Some(ref msg) = self.save_message {
+            format!("💾 {} | {}", msg, status_text)
+        } else {
+            status_text.to_string()
+        };
+
+        let status = Paragraph::new(status_text_with_save)
             .style(Style::default().fg(AyuTheme::FG_PRIMARY))
             .block(
                 Block::default()
@@ -2076,6 +2182,8 @@ impl PeptideSelector {
             return;
         }
 
+        let is_forcefield = matches!(self.editing_field, Some(ConfigField::Forcefield));
+
         // Calculate popup size based on options
         let max_option_length = self
             .enum_options
@@ -2084,8 +2192,8 @@ impl PeptideSelector {
             .max()
             .unwrap_or(20);
 
-        let popup_height = (self.enum_options.len() + 5).min(15) as u16; // +5 for borders and instructions
-        let popup_width = (max_option_length + 12).max(35) as u16; // +12 for padding and indicators
+        let popup_height = (self.enum_options.len() + 6).min(15) as u16; // +6 for borders and instructions
+        let popup_width = (max_option_length + 15).max(40) as u16; // +15 for padding and indicators
 
         // Center the popup with better positioning
         let popup_area = centered_rect(
@@ -2099,7 +2207,7 @@ impl PeptideSelector {
             .direction(Direction::Vertical)
             .constraints([
                 Constraint::Min(0),    // List area
-                Constraint::Length(3), // Instructions area
+                Constraint::Length(4), // Instructions area
             ])
             .split(popup_area);
 
@@ -2110,14 +2218,41 @@ impl PeptideSelector {
             .enumerate()
             .map(|(i, option)| {
                 let is_selected = i == self.enum_selected_index;
-                let content = if is_selected {
-                    format!("► {}", option)
+                let is_checked = if is_forcefield {
+                    self.config.forcefield.contains(option)
                 } else {
-                    format!("  {}", option)
+                    false
                 };
+
+                let content = if is_forcefield {
+                    if is_checked {
+                        if is_selected {
+                            format!("► [✓] {}", option)
+                        } else {
+                            format!("  [✓] {}", option)
+                        }
+                    } else {
+                        if is_selected {
+                            format!("► [ ] {}", option)
+                        } else {
+                            format!("  [ ] {}", option)
+                        }
+                    }
+                } else {
+                    if is_selected {
+                        format!("► {}", option)
+                    } else {
+                        format!("  {}", option)
+                    }
+                };
+
                 ListItem::new(content).style(if is_selected {
                     Style::default()
                         .fg(AyuTheme::CYAN)
+                        .add_modifier(Modifier::BOLD)
+                } else if is_checked {
+                    Style::default()
+                        .fg(AyuTheme::GREEN)
                         .add_modifier(Modifier::BOLD)
                 } else {
                     Style::default().fg(AyuTheme::FG_PRIMARY)
@@ -2131,7 +2266,7 @@ impl PeptideSelector {
                 ConfigField::Interface => "Interface Options",
                 ConfigField::Device => "Compute Device",
                 ConfigField::Method => "Sampling Method",
-                ConfigField::Forcefield => "Force Field",
+                ConfigField::Forcefield => "Force Fields (Multi-select)",
                 _ => "Available Options",
             }
         } else {
@@ -2164,32 +2299,74 @@ impl PeptideSelector {
         f.render_stateful_widget(enum_list, popup_chunks[0], &mut self.enum_list_state);
 
         // Add instructions in a separate bordered area
-        let instructions = Paragraph::new(vec![Line::from(vec![
-            Span::styled(
-                "↑/↓",
-                Style::default()
-                    .fg(AyuTheme::YELLOW)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::styled(" Navigate  ", Style::default().fg(AyuTheme::FG_SECONDARY)),
-            Span::styled(
-                "ENTER",
-                Style::default()
-                    .fg(AyuTheme::GREEN)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::styled(
-                " Select Option",
-                Style::default().fg(AyuTheme::FG_SECONDARY),
-            ),
-        ])])
-        .block(
-            Block::default()
-                .borders(Borders::ALL)
-                .border_style(Style::default().fg(AyuTheme::BORDER)),
-        )
-        .alignment(Alignment::Center)
-        .style(Style::default().bg(AyuTheme::BG_SECONDARY));
+        let instruction_lines = if is_forcefield {
+            vec![
+                Line::from(vec![
+                    Span::styled(
+                        "↑/↓",
+                        Style::default()
+                            .fg(AyuTheme::YELLOW)
+                            .add_modifier(Modifier::BOLD),
+                    ),
+                    Span::styled(" Navigate  ", Style::default().fg(AyuTheme::FG_SECONDARY)),
+                    Span::styled(
+                        "SPACE",
+                        Style::default()
+                            .fg(AyuTheme::CYAN)
+                            .add_modifier(Modifier::BOLD),
+                    ),
+                    Span::styled(
+                        " Toggle Selection",
+                        Style::default().fg(AyuTheme::FG_SECONDARY),
+                    ),
+                ]),
+                Line::from(vec![
+                    Span::styled(
+                        "ENTER",
+                        Style::default()
+                            .fg(AyuTheme::GREEN)
+                            .add_modifier(Modifier::BOLD),
+                    ),
+                    Span::styled(" Confirm  ", Style::default().fg(AyuTheme::FG_SECONDARY)),
+                    Span::styled(
+                        "ESC",
+                        Style::default()
+                            .fg(AyuTheme::RED)
+                            .add_modifier(Modifier::BOLD),
+                    ),
+                    Span::styled(" Cancel", Style::default().fg(AyuTheme::FG_SECONDARY)),
+                ]),
+            ]
+        } else {
+            vec![Line::from(vec![
+                Span::styled(
+                    "↑/↓",
+                    Style::default()
+                        .fg(AyuTheme::YELLOW)
+                        .add_modifier(Modifier::BOLD),
+                ),
+                Span::styled(" Navigate  ", Style::default().fg(AyuTheme::FG_SECONDARY)),
+                Span::styled(
+                    "ENTER",
+                    Style::default()
+                        .fg(AyuTheme::GREEN)
+                        .add_modifier(Modifier::BOLD),
+                ),
+                Span::styled(
+                    " Select Option",
+                    Style::default().fg(AyuTheme::FG_SECONDARY),
+                ),
+            ])]
+        };
+
+        let instructions = Paragraph::new(instruction_lines)
+            .block(
+                Block::default()
+                    .borders(Borders::ALL)
+                    .border_style(Style::default().fg(AyuTheme::BORDER)),
+            )
+            .alignment(Alignment::Center)
+            .style(Style::default().bg(AyuTheme::BG_SECONDARY));
 
         f.render_widget(instructions, popup_chunks[1]);
     }
@@ -2225,7 +2402,7 @@ impl PeptideSelector {
                     Style::default().fg(AyuTheme::FG_SECONDARY),
                 ),
                 Span::styled(
-                    "Save current configuration to dncs.toml",
+                    "Save configuration to dncs.toml (stay in TUI)",
                     Style::default().fg(AyuTheme::FG_PRIMARY),
                 ),
             ]),
@@ -2235,7 +2412,7 @@ impl PeptideSelector {
                     Style::default().fg(AyuTheme::FG_SECONDARY),
                 ),
                 Span::styled(
-                    "Run simulation with current settings",
+                    "Legacy run command (deprecated)",
                     Style::default().fg(AyuTheme::FG_PRIMARY),
                 ),
             ]),
@@ -2316,7 +2493,7 @@ impl PeptideSelector {
                     Style::default().fg(AyuTheme::FG_SECONDARY),
                 ),
                 Span::styled(
-                    "RUN SIMULATION (just run)",
+                    "EXIT TUI and RUN SIMULATION (clear screen + just run)",
                     Style::default()
                         .fg(AyuTheme::GREEN)
                         .add_modifier(Modifier::BOLD),
@@ -2342,6 +2519,21 @@ impl PeptideSelector {
                     Style::default().fg(AyuTheme::FG_PRIMARY),
                 ),
             ]),
+            Line::from(""),
+            Line::from(vec![Span::styled(
+                "Configuration Management:",
+                Style::default()
+                    .fg(AyuTheme::ORANGE)
+                    .add_modifier(Modifier::BOLD),
+            )]),
+            Line::from(vec![Span::styled(
+                "  • F5 - Save config and stay in TUI",
+                Style::default().fg(AyuTheme::CYAN),
+            )]),
+            Line::from(vec![Span::styled(
+                "  • 'r' - Save config, exit TUI, and run simulation",
+                Style::default().fg(AyuTheme::GREEN),
+            )]),
             Line::from(""),
             Line::from(vec![Span::styled(
                 "Smart Field Editing:",
