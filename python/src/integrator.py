@@ -355,11 +355,29 @@ class MDSimulation:
             return
 
         # Load the first PDB to set up the single OpenMM context.
-        # We assume all subsequent PDBs will have an identical topology,
-        # which is typically the case if they come from the same
-        # molecule after consistent solvent addition.
         first_pdb_path = os.path.join(self.inpfolder, self.pdbs[0])
         first_pdb_data = PDBFile(first_pdb_path)
+        reference_atom_count = first_pdb_data.topology.getNumAtoms()
+
+        # Validate all PDB files have consistent topology before starting
+        valid_pdbs = []
+        for pdb_file in self.pdbs:
+            pdb_path = os.path.join(self.inpfolder, pdb_file)
+            try:
+                pdb_data = PDBFile(pdb_path)
+                atom_count = pdb_data.topology.getNumAtoms()
+                if atom_count == reference_atom_count:
+                    valid_pdbs.append(pdb_file)
+                else:
+                    print(f"Warning: Excluding {pdb_file} - atom count mismatch ({atom_count} vs {reference_atom_count})")
+            except Exception as e:
+                print(f"Warning: Excluding {pdb_file} - failed to load: {e}")
+
+        if not valid_pdbs:
+            print("No valid equilibrated structures found with consistent topology. Skipping production MD.")
+            return
+
+        print(f"Using {len(valid_pdbs)} out of {len(self.pdbs)} structures for production MD")
 
         # Create the system and integrator once outside the loop
         system = self.forcefield.createSystem(first_pdb_data.topology, ignoreExternalBonds=True)
@@ -379,11 +397,11 @@ class MDSimulation:
                                           temperature=True))
 
         # Calculate steps per structure for production MD
-        steps_per_structure = int(self.config.md_steps / len(self.pdbs))
+        steps_per_structure = int(self.config.md_steps / len(valid_pdbs))
 
-        print(f"Running production MD with {len(self.pdbs)} equilibrated structures, {steps_per_structure} steps each")
+        print(f"Running production MD with {len(valid_pdbs)} equilibrated structures, {steps_per_structure} steps each")
 
-        for i, pdb_file in enumerate(self.pdbs):
+        for i, pdb_file in enumerate(valid_pdbs):
             model_num = i + 1
 
             # Load the current equilibrated structure
@@ -399,11 +417,16 @@ class MDSimulation:
             # Run production MD steps for this segment
             simulation.step(steps_per_structure)
 
-            # Get and save the final state after this production segment
-            final_state = simulation.context.getState(getPositions=True, getEnergy=True)
-            print(f"Production MD {model_num}: {final_state.getPotentialEnergy()}")
-            save_pdb(f"{self.outfolder}/production_md_{model_num:04}.pdb", simulation.topology, final_state.getPositions())
+            # Get final state and save
+            state = simulation.context.getState(getEnergy=True, getPositions=True)
+            print(f"Production MD {model_num}: {state.getPotentialEnergy()}")
 
+            # Save final frame to output
+            self.save_pdb(
+                f"{self.outfolder}/MD/Production_{model_num:04}.pdb",
+                simulation.topology,
+                state.getPositions()
+            )
 def save_pdb(filename: str, topology, positions):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     PDBFile.writeFile(topology, positions, open(filename, "w"))
