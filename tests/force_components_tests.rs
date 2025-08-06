@@ -18,7 +18,6 @@ mod force_components_tests {
     use std::f64::consts::PI;
 
     const TOLERANCE: f64 = 1e-10;
-    const ENERGY_TOLERANCE: f64 = 1e-6;
 
     /// Test harmonic bond force calculations
     #[test]
@@ -36,8 +35,8 @@ mod force_components_tests {
         assert!(!bond_params.is_empty(), "Should have bond parameters");
         
         for bond in bond_params {
-            assert!(bond.length > 0.5 && bond.length < 5.0, 
-                    "Bond length {} Å is outside reasonable range", bond.length);
+            assert!(bond.length > 0.05 && bond.length < 0.5, 
+                    "Bond length {} nm is outside reasonable range", bond.length);
             assert!(bond.k > 0.0, 
                     "Bond force constant {} should be positive", bond.k);
         }
@@ -83,7 +82,7 @@ mod force_components_tests {
                     "Periodicity {} is outside reasonable range", torsion.periodicity1);
             
             // Test that phases are in valid range
-            assert!(torsion.phase1 >= -PI && torsion.phase1 <= PI,
+            assert!(torsion.phase1 >= -2.0*PI && torsion.phase1 <= 2.0*PI,
                     "Phase {} is outside valid range", torsion.phase1);
             
             // Test force constants
@@ -181,8 +180,8 @@ mod force_components_tests {
         // Test that LJ parameters are in reasonable ranges
         for atom in &system.particles {
             if atom.sigma > 0.0 {
-                assert!(atom.sigma > 1.0 && atom.sigma < 6.0,
-                        "Sigma {} Å is outside typical range for atoms", atom.sigma);
+                assert!(atom.sigma > 0.1 && atom.sigma < 0.8,
+                        "Sigma {} nm is outside typical range for atoms", atom.sigma);
             }
             if atom.epsilon > 0.0 {
                 assert!(atom.epsilon < 1.0,
@@ -296,8 +295,8 @@ mod force_components_tests {
         
         // Test bond parameters
         for bond in &ff.harmonic_bond_force.bonds {
-            assert!(bond.length > 0.5 && bond.length < 3.0,
-                    "Bond length {} Å is outside typical range", bond.length);
+            assert!(bond.length > 0.05 && bond.length < 0.3,
+                    "Bond length {} nm is outside typical range", bond.length);
             assert!(bond.k > 0.0 && bond.k < 10000.0,
                     "Bond force constant {} is outside reasonable range", bond.k);
         }

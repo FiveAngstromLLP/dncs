@@ -48,11 +48,11 @@ impl Amber {
             harmonic_angle += self.harmonic_angle_force(iatom);
         }
 
-        // println!("Lennard-Jones energy: {}", lennard_jones);
-        // println!("Electrostatic energy: {}", electrostatic);
-        // println!("Harmonic bond energy: {}", harmonic_bond);
-        // println!("Harmonic angle energy: {}", harmonic_angle);
-        // println!("Periodic torsional energy: {}", torsional);
+        println!("Lennard-Jones energy: {}", lennard_jones);
+        println!("Electrostatic energy: {}", electrostatic);
+        println!("Harmonic bond energy: {}", harmonic_bond);
+        println!("Harmonic angle energy: {}", harmonic_angle);
+        println!("Periodic torsional energy: {}", torsional);
 
         lennard_jones + electrostatic + harmonic_bond + harmonic_angle + torsional
     }
@@ -123,6 +123,10 @@ impl Amber {
                         || (Some(h.class1.to_string()) == jatom.atomtype
                             && Some(h.class2.to_string()) == iatom.atomtype)
                 }) {
+                    // Skip LP (lone pair) bonds - they are constraint-like interactions
+                    if hbf.class1 == "LP" || hbf.class2 == "LP" {
+                        continue;
+                    }
                     let d = Self::distance(iatom, jatom);
                     let eng = 0.5 * hbf.k * (d - hbf.length).powi(2);
                     // println!(
@@ -154,12 +158,12 @@ impl Amber {
                     if katom.serial > jatom.serial {
                         // println!("{}:{}", katom.serial, katom.name);
                         if let Some(haf) = haforce.iter().find(|h| {
-                            Some(h.class1.to_string()) == iatom.atomtype
+                            (Some(h.class1.to_string()) == iatom.atomtype
                                 && Some(h.class2.to_string()) == jatom.atomtype
-                                && Some(h.class2.to_string()) == katom.atomtype
-                                || Some(h.class1.to_string()) == jatom.atomtype
+                                && Some(h.class3.to_string()) == katom.atomtype)
+                                || (Some(h.class1.to_string()) == katom.atomtype
                                     && Some(h.class2.to_string()) == jatom.atomtype
-                                    && Some(h.class2.to_string()) == iatom.atomtype
+                                    && Some(h.class3.to_string()) == iatom.atomtype)
                         }) {
                             let a = Self::angle(iatom, jatom, katom);
                             // println!(
@@ -205,14 +209,14 @@ impl Amber {
             }) {
                 // println!(
                 //     "Periodic torsional energy before k1 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, ptf.k1 * (1.0 + (ptf.periodicity1 * dh - ptf.phase1).cos())
                 // );
                 energy += ptf.k1 * (1.0 + (ptf.periodicity1 * dh - ptf.phase1).cos());
 
                 if let (Some(k), Some(n), Some(th)) = (ptf.k2, ptf.periodicity2, ptf.phase2) {
                     // println!(
                     //     "Periodic torsional energy before k2 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, k * (1.0 + (n * dh - th).cos())
                     // );
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
@@ -220,7 +224,7 @@ impl Amber {
                 if let (Some(k), Some(n), Some(th)) = (ptf.k3, ptf.periodicity3, ptf.phase3) {
                     // println!(
                     //     "Periodic torsional energy before k3 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, k * (1.0 + (n * dh - th).cos())
                     // );
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
@@ -228,7 +232,7 @@ impl Amber {
                 if let (Some(k), Some(n), Some(th)) = (ptf.k4, ptf.periodicity4, ptf.phase4) {
                     // println!(
                     //     "Periodic torsional energy before k4 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, k * (1.0 + (n * dh - th).cos())
                     // );
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
@@ -236,7 +240,7 @@ impl Amber {
                 if let (Some(k), Some(n), Some(th)) = (ptf.k5, ptf.periodicity5, ptf.phase5) {
                     // println!(
                     //     "Periodic torsional energy before k5 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, k * (1.0 + (n * dh - th).cos())
                     // );
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
@@ -244,7 +248,7 @@ impl Amber {
                 if let (Some(k), Some(n), Some(th)) = (ptf.k6, ptf.periodicity6, ptf.phase6) {
                     // println!(
                     //     "Periodic torsional energy before k6 update (atoms {}({})-{}({})-{}({})-{}({})): {}",
-                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, energy
+                    //     a.name, a.serial, b.name, b.serial, c.name, c.serial, d.name, d.serial, k * (1.0 + (n * dh - th).cos())
                     // );
                     energy += k * (1.0 + (n * dh - th).cos());
                 }
@@ -275,9 +279,9 @@ impl Amber {
         let r = Self::distance(i, j); // Unit >> nm
         let sigma = (i.sigma + j.sigma) / 2.0; // Unit >> nm
         let epsilon = (i.epsilon * j.epsilon).sqrt(); // Unit >> kJ/mol
-        if r < 2.5 * sigma {
-            return 0.0; // Avoid division by zero
-        }
+                                                      // if r < 2.5 * sigma {
+                                                      //     return 0.0; // Avoid division by zero
+                                                      // }
         4.0 * epsilon * ((sigma / r).powi(12) - (sigma / r).powi(6)) // Unit >> kJ/mol
     }
 
@@ -286,12 +290,12 @@ impl Amber {
         let r = Self::distance(i, j); // Unit >> nm
         let q1 = i.charge;
         let q2 = j.charge;
-        // let k = 138.93545727242866; // Coulomb's constant in vacuum (kJ/mol)
-        // let k = 7.935; // Coulomb's constant in vacuum (kJ/mol)
-        let k = 0.101; // Coulomb's constant in vacuum (kJ/mol)
-                       // if r < 0.8 && r > 1.2 {
-                       //     return 0.0; // Unit >> kJ/mol
-                       // }
+        let k = 138.93545727242866; // Coulomb's constant in vacuum (kJ/mol)
+                                    // let k = 7.935; // Coulomb's constant in vacuum (kJ/mol)
+                                    // let k = 0.101; // Coulomb's constant in vacuum (kJ/mol)
+                                    // if r < 0.8 && r > 1.2 {
+                                    //     return 0.0; // Unit >> kJ/mol
+                                    // }
         return k * q1 * q2 / r;
     }
 

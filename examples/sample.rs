@@ -12,6 +12,6 @@ fn main() {
     sys.to_pdb("sample.pdb");
     sys.init_parameters();
 
-    let mut sample = Sampler::new(Arc::new(sys), Method::Search, "Result".to_string());
-    sample.sample(1);
+    let mut sample = Sampler::new(Arc::new(sys), Method::None, "Result/6RRO".to_string());
+    sample.sample(1000);
 }

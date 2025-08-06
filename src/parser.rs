@@ -232,7 +232,7 @@ pub struct Polymer<T> {
 pub fn generate(seq: &str) -> Vec<Atom> {
     let seq = seq.trim().to_uppercase();
     for s in seq.chars() {
-        assert!(!" OJUXZ".contains(s), "Invalid Sequence");
+        assert!(!" BOJUXZ".contains(s), "Invalid Sequence");
     }
 
     let mut sequence = Vec::<Atom>::new();
