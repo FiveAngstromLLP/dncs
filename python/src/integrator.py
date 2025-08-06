@@ -18,10 +18,11 @@ import os
 import sys
 import re
 import dncs
+import math
 import logging
 import datetime
 import concurrent.futures
-from openmm.app import ForceField, PDBFile,Simulation,Modeller, StateDataReporter
+from openmm.app import ForceField, PDBFile,Simulation,Modeller, PDBReporter, StateDataReporter
 from openmm.openmm import Platform, LangevinMiddleIntegrator
 from openmm.unit import kelvin, nano, pico
 
@@ -119,10 +120,7 @@ class DncsIntegrator:
             print("No minimized structures found. Skipping equilibration.")
             return
 
-        # Calculate steps per structure
-        steps_per_structure = int(self.config.steps / self.config.md_simulation)
-
-        print(f"Running equilibration with {len(minimized_files)} structures, {steps_per_structure} steps each")
+        print(f"Running equilibration with {len(minimized_files)} structures, {self.config.steps} steps each")
 
         # Create Langevin directory
         os.makedirs(f"{self.outfolder}/Langevin", exist_ok=True)
@@ -152,11 +150,11 @@ class DncsIntegrator:
             simulation.context.setVelocitiesToTemperature(temperature)
 
             # Run equilibration steps
-            simulation.step(steps_per_structure)
+            simulation.step(self.config.steps)
 
             # Get equilibrated state and save
             equilibrated_state = simulation.context.getState(getEnergy=True, getPositions=True)
-            self.log.info(f"EQUILIBRATED ENERGY AFTER {steps_per_structure} STEPS FOR MODEL {model_num} = {equilibrated_state.getPotentialEnergy()}")
+            self.log.info(f"EQUILIBRATED ENERGY AFTER {self.config.steps} STEPS FOR MODEL {model_num} = {equilibrated_state.getPotentialEnergy()}")
             print(f"Equilibrated energy for model {model_num}: {equilibrated_state.getPotentialEnergy()}")
 
             # Save equilibrated structure
@@ -177,21 +175,12 @@ class CleanUp:
         self.config = config
         self.inpfolder = f"{config.folder}/{self.config.moleculename}"
         self.process_files()
-        self.write_sampled()
         self.write_equilibrated()
         self.write_minimized()
 
     def process_files(self):
-        self.process_sampled_directory()
-
-        # Only process directories that exist
-        langevin_dir = f"{self.inpfolder}/Langevin"
-        if os.path.exists(langevin_dir):
-            self.process_directory(langevin_dir, "equilibrated.out")
-
-        minimized_dir = f"{self.inpfolder}/Minimized"
-        if os.path.exists(minimized_dir):
-            self.process_directory(minimized_dir, "minimized.out")
+        self.process_directory(f"{self.inpfolder}/Langevin", "equilibrated.out")
+        self.process_directory(f"{self.inpfolder}/Minimized", "minimized.out")
 
 
     def process_directory(self, directory: str, output_file: str):
@@ -208,9 +197,7 @@ class CleanUp:
         pattern = self.get_energy_pattern(file.name)
         energy = self.find_energy(model_num, pattern)
         fname = ""
-        if "sampled.out" in file.name:
-            fname = f"sample/sample_{model_num:04}.pdb"
-        elif "equilibrated.out" in file.name:
+        if "equilibrated.out" in file.name:
             fname = f"Langevin/Equilibrated_{model_num:04}.pdb"
         elif "minimized.out" in file.name:
             fname = f"Minimized/Minimized_{model_num:04}.pdb"
@@ -219,9 +206,7 @@ class CleanUp:
         file.write(f"{model_num}, {energy}, {angles_str}\n")
 
     def get_energy_pattern(self, filename: str) -> str:
-        if "sampled.out" in filename:
-            return r"Sample {model_num}: (.*)kJ/mol"
-        elif "equilibrated.out" in filename:
+        if "equilibrated.out" in filename:
             return r"EQUILIBRATED ENERGY AFTER \d+ STEPS FOR MODEL {model_num} = (.*)"
         elif "minimized.out" in filename:
             return r"MINIMIZED ENERGY FOR MODEL {model_num} = (.*)"
@@ -229,77 +214,13 @@ class CleanUp:
             raise ValueError(f"Unknown file type: {filename}")
 
     def find_energy(self, model_num: int, pattern: str) -> str:
-        if "sampled.out" in pattern:
-            # For sampled energies, read from sample.out file
-            try:
-                with open(f"{self.inpfolder}/sample/sample.out", "r") as src:
-                    data = src.read()
-                match = re.search(pattern.format(model_num=model_num), data)
-                return f"{match.group(1).strip()}" if match else "N/A"
-            except FileNotFoundError:
-                return "N/A"
-        else:
-            with open(f"{self.inpfolder}/dncs.log", "r") as src:
-                data = src.read()
-            match = re.search(pattern.format(model_num=model_num), data)
-            return f"{match.group().split('=')[-1].strip()}" if match else "N/A"
-
-    def process_sampled_directory(self):
-        """Process sample directory by reading energies directly from sample.out"""
-        sample_dir = f"{self.inpfolder}/sample"
-        sample_out_path = f"{sample_dir}/sample.out"
-
-        if not os.path.exists(sample_out_path):
-            print(f"Warning: {sample_out_path} not found. Skipping sampled processing.")
-            return
-
-        # Create sampled.out by parsing sample.out
-        sampled_out_path = f"{sample_dir}/sampled.out"
-        with open(sample_out_path, "r") as src, open(sampled_out_path, "w") as dst:
-            for line in src:
-                # Parse lines like "Sample 0: 876.8456789kJ/mol"
-                if line.strip().startswith("Sample ") and "kJ/mol" in line:
-                    parts = line.strip().split(": ")
-                    sample_num = parts[0].replace("Sample ", "")
-                    energy = parts[1].replace("kJ/mol", "")
-
-                    # Get angles for this sample
-                    pdb_file = f"{sample_dir}/sample_{int(sample_num):04}.pdb"
-                    if os.path.exists(pdb_file):
-                        angles_str = dncs.pdb_to_angle(pdb_file)
-                        dst.write(f"{sample_num}, {energy}, {angles_str}\n")
-
-    def write_sampled(self):
-        sampled_out_path = f"{self.inpfolder}/sample/sampled.out"
-        if not os.path.exists(sampled_out_path):
-            print(f"Warning: {sampled_out_path} not found. Skipping sampled.pdb creation.")
-            return
-
-        with open(sampled_out_path, "r") as f:
-            sampled_lines = f.readlines()
-        weng = []
-        for line in sampled_lines:
-            data = line.split(",")
-            weng.append((data[0], data[1]))
-
-        # Get top N samples (use md_simulation parameter)
-        top_n = self.config.md_simulation
-        sorted_samples = sorted(weng, key=lambda x: float(x[1]))[:top_n]
-
-        with open(f"{self.inpfolder}/sampled.pdb", "w") as file:
-            for i, (m, e) in enumerate(sorted_samples):
-                f = f"{self.inpfolder}/sample/sample_{int(m):04}.pdb"
-                if os.path.exists(f):
-                    pdb = PDBFile(f)
-                    PDBFile.writeModel(pdb.topology, pdb.positions, file, modelIndex=i+1)
+        with open(f"{self.inpfolder}/dncs.log", "r") as src:
+            data = src.read()
+        match = re.search(pattern.format(model_num=model_num), data)
+        return f"{match.group().split('=')[-1].strip()}" if match else "N/A"
 
     def write_equilibrated(self):
-        equilibrated_out_path = f"{self.inpfolder}/Langevin/equilibrated.out"
-        if not os.path.exists(equilibrated_out_path):
-            print(f"Warning: {equilibrated_out_path} not found. Skipping equilibrated.pdb creation.")
-            return
-
-        with open(equilibrated_out_path, "r") as f:
+        with open(f"{self.inpfolder}/Langevin/equilibrated.out", "r") as f:
             minimized_lines = f.readlines()
         weng = []
         for line in minimized_lines:
@@ -314,12 +235,7 @@ class CleanUp:
 
 
     def write_minimized(self):
-        minimized_out_path = f"{self.inpfolder}/Minimized/minimized.out"
-        if not os.path.exists(minimized_out_path):
-            print(f"Warning: {minimized_out_path} not found. Skipping minimized.pdb creation.")
-            return
-
-        with open(minimized_out_path, "r") as f:
+        with open(f"{self.inpfolder}/Minimized/minimized.out", "r") as f:
             minimized_lines = f.readlines()
         weng = []
         for line in minimized_lines:
@@ -343,91 +259,50 @@ class MDSimulation:
         self.pdbs = sorted([f for f in os.listdir(self.inpfolder) if f.endswith('.pdb')])
 
     def run_simulation(self):
-        """
-        Run production MD with a single OpenMM context, cycling through equilibrated structures.
-        For each input structure, its coordinates are introduced into the single OpenMM context
-        before running a segment of the production simulation.
-        """
+        """Run production MD with individual OpenMM contexts using equilibrated structures"""
         platform = Platform.getPlatformByName(self.config.device)
 
         if not self.pdbs:
             print("No equilibrated structures found. Skipping production MD.")
             return
 
-        # Load the first PDB to set up the single OpenMM context.
-        first_pdb_path = os.path.join(self.inpfolder, self.pdbs[0])
-        first_pdb_data = PDBFile(first_pdb_path)
-        reference_atom_count = first_pdb_data.topology.getNumAtoms()
+        print(f"Running production MD with {len(self.pdbs)} equilibrated structures, {self.config.md_steps} steps each")
 
-        # Validate all PDB files have consistent topology before starting
-        valid_pdbs = []
-        for pdb_file in self.pdbs:
-            pdb_path = os.path.join(self.inpfolder, pdb_file)
-            try:
-                pdb_data = PDBFile(pdb_path)
-                atom_count = pdb_data.topology.getNumAtoms()
-                if atom_count == reference_atom_count:
-                    valid_pdbs.append(pdb_file)
-                else:
-                    print(f"Warning: Excluding {pdb_file} - atom count mismatch ({atom_count} vs {reference_atom_count})")
-            except Exception as e:
-                print(f"Warning: Excluding {pdb_file} - failed to load: {e}")
+        for i, pdb_file in enumerate(self.pdbs):
+            print(f"Production MDSimulation {i+1}/{len(self.pdbs)}")
 
-        if not valid_pdbs:
-            print("No valid equilibrated structures found with consistent topology. Skipping production MD.")
-            return
+            # Load equilibrated structure
+            pdbdata = PDBFile(f"{self.inpfolder}/{pdb_file}")
 
-        print(f"Using {len(valid_pdbs)} out of {len(self.pdbs)} structures for production MD")
+            # Create individual simulation context for each structure
+            system = self.forcefield.createSystem(pdbdata.topology)
+            integrator = LangevinMiddleIntegrator(
+                self.config.temp * kelvin,
+                self.config.gamma/pico.factor,
+                self.config.dt*pico.factor
+            )
 
-        # Create the system and integrator once outside the loop
-        system = self.forcefield.createSystem(first_pdb_data.topology, ignoreExternalBonds=True)
-        integrator = LangevinMiddleIntegrator(
-            self.config.temp * kelvin,
-            self.config.gamma / pico.factor,
-            self.config.dt * pico.factor
-        )
+            simulation = Simulation(pdbdata.topology, system, integrator, platform)
 
-        # Create the single simulation context that will be reused
-        simulation = Simulation(first_pdb_data.topology, system, integrator, platform)
+            # Add reporters
+            simulation.reporters.append(StateDataReporter(sys.stdout, 100, step=True,
+                                              potentialEnergy=True,
+                                              kineticEnergy=True,
+                                              temperature=True))
 
-        # Add reporters once to the single simulation context
-        simulation.reporters.append(StateDataReporter(sys.stdout, 100, step=True,
-                                          potentialEnergy=True,
-                                          kineticEnergy=True,
-                                          temperature=True))
-
-        # Calculate steps per structure for production MD
-        steps_per_structure = int(self.config.md_steps / len(valid_pdbs))
-
-        print(f"Running production MD with {len(valid_pdbs)} equilibrated structures, {steps_per_structure} steps each")
-
-        for i, pdb_file in enumerate(valid_pdbs):
-            model_num = i + 1
-
-            # Load the current equilibrated structure
-            pdbdata = PDBFile(os.path.join(self.inpfolder, pdb_file))
-
-            # Introduce (set) new coordinates into the existing OpenMM context
+            # Set positions from equilibrated structure
             simulation.context.setPositions(pdbdata.positions)
 
-            # Set velocities to temperature for the start of this production segment
+            # Set velocities to temperature for production MD
             temperature = self.config.temp * kelvin
             simulation.context.setVelocitiesToTemperature(temperature)
 
-            # Run production MD steps for this segment
-            simulation.step(steps_per_structure)
+            # Run production MD steps
+            simulation.step(self.config.md_steps)
 
-            # Get final state and save
-            state = simulation.context.getState(getEnergy=True, getPositions=True)
-            print(f"Production MD {model_num}: {state.getPotentialEnergy()}")
-
-            # Save final frame to output
-            save_pdb(
-                f"{self.outfolder}/MD/Production_{model_num:04}.pdb",
-                simulation.topology,
-                state.getPositions()
-            )
-
+            # Save final structure after production MD
+            final_state = simulation.context.getState(getPositions=True)
+            save_pdb(f"{self.outfolder}/production_md_{i+1:04}.pdb", simulation.topology, final_state.getPositions())
 
 def save_pdb(filename: str, topology, positions):
     os.makedirs(os.path.dirname(filename), exist_ok=True)

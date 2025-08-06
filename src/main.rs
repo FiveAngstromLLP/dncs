@@ -22,7 +22,7 @@ enum SubCommands {
         /// PDB file path
         file: String,
     },
-    #[command(about = "Interactive peptide selector TUI")]
+    #[command(about = "TUI for Configurations")]
     Tui,
 }
 

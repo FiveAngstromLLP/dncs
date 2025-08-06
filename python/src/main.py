@@ -30,7 +30,6 @@ class SimulationConfig:
     interface: str
     n_samples: int
     md_simulation: int
-    sample_top_n: int
     temp: float
     forcefield: List[str]
     device: str

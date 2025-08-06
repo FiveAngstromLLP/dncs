@@ -297,6 +297,19 @@ impl PeptideSelector {
     }
 
     fn filter_peptides(&mut self) {
+        // Remember currently selected peptide if any
+        let currently_selected_peptide_idx = if let Some(selected_idx) = self.list_state.selected()
+        {
+            if selected_idx >= 2 {
+                let adjusted_idx = selected_idx - 2;
+                self.filtered_indices.get(adjusted_idx).copied()
+            } else {
+                None
+            }
+        } else {
+            None
+        };
+
         if self.search_query.is_empty() {
             self.filtered_indices = (0..self.peptides.len()).collect();
         } else {
@@ -330,9 +343,25 @@ impl PeptideSelector {
         // Apply sorting
         self.sort_peptides();
 
-        // Reset selection to first item (after headers)
+        // Smart selection: try to maintain current selection if it's still in filtered results
         if !self.filtered_indices.is_empty() {
-            self.list_state.select(Some(2)); // Skip headers
+            if let Some(selected_peptide_idx) = currently_selected_peptide_idx {
+                // Try to find the previously selected peptide in the new filtered results
+                if let Some(new_position) = self
+                    .filtered_indices
+                    .iter()
+                    .position(|&idx| idx == selected_peptide_idx)
+                {
+                    // Found it! Select the same peptide at its new position
+                    self.list_state.select(Some(new_position + 2)); // +2 for headers
+                } else {
+                    // Previously selected peptide is no longer in results, select first item
+                    self.list_state.select(Some(2)); // Skip headers
+                }
+            } else {
+                // No previous selection, select first item
+                self.list_state.select(Some(2)); // Skip headers
+            }
         } else {
             self.list_state.select(None);
         }
@@ -645,9 +674,11 @@ impl PeptideSelector {
             }
             KeyCode::Char(c) if self.search_mode => {
                 self.search_query.push(c);
+                self.filter_peptides(); // Live search: filter as user types
             }
             KeyCode::Backspace if self.search_mode => {
                 self.search_query.pop();
+                self.filter_peptides(); // Live search: filter as user deletes
             }
             _ => return Ok(false), // Key not handled
         }
@@ -1150,7 +1181,6 @@ impl PeptideSelector {
         doc["simulation"]["interface"] = value(&self.config.interface);
         doc["simulation"]["n_samples"] = value(self.config.n_samples as i64);
         doc["simulation"]["md_simulation"] = value(self.config.md_simulation as i64);
-        doc["simulation"]["sample_top_n"] = value(self.config.md_simulation as i64);
         doc["simulation"]["temp"] = value(self.config.temp);
         doc["simulation"]["device"] = value(&self.config.device);
         doc["simulation"]["solvent"] = value(self.config.solvent as i64);
@@ -1297,10 +1327,30 @@ impl PeptideSelector {
             Style::default().fg(AyuTheme::FG_SECONDARY)
         };
 
+        let result_count = self.filtered_indices.len();
+        let total_count = self.peptides.len();
+
         let search_text = if self.search_mode {
-            format!("Search: {}_", self.search_query)
+            if self.search_query.is_empty() {
+                format!("Search: _ ({} results)", result_count)
+            } else {
+                format!(
+                    "Search: {}_ ({} of {} results)",
+                    self.search_query, result_count, total_count
+                )
+            }
         } else {
-            format!("Search: {} (Press '/' to search)", self.search_query)
+            if self.search_query.is_empty() {
+                format!(
+                    "Search: (Press '/' to search) - {} peptides available",
+                    total_count
+                )
+            } else {
+                format!(
+                    "Search: {} ({} of {} results) - Press '/' to modify",
+                    self.search_query, result_count, total_count
+                )
+            }
         };
 
         let search_title = if self.search_mode {
