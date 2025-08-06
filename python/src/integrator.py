@@ -18,11 +18,10 @@ import os
 import sys
 import re
 import dncs
-import math
 import logging
 import datetime
 import concurrent.futures
-from openmm.app import ForceField, PDBFile,Simulation,Modeller, PDBReporter, StateDataReporter
+from openmm.app import ForceField, PDBFile,Simulation,Modeller, StateDataReporter
 from openmm.openmm import Platform, LangevinMiddleIntegrator
 from openmm.unit import kelvin, nano, pico
 
@@ -178,12 +177,21 @@ class CleanUp:
         self.config = config
         self.inpfolder = f"{config.folder}/{self.config.moleculename}"
         self.process_files()
+        self.write_sampled()
         self.write_equilibrated()
         self.write_minimized()
 
     def process_files(self):
-        self.process_directory(f"{self.inpfolder}/Langevin", "equilibrated.out")
-        self.process_directory(f"{self.inpfolder}/Minimized", "minimized.out")
+        self.process_sampled_directory()
+
+        # Only process directories that exist
+        langevin_dir = f"{self.inpfolder}/Langevin"
+        if os.path.exists(langevin_dir):
+            self.process_directory(langevin_dir, "equilibrated.out")
+
+        minimized_dir = f"{self.inpfolder}/Minimized"
+        if os.path.exists(minimized_dir):
+            self.process_directory(minimized_dir, "minimized.out")
 
 
     def process_directory(self, directory: str, output_file: str):
@@ -200,7 +208,9 @@ class CleanUp:
         pattern = self.get_energy_pattern(file.name)
         energy = self.find_energy(model_num, pattern)
         fname = ""
-        if "equilibrated.out" in file.name:
+        if "sampled.out" in file.name:
+            fname = f"sample/sample_{model_num:04}.pdb"
+        elif "equilibrated.out" in file.name:
             fname = f"Langevin/Equilibrated_{model_num:04}.pdb"
         elif "minimized.out" in file.name:
             fname = f"Minimized/Minimized_{model_num:04}.pdb"
@@ -209,7 +219,9 @@ class CleanUp:
         file.write(f"{model_num}, {energy}, {angles_str}\n")
 
     def get_energy_pattern(self, filename: str) -> str:
-        if "equilibrated.out" in filename:
+        if "sampled.out" in filename:
+            return r"Sample {model_num}: (.*)kJ/mol"
+        elif "equilibrated.out" in filename:
             return r"EQUILIBRATED ENERGY AFTER \d+ STEPS FOR MODEL {model_num} = (.*)"
         elif "minimized.out" in filename:
             return r"MINIMIZED ENERGY FOR MODEL {model_num} = (.*)"
@@ -217,13 +229,77 @@ class CleanUp:
             raise ValueError(f"Unknown file type: {filename}")
 
     def find_energy(self, model_num: int, pattern: str) -> str:
-        with open(f"{self.inpfolder}/dncs.log", "r") as src:
-            data = src.read()
-        match = re.search(pattern.format(model_num=model_num), data)
-        return f"{match.group().split('=')[-1].strip()}" if match else "N/A"
+        if "sampled.out" in pattern:
+            # For sampled energies, read from sample.out file
+            try:
+                with open(f"{self.inpfolder}/sample/sample.out", "r") as src:
+                    data = src.read()
+                match = re.search(pattern.format(model_num=model_num), data)
+                return f"{match.group(1).strip()}" if match else "N/A"
+            except FileNotFoundError:
+                return "N/A"
+        else:
+            with open(f"{self.inpfolder}/dncs.log", "r") as src:
+                data = src.read()
+            match = re.search(pattern.format(model_num=model_num), data)
+            return f"{match.group().split('=')[-1].strip()}" if match else "N/A"
+
+    def process_sampled_directory(self):
+        """Process sample directory by reading energies directly from sample.out"""
+        sample_dir = f"{self.inpfolder}/sample"
+        sample_out_path = f"{sample_dir}/sample.out"
+
+        if not os.path.exists(sample_out_path):
+            print(f"Warning: {sample_out_path} not found. Skipping sampled processing.")
+            return
+
+        # Create sampled.out by parsing sample.out
+        sampled_out_path = f"{sample_dir}/sampled.out"
+        with open(sample_out_path, "r") as src, open(sampled_out_path, "w") as dst:
+            for line in src:
+                # Parse lines like "Sample 0: 876.8456789kJ/mol"
+                if line.strip().startswith("Sample ") and "kJ/mol" in line:
+                    parts = line.strip().split(": ")
+                    sample_num = parts[0].replace("Sample ", "")
+                    energy = parts[1].replace("kJ/mol", "")
+
+                    # Get angles for this sample
+                    pdb_file = f"{sample_dir}/sample_{int(sample_num):04}.pdb"
+                    if os.path.exists(pdb_file):
+                        angles_str = dncs.pdb_to_angle(pdb_file)
+                        dst.write(f"{sample_num}, {energy}, {angles_str}\n")
+
+    def write_sampled(self):
+        sampled_out_path = f"{self.inpfolder}/sample/sampled.out"
+        if not os.path.exists(sampled_out_path):
+            print(f"Warning: {sampled_out_path} not found. Skipping sampled.pdb creation.")
+            return
+
+        with open(sampled_out_path, "r") as f:
+            sampled_lines = f.readlines()
+        weng = []
+        for line in sampled_lines:
+            data = line.split(",")
+            weng.append((data[0], data[1]))
+
+        # Get top N samples (use sample_top_n parameter or default to 10)
+        top_n = getattr(self.config, 'sample_top_n', 10)
+        sorted_samples = sorted(weng, key=lambda x: float(x[1]))[:top_n]
+
+        with open(f"{self.inpfolder}/sampled.pdb", "w") as file:
+            for i, (m, e) in enumerate(sorted_samples):
+                f = f"{self.inpfolder}/sample/sample_{int(m):04}.pdb"
+                if os.path.exists(f):
+                    pdb = PDBFile(f)
+                    PDBFile.writeModel(pdb.topology, pdb.positions, file, modelIndex=i+1)
 
     def write_equilibrated(self):
-        with open(f"{self.inpfolder}/Langevin/equilibrated.out", "r") as f:
+        equilibrated_out_path = f"{self.inpfolder}/Langevin/equilibrated.out"
+        if not os.path.exists(equilibrated_out_path):
+            print(f"Warning: {equilibrated_out_path} not found. Skipping equilibrated.pdb creation.")
+            return
+
+        with open(equilibrated_out_path, "r") as f:
             minimized_lines = f.readlines()
         weng = []
         for line in minimized_lines:
@@ -238,7 +314,12 @@ class CleanUp:
 
 
     def write_minimized(self):
-        with open(f"{self.inpfolder}/Minimized/minimized.out", "r") as f:
+        minimized_out_path = f"{self.inpfolder}/Minimized/minimized.out"
+        if not os.path.exists(minimized_out_path):
+            print(f"Warning: {minimized_out_path} not found. Skipping minimized.pdb creation.")
+            return
+
+        with open(minimized_out_path, "r") as f:
             minimized_lines = f.readlines()
         weng = []
         for line in minimized_lines:

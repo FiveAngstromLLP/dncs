@@ -2,6 +2,8 @@ use clap::{Parser, Subcommand};
 use libdncs::*;
 use std::sync::Arc;
 
+// mod tui;
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
@@ -20,6 +22,8 @@ enum SubCommands {
         /// PDB file path
         file: String,
     },
+    // #[command(about = "Interactive peptide selector TUI")]
+    // Tui,
 }
 
 #[derive(Parser, Debug)]
@@ -89,6 +93,11 @@ fn main() {
                 .collect::<Vec<String>>()
                 .join(",");
             println!("{}", dihedral_angle);
-        }
+        } // SubCommands::Tui => {
+          //     if let Err(e) = tui::run_peptide_selector() {
+          //         eprintln!("TUI Error: {}", e);
+          //         std::process::exit(1);
+          //     }
+          // }
     }
 }
