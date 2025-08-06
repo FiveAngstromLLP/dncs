@@ -154,6 +154,10 @@ pub struct PeptideSelector {
     save_message: Option<String>,
     save_message_timer: u8,
     exit_and_run: bool,
+    g_pressed: bool,
+    f_pressed: bool,
+    length_filter_buffer: String,
+    length_filter: Option<u32>,
 }
 
 impl PeptideSelector {
@@ -210,6 +214,10 @@ impl PeptideSelector {
             save_message: None,
             save_message_timer: 0,
             exit_and_run: false,
+            g_pressed: false,
+            f_pressed: false,
+            length_filter_buffer: String::new(),
+            length_filter: None,
         })
     }
 
@@ -310,16 +318,17 @@ impl PeptideSelector {
             None
         };
 
-        if self.search_query.is_empty() {
-            self.filtered_indices = (0..self.peptides.len()).collect();
-        } else {
-            let query = self.search_query.to_lowercase();
-            self.filtered_indices = self
-                .peptides
-                .iter()
-                .enumerate()
-                .filter(|(_, peptide)| {
-                    // Always include length in text search
+        // Apply search query filter and length filter
+        self.filtered_indices = self
+            .peptides
+            .iter()
+            .enumerate()
+            .filter(|(_, peptide)| {
+                // Check search query filter
+                let matches_search = if self.search_query.is_empty() {
+                    true
+                } else {
+                    let query = self.search_query.to_lowercase();
                     let length_str = peptide.total_length.to_string();
                     let matches_text = peptide.name.to_lowercase().contains(&query)
                         || peptide.sequence.to_lowercase().contains(&query)
@@ -335,10 +344,19 @@ impl PeptideSelector {
                     };
 
                     matches_text || matches_length
-                })
-                .map(|(i, _)| i)
-                .collect();
-        }
+                };
+
+                // Check length filter
+                let matches_length_filter = if let Some(target_length) = self.length_filter {
+                    peptide.total_length == target_length
+                } else {
+                    true
+                };
+
+                matches_search && matches_length_filter
+            })
+            .map(|(i, _)| i)
+            .collect();
 
         // Apply sorting
         self.sort_peptides();
@@ -473,6 +491,18 @@ impl PeptideSelector {
             None => 2, // Start after headers
         };
         self.list_state.select(Some(i));
+    }
+
+    fn go_to_top(&mut self) {
+        if !self.filtered_indices.is_empty() {
+            self.list_state.select(Some(2)); // First item after headers
+        }
+    }
+
+    fn go_to_end(&mut self) {
+        if !self.filtered_indices.is_empty() {
+            self.list_state.select(Some(self.filtered_indices.len() + 1)); // Last item
+        }
     }
 
     fn get_selected_peptide(&self) -> Option<&PeptideEntry> {
@@ -647,6 +677,43 @@ impl PeptideSelector {
             KeyCode::Char('s') if !self.search_mode => {
                 self.cycle_sort_mode();
             }
+            KeyCode::Char('g') if !self.search_mode => {
+                self.g_pressed = true;
+            }
+            KeyCode::Char('t') if !self.search_mode && self.g_pressed => {
+                self.go_to_top();
+                self.g_pressed = false;
+            }
+            KeyCode::Char('e') if !self.search_mode && self.g_pressed => {
+                self.go_to_end();
+                self.g_pressed = false;
+            }
+            KeyCode::Char('f') if !self.search_mode && !self.f_pressed => {
+                self.f_pressed = true;
+                self.length_filter_buffer.clear();
+            }
+            KeyCode::Enter if self.f_pressed => {
+                // Apply length filter
+                if let Ok(length) = self.length_filter_buffer.parse::<u32>() {
+                    self.length_filter = Some(length);
+                } else if self.length_filter_buffer.is_empty() {
+                    // Clear filter if empty
+                    self.length_filter = None;
+                }
+                self.f_pressed = false;
+                self.length_filter_buffer.clear();
+                self.filter_peptides();
+            }
+            KeyCode::Esc if self.f_pressed => {
+                self.f_pressed = false;
+                self.length_filter_buffer.clear();
+            }
+            KeyCode::Char(c) if self.f_pressed && c.is_ascii_digit() => {
+                self.length_filter_buffer.push(c);
+            }
+            KeyCode::Backspace if self.f_pressed => {
+                self.length_filter_buffer.pop();
+            }
             KeyCode::Esc if self.search_mode => {
                 self.search_mode = false;
                 self.search_query.clear();
@@ -680,7 +747,17 @@ impl PeptideSelector {
                 self.search_query.pop();
                 self.filter_peptides(); // Live search: filter as user deletes
             }
-            _ => return Ok(false), // Key not handled
+            _ => {
+                // Reset g_pressed and f_pressed if any other key is pressed
+                if self.g_pressed {
+                    self.g_pressed = false;
+                }
+                if self.f_pressed {
+                    self.f_pressed = false;
+                    self.length_filter_buffer.clear();
+                }
+                return Ok(false); // Key not handled
+            }
         }
         Ok(true) // Key was handled
     }
@@ -1318,7 +1395,7 @@ impl PeptideSelector {
             .split(area);
 
         // Search bar
-        let search_style = if self.search_mode {
+        let search_style = if self.search_mode || self.f_pressed {
             Style::default()
                 .fg(AyuTheme::YELLOW)
                 .bg(AyuTheme::BG_ACCENT)
@@ -1330,25 +1407,36 @@ impl PeptideSelector {
         let result_count = self.filtered_indices.len();
         let total_count = self.peptides.len();
 
-        let search_text = if self.search_mode {
+        let length_filter_text = if let Some(length) = self.length_filter {
+            format!(" [Length={}]", length)
+        } else {
+            String::new()
+        };
+
+        let search_text = if self.f_pressed {
+            format!(
+                "Length filter: {}_ (Enter to apply, Esc to cancel){}",
+                self.length_filter_buffer, length_filter_text
+            )
+        } else if self.search_mode {
             if self.search_query.is_empty() {
-                format!("Search: _ ({} results)", result_count)
+                format!("Search: _ ({} results){}", result_count, length_filter_text)
             } else {
                 format!(
-                    "Search: {}_ ({} of {} results)",
-                    self.search_query, result_count, total_count
+                    "Search: {}_ ({} of {} results){}",
+                    self.search_query, result_count, total_count, length_filter_text
                 )
             }
         } else {
             if self.search_query.is_empty() {
                 format!(
-                    "Search: (Press '/' to search) - {} peptides available",
-                    total_count
+                    "Search: (Press '/' to search) - {} peptides available{}",
+                    total_count, length_filter_text
                 )
             } else {
                 format!(
-                    "Search: {} ({} of {} results) - Press '/' to modify",
-                    self.search_query, result_count, total_count
+                    "Search: {} ({} of {} results) - Press '/' to modify{}",
+                    self.search_query, result_count, total_count, length_filter_text
                 )
             }
         };
@@ -1409,9 +1497,9 @@ impl PeptideSelector {
 
                     let formatted_name = format!("{:<6}", name);
                     let formatted_sequence = if sequence.len() > 30 {
-                        format!("{:<30}", format!("{}...", &sequence[..27]))
+                        format!("{:<28}", format!("{}...", &sequence[..27]))
                     } else {
-                        format!("{:<30}", sequence)
+                        format!("{:<28}", sequence)
                     };
                     let formatted_type = format!("{:<8}", peptide_type);
                     let formatted_length = format!("{:>3}", total_length);
@@ -1437,7 +1525,7 @@ impl PeptideSelector {
                         ),
                         Span::raw(" │ "),
                         Span::styled(formatted_type, Style::default().fg(AyuTheme::PURPLE)),
-                        Span::raw(" │ Len:"),
+                        Span::raw(" │ "),
                         Span::styled(formatted_length, Style::default().fg(AyuTheme::CYAN)),
                         Span::raw(" │ "),
                         Span::styled(formatted_desc, Style::default().fg(AyuTheme::FG_SECONDARY)),
@@ -1461,7 +1549,7 @@ impl PeptideSelector {
             ),
             Span::styled(" │ ", Style::default().fg(AyuTheme::FG_MUTED)),
             Span::styled(
-                format!("{:<30}", "SEQUENCE"),
+                format!("{:<28}", "SEQUENCE"),
                 Style::default()
                     .fg(AyuTheme::FG_MUTED)
                     .add_modifier(Modifier::BOLD),
@@ -1475,7 +1563,7 @@ impl PeptideSelector {
             ),
             Span::styled(" │ ", Style::default().fg(AyuTheme::FG_MUTED)),
             Span::styled(
-                "LEN",
+                format!("{:>3}", "LEN"),
                 Style::default()
                     .fg(AyuTheme::FG_MUTED)
                     .add_modifier(Modifier::BOLD),
@@ -1491,8 +1579,20 @@ impl PeptideSelector {
         items_with_header
             .push(ListItem::new(header_content).style(Style::default().bg(AyuTheme::BG_ACCENT)));
 
-        // Add separator line
-        let separator_content = vec![Line::from("─".repeat(120))];
+        // Add separator line that matches column alignment
+        let separator_content = vec![Line::from(vec![
+            Span::raw("─"), // Status icon space
+            Span::raw(" "),
+            Span::raw("─".repeat(6)), // ID column
+            Span::raw(" │ "),
+            Span::raw("─".repeat(28)), // SEQUENCE column
+            Span::raw(" │ "),
+            Span::raw("─".repeat(8)), // TYPE column
+            Span::raw(" │ "),
+            Span::raw("─".repeat(3)), // LEN column
+            Span::raw(" │ "),
+            Span::raw("─".repeat(40)), // DESCRIPTION column
+        ])];
         items_with_header
             .push(ListItem::new(separator_content).style(Style::default().fg(AyuTheme::FG_MUTED)));
 
@@ -1655,7 +1755,7 @@ impl PeptideSelector {
                             self.config.sequence.clone()
                         },
                     ),
-                    ConfigField::Interface => ("Interface ⚡", self.config.interface.clone()),
+                    ConfigField::Interface => ("Interface", self.config.interface.clone()),
                     ConfigField::NSamples => {
                         ("Number of Samples", self.config.n_samples.to_string())
                     }
@@ -1665,7 +1765,7 @@ impl PeptideSelector {
                     ),
                     ConfigField::Temp => ("Temperature (K)", self.config.temp.to_string()),
                     ConfigField::Forcefield => (
-                        "Force Fields ⚡",
+                        "Force Fields",
                         if self.config.forcefield.len() <= 2 {
                             self.config.forcefield.join(", ")
                         } else {
@@ -1676,13 +1776,13 @@ impl PeptideSelector {
                             )
                         },
                     ),
-                    ConfigField::Device => ("Device ⚡", self.config.device.clone()),
+                    ConfigField::Device => ("Device", self.config.device.clone()),
                     ConfigField::Solvent => ("Solvent Count", self.config.solvent.to_string()),
                     ConfigField::Steps => ("Equilibration Steps", self.config.steps.to_string()),
                     ConfigField::Gamma => ("Friction Coefficient", self.config.gamma.to_string()),
                     ConfigField::Dt => ("Time Step (ps)", self.config.dt.to_string()),
                     ConfigField::MdSteps => ("MD Steps", self.config.md_steps.to_string()),
-                    ConfigField::Method => ("Sampling Method ⚡", self.config.method.clone()),
+                    ConfigField::Method => ("Sampling Method", self.config.method.clone()),
                 };
 
                 // Check if this field has enum options
@@ -1691,21 +1791,21 @@ impl PeptideSelector {
                 let content = if Some(field) == self.editing_field.as_ref() {
                     if self.enum_selection_mode && has_enum_options {
                         // Show active dropdown selection with highlight
-                        format!("{:<25} │ ▼ {} ◄ SELECTING", name, self.edit_buffer)
+                        format!("{:<28} │▼ {} ◄ SELECTING", name, self.edit_buffer)
                     } else if has_enum_options {
                         // Show dropdown field ready for selection
-                        format!("{:<25} │ ▼ {} ← PRESS ENTER", name, value)
+                        format!("{:<28} │▼ {} ← PRESS ENTER", name, value)
                     } else {
                         // Regular text input field with cursor
-                        format!("{:<25} │   {}_", name, self.edit_buffer)
+                        format!("{:<28} │  {}_", name, self.edit_buffer)
                     }
                 } else {
                     if has_enum_options {
                         // Show dropdown indicator for available enum fields
-                        format!("{:<25} │ ▼ {}", name, value)
+                        format!("{:<28} │▼ {}", name, value)
                     } else {
                         // Regular field display
-                        format!("{:<25} │   {}", name, value)
+                        format!("{:<28} │  {}", name, value)
                     }
                 };
 
@@ -1974,7 +2074,7 @@ impl PeptideSelector {
                             self.config.sequence.clone()
                         },
                     ),
-                    ConfigField::Interface => ("Interface ⚡", self.config.interface.clone()),
+                    ConfigField::Interface => ("Interface", self.config.interface.clone()),
                     ConfigField::NSamples => {
                         ("Number of Samples", self.config.n_samples.to_string())
                     }
@@ -1984,7 +2084,7 @@ impl PeptideSelector {
                     ),
                     ConfigField::Temp => ("Temperature (K)", self.config.temp.to_string()),
                     ConfigField::Forcefield => (
-                        "Force Fields ⚡",
+                        "Force Fields",
                         if self.config.forcefield.len() <= 2 {
                             self.config.forcefield.join(", ")
                         } else {
@@ -1995,20 +2095,20 @@ impl PeptideSelector {
                             )
                         },
                     ),
-                    ConfigField::Device => ("Device ⚡", self.config.device.clone()),
+                    ConfigField::Device => ("Device", self.config.device.clone()),
                     ConfigField::Solvent => ("Solvent Count", self.config.solvent.to_string()),
                     ConfigField::Steps => ("Equilibration Steps", self.config.steps.to_string()),
                     ConfigField::Gamma => ("Friction Coefficient", self.config.gamma.to_string()),
                     ConfigField::Dt => ("Time Step (ps)", self.config.dt.to_string()),
                     ConfigField::MdSteps => ("MD Steps", self.config.md_steps.to_string()),
-                    ConfigField::Method => ("Sampling Method ⚡", self.config.method.clone()),
+                    ConfigField::Method => ("Sampling Method", self.config.method.clone()),
                 };
 
                 let content = if Some(field) == self.editing_field.as_ref() {
                     if self.enum_selection_mode {
-                        format!("{:<25} │ ▼ {} ◄ SELECTING", name, self.edit_buffer)
+                        format!("{:<28} │▼ {} ◄ SELECTING", name, self.edit_buffer)
                     } else {
-                        format!("{:<25} │   {}_", name, self.edit_buffer)
+                        format!("{:<28} │  {}_", name, self.edit_buffer)
                     }
                 } else {
                     let has_enum_options = matches!(
@@ -2019,9 +2119,9 @@ impl PeptideSelector {
                             | ConfigField::Forcefield
                     );
                     if has_enum_options {
-                        format!("{:<25} │ ▼ {}", name, value)
+                        format!("{:<28} │▼ {}", name, value)
                     } else {
-                        format!("{:<25} │   {}", name, value)
+                        format!("{:<28} │  {}", name, value)
                     }
                 };
 
@@ -2242,7 +2342,7 @@ impl PeptideSelector {
             .max()
             .unwrap_or(20);
 
-        let popup_height = (self.enum_options.len() + 6).min(15) as u16; // +6 for borders and instructions
+        let popup_height = (self.enum_options.len() + 6).min(25) as u16; // +6 for borders and instructions
         let popup_width = (max_option_length + 15).max(40) as u16; // +15 for padding and indicators
 
         // Center the popup with better positioning
@@ -2592,7 +2692,7 @@ impl PeptideSelector {
                     .add_modifier(Modifier::BOLD),
             )]),
             Line::from(vec![Span::styled(
-                "  • Fields with ⚡ show dropdown menus",
+                "  • Fields with ▼ show dropdown menus",
                 Style::default().fg(AyuTheme::CYAN),
             )]),
             Line::from(vec![Span::styled(
