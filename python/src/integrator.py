@@ -76,8 +76,6 @@ class DncsIntegrator:
             platform = Platform.getPlatformByName(self.config.device)
 
             modeller.addHydrogens()
-
-            modeller.addSolvent(self.forcefield, padding=1.0 * nano.factor)
             modeller.addSolvent(self.forcefield, numAdded=self.config.solvent)
 
             system = self.forcefield.createSystem(modeller.topology, ignoreExternalBonds=True)
@@ -110,7 +108,7 @@ class DncsIntegrator:
         )
 
     def run_equilibration(self):
-        """Run equilibration with single OpenMM context, cycling through minimized structures"""
+        """Run equilibration with a single OpenMM context, cycling through minimized structures."""
         # Get all minimized structures
         minimized_dir = f"{self.outfolder}/Minimized"
         minimized_files = sorted([f for f in os.listdir(minimized_dir) if f.endswith('.pdb')])
@@ -119,32 +117,44 @@ class DncsIntegrator:
             print("No minimized structures found. Skipping equilibration.")
             return
 
-        print(f"Running equilibration with {len(minimized_files)} structures, {self.config.steps} steps each")
+        print(f"Running equilibration with {len(minimized_files)} structures, {self.config.steps} steps each, reusing a single OpenMM context.")
 
         # Create Langevin directory
         os.makedirs(f"{self.outfolder}/Langevin", exist_ok=True)
 
         platform = Platform.getPlatformByName(self.config.device)
 
+        # Load the topology and initial positions from the first PDB to set up the single OpenMM context.
+        # This assumes all subsequent PDBs in minimized_files have an identical topology.
+        first_pdb_path = os.path.join(minimized_dir, minimized_files[0])
+        pdbdata_initial = PDBFile(first_pdb_path)
+
+        system = self.forcefield.createSystem(pdbdata_initial.topology, ignoreExternalBonds=True)
+        integrator = LangevinMiddleIntegrator(
+            self.config.temp * kelvin,
+            self.config.gamma / pico.factor,
+            self.config.dt * pico.factor
+        )
+
+        simulation = Simulation(pdbdata_initial.topology, system, integrator, platform)
+
+        simulation.reporters.append(StateDataReporter(sys.stdout, 1000, step=True,
+                                            potentialEnergy=True,
+                                            kineticEnergy=True,
+                                            temperature=True))
+
         for i, pdb_file in enumerate(minimized_files):
             model_num = i + 1
-            pdb_path = os.path.join(minimized_dir, pdb_file)
-            pdb = PDBFile(pdb_path)
+            print(f"Equilibrating model {model_num}/{len(minimized_files)}")
 
-            # Create individual simulation context for each structure to avoid position count mismatch
-            system = self.forcefield.createSystem(pdb.topology, ignoreExternalBonds=True)
-            integrator = LangevinMiddleIntegrator(
-                self.config.temp * kelvin,
-                self.config.gamma / pico.factor,
-                self.config.dt * pico.factor
-            )
+            # Load positions for the current minimized structure.
+            # The topology of this PDB is expected to be identical to the one used to initialize 'simulation'.
+            current_pdb_data = PDBFile(os.path.join(minimized_dir, pdb_file))
 
-            simulation = Simulation(pdb.topology, system, integrator, platform)
+            # Set positions of the existing OpenMM context to the current structure's positions
+            simulation.context.setPositions(current_pdb_data.positions)
 
-            # Set positions from minimized structure
-            simulation.context.setPositions(pdb.positions)
-
-            # Set velocities to temperature to reduce artifacts
+            # Re-initialize velocities to the target temperature for each new equilibration run segment
             temperature = self.config.temp * kelvin
             simulation.context.setVelocitiesToTemperature(temperature)
 
@@ -156,7 +166,8 @@ class DncsIntegrator:
             self.log.info(f"EQUILIBRATED ENERGY AFTER {self.config.steps} STEPS FOR MODEL {model_num} = {equilibrated_state.getPotentialEnergy()}")
             print(f"Equilibrated energy for model {model_num}: {equilibrated_state.getPotentialEnergy()}")
 
-            # Save equilibrated structure
+            # Save equilibrated structure. The topology used for saving is from the 'simulation' object,
+            # which was set up with the first PDB's topology. This is consistent if all topologies are the same.
             self.save_pdb(
                 f"{self.outfolder}/Langevin/Equilibrated_{model_num:04}.pdb",
                 simulation.topology,
@@ -283,7 +294,7 @@ class MDSimulation:
         simulation = Simulation(pdbdata_initial.topology, system, integrator, platform)
 
         # Add reporters once to the single simulation object
-        simulation.reporters.append(StateDataReporter(sys.stdout, 100, step=True,
+        simulation.reporters.append(StateDataReporter(sys.stdout, 1000, step=True,
                                             potentialEnergy=True,
                                             kineticEnergy=True,
                                             temperature=True))
