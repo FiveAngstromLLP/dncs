@@ -18,11 +18,10 @@ import os
 import sys
 import re
 import dncs
-import math
 import logging
 import datetime
 import concurrent.futures
-from openmm.app import ForceField, PDBFile,Simulation,Modeller, PDBReporter, StateDataReporter
+from openmm.app import ForceField, PDBFile,Simulation,Modeller, StateDataReporter
 from openmm.openmm import Platform, LangevinMiddleIntegrator
 from openmm.unit import kelvin, nano, pico
 
@@ -258,51 +257,60 @@ class MDSimulation:
         os.makedirs(self.outfolder, exist_ok=True)
         self.pdbs = sorted([f for f in os.listdir(self.inpfolder) if f.endswith('.pdb')])
 
-    def run_simulation(self):
-        """Run production MD with individual OpenMM contexts using equilibrated structures"""
-        platform = Platform.getPlatformByName(self.config.device)
 
+    def run_simulation(self):
+        """Run production MD with a single OpenMM context, cycling through equilibrated structures."""
         if not self.pdbs:
             print("No equilibrated structures found. Skipping production MD.")
             return
 
-        print(f"Running production MD with {len(self.pdbs)} equilibrated structures, {self.config.md_steps} steps each")
+        print(f"Running production MD with {len(self.pdbs)} structures, {self.config.md_steps} steps each, reusing a single OpenMM context.")
+
+        platform = Platform.getPlatformByName(self.config.device)
+
+        # Load the topology and initial positions from the first PDB to set up the single OpenMM context.
+        # This assumes all subsequent PDBs in self.pdbs have an identical topology.
+        first_pdb_path = os.path.join(self.inpfolder, self.pdbs[0])
+        pdbdata_initial = PDBFile(first_pdb_path)
+
+        system = self.forcefield.createSystem(pdbdata_initial.topology)
+        integrator = LangevinMiddleIntegrator(
+            self.config.temp * kelvin,
+            self.config.gamma / pico.factor,
+            self.config.dt * pico.factor
+        )
+
+        simulation = Simulation(pdbdata_initial.topology, system, integrator, platform)
+
+        # Add reporters once to the single simulation object
+        simulation.reporters.append(StateDataReporter(sys.stdout, 100, step=True,
+                                            potentialEnergy=True,
+                                            kineticEnergy=True,
+                                            temperature=True))
 
         for i, pdb_file in enumerate(self.pdbs):
             print(f"Production MDSimulation {i+1}/{len(self.pdbs)}")
 
-            # Load equilibrated structure
-            pdbdata = PDBFile(f"{self.inpfolder}/{pdb_file}")
+            # Load positions for the current equilibrated structure.
+            # The topology of this PDB is expected to be identical to the one used to initialize 'simulation'.
+            current_pdb_data = PDBFile(os.path.join(self.inpfolder, pdb_file))
 
-            # Create individual simulation context for each structure
-            system = self.forcefield.createSystem(pdbdata.topology)
-            integrator = LangevinMiddleIntegrator(
-                self.config.temp * kelvin,
-                self.config.gamma/pico.factor,
-                self.config.dt*pico.factor
-            )
+            # Set positions of the existing OpenMM context to the current structure's positions
+            simulation.context.setPositions(current_pdb_data.positions)
 
-            simulation = Simulation(pdbdata.topology, system, integrator, platform)
-
-            # Add reporters
-            simulation.reporters.append(StateDataReporter(sys.stdout, 100, step=True,
-                                              potentialEnergy=True,
-                                              kineticEnergy=True,
-                                              temperature=True))
-
-            # Set positions from equilibrated structure
-            simulation.context.setPositions(pdbdata.positions)
-
-            # Set velocities to temperature for production MD
+            # Re-initialize velocities to the target temperature for each new production run segment
             temperature = self.config.temp * kelvin
             simulation.context.setVelocitiesToTemperature(temperature)
 
-            # Run production MD steps
+            # Run the production MD steps for this structure
             simulation.step(self.config.md_steps)
 
-            # Save final structure after production MD
+            # Get the final state (positions) from the simulation context
             final_state = simulation.context.getState(getPositions=True)
-            save_pdb(f"{self.outfolder}/production_md_{i+1:04}.pdb", simulation.topology, final_state.getPositions())
+
+            # Save the final structure. The topology used for saving is from the 'simulation' object,
+            # which was set up with the first PDB's topology. This is consistent if all topologies are the same.
+            save_pdb(f"{self.outfolder}/md_{i+1:04}.pdb", simulation.topology, final_state.getPositions())
 
 def save_pdb(filename: str, topology, positions):
     os.makedirs(os.path.dirname(filename), exist_ok=True)

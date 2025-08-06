@@ -18,6 +18,8 @@
 import toml
 import time
 import dncs
+import os
+import shutil
 from typing import List
 from dataclasses import dataclass
 from integrator import DncsIntegrator, CleanUp, MDSimulation
@@ -43,15 +45,18 @@ class SimulationConfig:
 class GenerateSamples:
     def __init__(self, config: SimulationConfig):
         self.config = config
+        self.outfolder = f"{self.config.folder}/{self.config.moleculename}"
         self.generate_samples()
 
     def generate_samples(self):
         sample = dncs.Polymer(self.config.sequence, "amberfb15.xml")
+        if os.path.exists(self.outfolder):
+            shutil.rmtree(self.outfolder)
         dncs.SobolSampler(
             sample,
             self.config.n_samples,
             self.config.method,
-            f"{self.config.folder}/{self.config.moleculename}/sample"
+            f"{self.outfolder}/sample"
         )
 
 def runopenmm(config):
