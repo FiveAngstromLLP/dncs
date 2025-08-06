@@ -344,9 +344,7 @@ pub struct Sampler {
 
 impl Sampler {
     pub fn new(system: Arc<System>, method: Method, folder: String) -> Self {
-        if std::path::Path::new(&folder).exists() {
-            std::fs::remove_dir_all(&folder).unwrap();
-        }
+        Self::handle_existing_directory(&folder);
         std::fs::create_dir_all(folder.to_string()).unwrap();
         Self {
             method,
@@ -355,6 +353,93 @@ impl Sampler {
             dihedral: system.dihedral.len(),
             system: Arc::clone(&system),
             rotate: RotateAtDihedral::new(Arc::clone(&system)),
+        }
+    }
+
+    fn handle_existing_directory(folder: &str) {
+        use std::io::{self, Write};
+        use chrono::Local;
+        
+        if !std::path::Path::new(folder).exists() {
+            return;
+        }
+
+        // Count files in directory
+        let file_count = std::fs::read_dir(folder)
+            .map(|entries| entries.filter_map(|e| e.ok()).count())
+            .unwrap_or(0);
+
+        // Get last modified time
+        let modified_time = std::fs::metadata(folder)
+            .and_then(|m| m.modified())
+            .map(|t| {
+                let datetime: chrono::DateTime<Local> = t.into();
+                datetime.format("%Y-%m-%d %H:%M:%S").to_string()
+            })
+            .unwrap_or_else(|_| "Unknown".to_string());
+
+        println!("\n┌─ Existing Sample Directory Found ─┐");
+        println!("│                                   │");
+        println!("│ Directory: {:<23} │", folder);
+        println!("│ Contains: {:<3} files              │", file_count);
+        println!("│ Last modified: {:<15} │", modified_time);
+        println!("│                                   │");
+        println!("│ What would you like to do?        │");
+        println!("│                                   │");
+        println!("│ [D] Delete and continue           │");
+        println!("│ [B] Backup and continue           │");
+        println!("│ [R] Rename with timestamp         │");
+        println!("│ [C] Cancel operation              │");
+        println!("│                                   │");
+        println!("└───────────────────────────────────┘");
+        print!("\nEnter your choice (D/B/R/C): ");
+        io::stdout().flush().unwrap();
+
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).unwrap();
+        let choice = input.trim().to_uppercase();
+
+        match choice.as_str() {
+            "D" => {
+                println!("Deleting existing directory...");
+                if let Err(e) = std::fs::remove_dir_all(folder) {
+                    eprintln!("Error deleting directory: {}", e);
+                    std::process::exit(1);
+                }
+            }
+            "B" => {
+                let timestamp = Local::now().format("%Y%m%d_%H%M%S");
+                let backup_folder = format!("{}_backup_{}", folder, timestamp);
+                println!("Creating backup at: {}", backup_folder);
+                
+                if let Err(e) = std::fs::rename(folder, &backup_folder) {
+                    eprintln!("Error creating backup: {}", e);
+                    std::process::exit(1);
+                }
+                println!("Backup created successfully!");
+            }
+            "R" => {
+                let timestamp = Local::now().format("%Y%m%d_%H%M%S");
+                let renamed_folder = format!("{}_{}", folder, timestamp);
+                println!("Renaming directory to: {}", renamed_folder);
+                
+                if let Err(e) = std::fs::rename(folder, &renamed_folder) {
+                    eprintln!("Error renaming directory: {}", e);
+                    std::process::exit(1);
+                }
+                println!("Directory renamed successfully!");
+            }
+            "C" => {
+                println!("Operation cancelled by user.");
+                std::process::exit(0);
+            }
+            _ => {
+                println!("Invalid choice. Defaulting to delete...");
+                if let Err(e) = std::fs::remove_dir_all(folder) {
+                    eprintln!("Error deleting directory: {}", e);
+                    std::process::exit(1);
+                }
+            }
         }
     }
 

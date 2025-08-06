@@ -282,8 +282,8 @@ class CleanUp:
             data = line.split(",")
             weng.append((data[0], data[1]))
 
-        # Get top N samples (use sample_top_n parameter or default to 10)
-        top_n = getattr(self.config, 'sample_top_n', 10)
+        # Get top N samples (use md_simulation parameter)
+        top_n = self.config.md_simulation
         sorted_samples = sorted(weng, key=lambda x: float(x[1]))[:top_n]
 
         with open(f"{self.inpfolder}/sampled.pdb", "w") as file:
