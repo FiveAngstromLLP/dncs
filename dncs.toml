@@ -1,16 +1,16 @@
 [simulation]
-moleculename = "6RRL"
+moleculename = "6X7I"
 folder = "Result"
-sequence = "FRIMRILRVLKL"
+sequence = "GQERFNRWFLTGMTVAGVVLLGSLFSRK"
 interface = "openmm"
-n_samples = 100
-md_simulation = 10
+n_samples = 2048
+md_simulation = 20
 temp = 300.0
 forcefield = ["amber14-all.xml", "amber14/tip3p.xml"]
 device = "CUDA"
-solvent = 100
-steps = 5000
+solvent = 10000
+steps = 500000
 gamma = 1.0
 dt = 0.002
-md_steps = 1000
+md_steps = 100000
 method = "fold"

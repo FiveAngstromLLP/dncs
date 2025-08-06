@@ -357,9 +357,9 @@ impl Sampler {
     }
 
     fn handle_existing_directory(folder: &str) {
-        use std::io::{self, Write};
         use chrono::Local;
-        
+        use std::io::{self, Write};
+
         if !std::path::Path::new(folder).exists() {
             return;
         }
@@ -411,7 +411,7 @@ impl Sampler {
                 let timestamp = Local::now().format("%Y%m%d_%H%M%S");
                 let backup_folder = format!("{}_backup_{}", folder, timestamp);
                 println!("Creating backup at: {}", backup_folder);
-                
+
                 if let Err(e) = std::fs::rename(folder, &backup_folder) {
                     eprintln!("Error creating backup: {}", e);
                     std::process::exit(1);
@@ -422,7 +422,7 @@ impl Sampler {
                 let timestamp = Local::now().format("%Y%m%d_%H%M%S");
                 let renamed_folder = format!("{}_{}", folder, timestamp);
                 println!("Renaming directory to: {}", renamed_folder);
-                
+
                 if let Err(e) = std::fs::rename(folder, &renamed_folder) {
                     eprintln!("Error renaming directory: {}", e);
                     std::process::exit(1);
@@ -448,6 +448,7 @@ impl Sampler {
 
         let s = Sobol::new(self.dihedral, self.method.clone());
         for i in 0..max {
+            println!("Sampling configuration {}", i);
             let mut rotate = RotateAtDihedral::new(Arc::clone(&self.system));
             rotate.rotate(s.get_index(i));
             // let energy_val = rotate.energy();

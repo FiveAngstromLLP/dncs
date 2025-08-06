@@ -290,12 +290,14 @@ impl Amber {
         let r = Self::distance(i, j); // Unit >> nm
         let q1 = i.charge;
         let q2 = j.charge;
-        let k = 138.93545727242866; // Coulomb's constant in vacuum (kJ/mol)
-                                    // let k = 7.935; // Coulomb's constant in vacuum (kJ/mol)
-                                    // let k = 0.101; // Coulomb's constant in vacuum (kJ/mol)
-                                    // if r < 0.8 && r > 1.2 {
-                                    //     return 0.0; // Unit >> kJ/mol
-                                    // }
+        // Electrostatic energy (kJ/mol) = 138.935 * q1 (e) * q2 (e) / r (nm) in vacuum.
+        // let k = 138.93545727242866; // Coulomb's constant in vacuum (kJ/mol)
+        let k = 138.93545727242866 / 78.0; // Coulomb's constant in water (kJ/mol)
+                                           // let k = 7.935; // Coulomb's constant in vacuum (kJ/mol)
+                                           // let k = 0.101; // Coulomb's constant in vacuum (kJ/mol)
+                                           // if r < 0.8 && r > 1.2 {
+                                           //     return 0.0; // Unit >> kJ/mol
+                                           // }
         return k * q1 * q2 / r;
     }
 

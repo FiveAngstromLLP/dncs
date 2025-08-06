@@ -3,7 +3,9 @@ use std::sync::Arc;
 const FORCE_FIELD: FF = FF::AmberFB15;
 
 fn main() {
-    let mut sys = System::new("AA", FORCE_FIELD.init());
+    // let mut sys = System::new("AA", FORCE_FIELD.init());
+
+    let mut sys = System::from_pdb("1plx.pdb", FORCE_FIELD.init());
     sys.init_parameters();
 
     let amber = Amber::new(Arc::new(sys.clone()));
