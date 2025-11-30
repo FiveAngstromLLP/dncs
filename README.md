@@ -390,7 +390,7 @@ This project is licensed under the **GNU General Public License v3. 0** - see th
 - **Satheeshkumar S.**
 - **Sam Paul D.**
 - **Stephen A.**
-- **[FiveAngstrom LLP](https://fiveangstrom. com)**
+
 
 ---
 
